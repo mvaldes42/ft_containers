@@ -17,7 +17,7 @@ int main()
 	ft::vector<int> vector_int;
 	ft::vector<Buffer> vector_buffer;
 
-	ft::vector<int> vector_int_construct(2, 200);
+	ft::vector<int> vector_int_construct(2, 10);
 	for (unsigned long int i = 0; i < vector_int_construct.size(); ++i)
 		std::cout << i << ": " << vector_int_construct[i] << std::endl;
 

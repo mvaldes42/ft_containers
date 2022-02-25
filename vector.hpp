@@ -40,7 +40,7 @@ namespace ft {
 			explicit vector (const allocator_type& alloc = allocator_type()); 														✅
 			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type());	❌
 			template <class InputIterator>
-					vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());				❌
+					vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());				🚧 
 			vector (const vector& x)				🚧 
 			~vector();								❌
 			vector& operator= (const vector& x)		🚧 
@@ -52,26 +52,26 @@ namespace ft {
 			explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 			: _size(n), _capacity(n), _array(NULL), _alloc(alloc)
 			{
-				_array = _alloc.allocate(n);
+				_array = _alloc.allocate(_size);
 				for (size_type i = 0; i < _size; ++i)
 					_alloc.construct(&_array[i], val);
 			};
 
 			// template <class InputIterator>
-			// vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());
+			// vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+			// : _size(0), _capacity(0), _array(NULL), _alloc(alloc)
+			// {
+			// 	for (InputIterator it = first; it != last; ++it)
+			// 		_size++;
+			// 	_capacity = _size;
+			// 	_array = _alloc.allocate(_size);
+			// 	for (size_type i = 0; i < _size; ++i)
+			// 		_alloc.construct(&_array[i], (first++));
+			// };
 			
-			// vector (const vector& x) : _size(x._size), _capacity(x._capacity), _array(x._array), _alloc(x._alloc) {};
+			// vector (const vector& x) : _size(x._size), _capacity(x._capacity), _array(x._array), _alloc(x._alloc) {}; // insert ?
 
-// 			Vector(const Vector &src) : _size(src._size), _capacity(src._capacity), _array(new int[_capacity])
-// 			{
-// 				for (int i=0; i<_size; ++i)
-// 					_array[i] = src._array[i];
-// 			};
-
-// 			~Vector()
-// 			{
-// 				delete [] _array;
-// 			};
+// 			~Vector() {};
 
 // 			Vector &operator =(const Vector& rhs)
 // 			{
@@ -111,24 +111,54 @@ namespace ft {
 
 // 			/*
 // 			size		✅ 
-// 			max_size	❌
-// 			resize		❌
+// 			max_size	✅ 
+// 			resize		🚧
 // 			capacity	✅
 // 			empty		✅
-// 			reserve		❌
+// 			reserve		🚧
 // 			*/
 
 			size_type size() const { return (_size); };
 		
-			// size_type max_size() const { return (_size); };
+			size_type max_size() const { return (_alloc.max_size()); };
 		
-// 			// void resize (size_type n, value_type val = value_type());
+			// void resize (size_type n, value_type val = value_type())
+			// {
+				// resize to contain n elements
+				// if n < _size
+				// reduce to n & remove + destroy the rest
+
+				// if n > _size
+				// insert diff elements at the end to reach n size
+				// if val is specified, new elements are copies of val
+				// else they are value-initialized
+
+				// if n > _capacity
+				// automatic reallocation
+			// };
 		
 			size_type capacity() const { return (_capacity); };
 		
 			bool empty() const { return (_size == 0); };
 			
-// 			// void reserve (size_type n);
+			void reserve (size_type n)
+			{
+				// request that _capacity be at least enough for n elements
+				// if (n > max_size())
+					// throw error // do try catch
+				if (n > _capacity)
+				{
+					size_type oldCapacity = _capacity;
+					_capacity = n;
+					value_type *newArray = _alloc.allocate(_capacity);
+					for (size_type i = 0; i < _size; ++i)
+						_alloc.construct(&newArray[i], _array[i]);
+					for (iterator it = begin(); it != end(); ++it)
+						_alloc.destroy(it);
+					_alloc.deallocate(_array, oldCapacity);
+					_array = newArray;
+				}
+			};
 
 // 		// ** // ELEMENT ACCESS // ** //
 
@@ -140,18 +170,15 @@ namespace ft {
 // 			*/
 
 			reference operator[] (size_type n) { return (_array[n]); };
+			const_reference operator[] (size_type n) const { return ((*this)[n]); };
 
-// 			// const_reference operator[] (size_type n) const;
-
-			// reference at (size_type n);
-			// const_reference at (size_type n) const;
-
-// 			int &at(int index)
-// 			{
-// 				if ((index < 0 || index >= _size))
-// 					throw std::exception("Pop back on empty vector!");
-// 				return (_array[index]);
-// 			};
+			reference at (size_type n)
+			{
+				// if (n < 0 || n >= _size)
+					// throwing an out_of_range exception 
+				return (_array[n]);
+			};
+			const_reference at (size_type n) const { return at(n); };
 
 			reference front() { return (*begin()); };
 			const_reference front() const { return (const_reference(front())); };
@@ -162,7 +189,7 @@ namespace ft {
 // 		// ** // MODIFIERS // ** //
 
 // 			/*
-// 			assign		❌
+// 			assign		🚧
 // 			push_back	🚧 
 // 			pop_back	🚧 
 // 			insert		🚧 
@@ -174,7 +201,13 @@ namespace ft {
 // 			/*
 // 			template <class InputIterator>
 // 			void assign (InputIterator first, InputIterator last);
-// 			void assign (size_type n, const value_type& val);
+			void assign (size_type n, const value_type& val)
+			{
+				size_type oldSize = _size;
+				reserve(n);
+				for (size_type i = oldSize; i < _size; ++i)
+					_alloc.construct(&_array[i], val);
+			};
 
 			void push_back (const value_type& val)
 			{
@@ -204,12 +237,33 @@ namespace ft {
 			// template <class InputIterator>
 			// void insert (iterator position, InputIterator first, InputIterator last);
 
-// 			iterator erase (iterator position);
-// 			iterator erase (iterator first, iterator last);
+			iterator erase (iterator position)
+			{
+				iterator it = position;
+				_alloc.destroy(it);
+				for (iterator it = position; it + 1 != end(); ++it)
+				{
+					_alloc.construct(it, *(it + 1));
+					// if (it + 1 != end())
+					_alloc.destroy(it + 1);
+				}
+				_size -= 1;
+			};
+			iterator erase (iterator first, iterator last)
+			{
+				
+			};
 
 // 			void swap (vector& x);
 
-// 			void clear();
+			void clear()
+			{
+				for (iterator it = begin(); it != end(); ++it)
+					_alloc.destroy(it);
+				_size = 0;
+				_alloc.deallocate(_array, _capacity);
+				_capacity = 0;
+			};
 // 			*/
 
 			// void pushBack(int value)
@@ -231,11 +285,6 @@ namespace ft {
 // 				for (int i = index; i < _size; ++i)
 // 					_array[i] = _array[i + 1];
 // 				_size--;
-// 			};
-// 			void clear()
-// 			{
-// 				//clear the memory of pointers if it is pointers
-// 				_size = 0;
 // 			};
 // 		// ** // ALLOCATOR // ** //
 
