@@ -17,19 +17,23 @@ int main()
 	ft::vector<int> vector_int;
 	ft::vector<Buffer> vector_buffer;
 
-	ft::vector<int> vector_int_construct(2, 10);
-	for (unsigned long int i = 0; i < vector_int_construct.size(); ++i)
-		std::cout << i << ": " << vector_int_construct[i] << std::endl;
+	ft::vector<int> vectorTest(2, 10);
+	std::cout << vectorTest;
 
-	vector_int_construct.push_back(10);
-	vector_int_construct.push_back(10);
-	vector_int_construct.push_back(10);
-	vector_int_construct.push_back(10);
-	for (unsigned long int i = 0; i < vector_int_construct.size(); ++i)
-		std::cout << i << ": " << vector_int_construct[i] << std::endl;
+	vectorTest.push_back(6);
+	vectorTest.push_back(8000);
+	vectorTest.push_back(600);
+	vectorTest.push_back(5);
+	std::cout << "push_back:: " << vectorTest;
 
-	std::allocator<int>::reference ref = vector_int_construct.front();
-	std::cout << "ref: " << ref << std::endl;
-	ref = vector_int_construct.back();
-	std::cout << "ref: " << ref << std::endl;
+	vectorTest.erase(&vectorTest[1]);
+	std::cout << "erase:: " << vectorTest;
+
+	vectorTest.insert(&vectorTest[1], 3);
+	std::cout << "insert 3 at pos 1:: " << vectorTest;
+
+	std::allocator<int>::reference ref = vectorTest.front();
+	std::cout << "front:: " << ref << std::endl;
+	ref = vectorTest.back();
+	std::cout << "back:: " << ref << std::endl;
 }
