@@ -20,7 +20,7 @@ namespace ft
 
 		// Member object
 		protected:
-			iterator_type current; // the underlying iterator of which base() returns a copy
+			iterator_type _current; // the underlying iterator of which base() returns a copy
 			//  reverse iterator r constructed from an iterator i => &*r == &*(i-1) //  (as long as r is dereferenceable)
 
 		public:
@@ -42,16 +42,21 @@ namespace ft
 		// operator-
 
 
-			reverse_iterator(): current() {};
-			explicit reverse_iterator (iterator_type it) {};
+			reverse_iterator(): _current() {};
+			explicit reverse_iterator (iterator_type it) : _current(it) {};
 			// template <class iterator>
 			// reverse_iterator (const reverse_iterator<iterator>& rev_it);
 
 			// reverse_iterator& operator-= (difference_type n);
 
-			// iterator_type base() const;
+			iterator_type base() const { return _current; };
 
-			// reference operator*() const;
+			// reference operator*() const
+			// {
+			// 	iterator_type tmp = _current;
+			// 	tmp--;
+			// 	return (*tmp);
+			// };
 
 			// pointer operator->() const;
 

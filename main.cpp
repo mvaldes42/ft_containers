@@ -77,8 +77,9 @@ int main()
 		std::cout << "result: " << ft::is_integral<int>::value << std::endl;
 
 		typedef ft::vector<int>::iterator iter_type;
-		// iter_type begin(vectorTest.begin());
-		ft::reverse_iterator<iter_type> rev_until;
+		iter_type begin(vectorTest.begin());
+		ft::reverse_iterator<iter_type> rev_until(begin);
+		std::cout << "rev it: " << *rev_until.base() << std::endl;
 		// std::reverse_iterator<> rev_it;
 	}
 }
