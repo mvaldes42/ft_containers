@@ -23,6 +23,10 @@ namespace ft
 		public:
 		// Member functions
 		// (constructor) constructs a new iterator adaptor
+		reverse_iterator();
+		explicit reverse_iterator (iterator_type it);
+		template <class Iter>
+		reverse_iterator (const reverse_iterator<Iter>& rev_it);
 		// operator=
 		// base accesses the underlying iterator
 		// operator* accesses the pointed-to element
