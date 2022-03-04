@@ -1,4 +1,5 @@
 #include "vector.hpp"
+#include "utils.hpp"
 
 #include <iostream>
 #include <vector>
@@ -72,5 +73,6 @@ int main()
 		// std::cout << "front:: " << ref << std::endl;
 		// ref = vectorTest.back();
 		// std::cout << "back:: " << ref << std::endl;
+		std::cout << "result: " << ft::is_integral<int>::value << std::endl;
 	}
 }
