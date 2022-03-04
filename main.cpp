@@ -58,7 +58,7 @@ int main()
 		catch (std::exception &e)
 			{ std::cerr << "Length error: " << e.what() << std::endl; }
 		try
-			{ vectorTest.reserve(vectorTest.max_size()); }
+			{ vectorTest.reserve(vectorTest.max_size() + 1); }
 		catch (std::exception &e)
 			{ std::cerr << "Length error: " << e.what() << std::endl; }
 		// std::cout << vectorTest;
@@ -66,7 +66,7 @@ int main()
 		// std::cout << "//// COPY CONSTRUCTOR //// " << std::endl;
 		// ft::vector<int> vectorTest2(vectorTest);
 		// vectorTest.erase(&vectorTest[0], &vectorTest[4]);
-		// std::cout << vectorTest;
+		std::cout << vectorTest;
 		// std::cout << vectorTest2;
 
 		std::allocator<int>::reference ref = vectorTest.front();
@@ -80,6 +80,12 @@ int main()
 		iter_type begin(vectorTest.begin());
 		ft::reverse_iterator<iter_type> rev_until(begin);
 		std::cout << "rev it: " << *rev_until.base() << std::endl;
-		// std::reverse_iterator<> rev_it;
+		ft::reverse_iterator<iter_type> rev_cp(rev_until);
+		std::cout << "rev it copy: " << *rev_cp.base() << std::endl;
+		ft::reverse_iterator<iter_type> rev_equals = rev_until;
+		std::cout << "rev it equals: " << *rev_equals.base() << std::endl;
+		std::cout << "rev it operator[0]: " << rev_equals[0] << std::endl;
+		std::cout << "rev it operator[2]: " << rev_equals[2] << std::endl;
+		std::cout << "rev it operator[-1]: " << rev_equals[-1] << std::endl;
 	}
 }

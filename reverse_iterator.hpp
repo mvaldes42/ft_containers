@@ -21,46 +21,52 @@ namespace ft
 		// Member object
 		protected:
 			iterator_type _current; // the underlying iterator of which base() returns a copy
-			//  reverse iterator r constructed from an iterator i => &*r == &*(i-1) //  (as long as r is dereferenceable)
 
 		public:
 
-		// Member functions
-		// (constructor) constructs a new iterator adaptor
-		// operator=
-		// base accesses the underlying iterator
-		// operator* accesses the pointed-to element
-		// operator-> accesses the pointed-to element
-		// operator[]
-		// operator++
-		// operator++(int)
-		// operator+=
-		// operator+
-		// operator--
-		// operator--(int)
-		// operator-=
-		// operator-
+		// Member functions 🚧
+		// (constructor) ✅
+		// operator= ✅
+		// base ✅
+		// operator* ✅
+		// operator-> ❌
+		// operator[] ❌
+		// operator++ ❌
+		// operator++(int) ❌
+		// operator+= ❌
+		// operator+ ❌
+		// operator-- ❌
+		// operator--(int) ❌
+		// operator-= ❌
+		// operator- ❌
 
 
 			reverse_iterator(): _current() {};
 			explicit reverse_iterator (iterator_type it) : _current(it) {};
-			// template <class iterator>
-			// reverse_iterator (const reverse_iterator<iterator>& rev_it);
+			template <iterator>
+			reverse_iterator (const reverse_iterator<iterator>& rev_it) : _current(rev_it._current){};
 
-			// reverse_iterator& operator-= (difference_type n);
+			template< class U >
+			reverse_iterator& operator=( const reverse_iterator<U>& other )
+			{
+				if (this != other)
+					_current = other._current;
+				return (*this);
+			};
 
 			iterator_type base() const { return _current; };
 
-			// reference operator*() const
-			// {
-			// 	iterator_type tmp = _current;
-			// 	tmp--;
-			// 	return (*tmp);
-			// };
+			//  reverse iterator r constructed from an iterator i => &*r == &*(i-1) //  (as long as r is dereferenceable)
+			reference operator*() const
+			{
+				iterator_type tmp(_current);
+				tmp--;
+				return (*tmp);
+			};
 
 			// pointer operator->() const;
 
-			// reference operator[] (difference_type n) const;
+			reference operator[] (difference_type n) const { return (base()[-n-1]); };
 
 			// reverse_iterator& operator++();
 
@@ -79,16 +85,16 @@ namespace ft
 			// reverse_iterator operator- (difference_type n) const;
 	};
 }
-// Non-member functions
+// Non-member functions 🚧
 // compares the underlying iterators (function template) :
-// operator==
-// operator!=
-// operator<
-// operator<=
-// operator>
-// operator>=
-// operator+
-// operator-
+// operator== ❌
+// operator!= ❌
+// operator< ❌
+// operator<= ❌
+// operator> ❌
+// operator>= ❌
+// operator+ ❌
+// operator- ❌
 
 // template <class Iterator>
 // bool operator== (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs);
