@@ -2,31 +2,31 @@
 #define REVERSE_ITERATOR_HPP
 
 #include <iostream>
+#include "iterator_traits.hpp"
+
 
 namespace ft
 {
-	template< class Iter >
+	template <class iterator>
 	class reverse_iterator
 	{
 		// Member types
-		typedef Iter iterator_type;
-		typedef typename std::iterator_traits<Iter>::iterator_category iterator_category;
-		std::iterator_traits<Iter>::value_type value_type
-		std::iterator_traits<Iter>::difference_type difference_type
-		std::iterator_traits<Iter>::pointer pointer
-		std::iterator_traits<Iter>::reference reference
+		typedef iterator iterator_type;
+		typedef typename std::iterator_traits<iterator>::iterator_category iterator_category;
+		typedef typename std::iterator_traits<iterator>::value_type value_type;
+		typedef typename std::iterator_traits<iterator>::difference_type difference_type;
+		typedef typename std::iterator_traits<iterator>::pointer pointer;
+		typedef typename std::iterator_traits<iterator>::reference reference;
 
 		// Member object
 		protected:
-		iterator_type current // the underlying iterator of which base() returns a copy
+			iterator_type current; // the underlying iterator of which base() returns a copy
+			//  reverse iterator r constructed from an iterator i => &*r == &*(i-1) //  (as long as r is dereferenceable)
 
 		public:
+
 		// Member functions
 		// (constructor) constructs a new iterator adaptor
-		reverse_iterator();
-		explicit reverse_iterator (iterator_type it);
-		template <class Iter>
-		reverse_iterator (const reverse_iterator<Iter>& rev_it);
 		// operator=
 		// base accesses the underlying iterator
 		// operator* accesses the pointed-to element
@@ -40,6 +40,38 @@ namespace ft
 		// operator--(int)
 		// operator-=
 		// operator-
+
+
+			reverse_iterator(): current() {};
+			explicit reverse_iterator (iterator_type it) {};
+			// template <class iterator>
+			// reverse_iterator (const reverse_iterator<iterator>& rev_it);
+
+			// reverse_iterator& operator-= (difference_type n);
+
+			// iterator_type base() const;
+
+			// reference operator*() const;
+
+			// pointer operator->() const;
+
+			// reference operator[] (difference_type n) const;
+
+			// reverse_iterator& operator++();
+
+			// reverse_iterator  operator++(int);
+
+			// reverse_iterator& operator+= (difference_type n);
+
+			// reverse_iterator operator+ (difference_type n) const;
+
+			// reverse_iterator& operator--();
+
+			// reverse_iterator  operator--(int);
+
+			// reverse_iterator& operator-= (difference_type n);
+
+			// reverse_iterator operator- (difference_type n) const;
 	};
 }
 // Non-member functions
@@ -50,8 +82,31 @@ namespace ft
 // operator<=
 // operator>
 // operator>=
-
 // operator+
 // operator-
+
+// template <class Iterator>
+// bool operator== (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs);
+// template <class Iterator>
+// bool operator!= (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs);
+// template <class Iterator>
+// bool operator<  (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs);
+// template <class Iterator>
+// bool operator<= (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs);
+// template <class Iterator>
+// bool operator>  (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs);
+// template <class Iterator>
+// bool operator>= (const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs);
+
+// template <class Iterator>
+// reverse_iterator<Iterator> operator+ (
+// 	typename reverse_iterator<Iterator>::difference_type n,
+// 	const reverse_iterator<Iterator>& rev_it);
+
+// template <class Iterator>
+// typename reverse_iterator<Iterator>::difference_type operator- (
+// 	const reverse_iterator<Iterator>& lhs,
+//     const reverse_iterator<Iterator>& rhs);
+
 
 #endif
