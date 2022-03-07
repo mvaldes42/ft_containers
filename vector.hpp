@@ -187,8 +187,8 @@ namespace ft
 			reference front() { return (*begin()); };
 			const_reference front() const { return const_reference(*begin()); };
 
-			reference back() { return *(end() - 1); };
-			const_reference back() const { return const_reference(*(end() - 1)); };
+			reference back() { return (_array[_size - 1]); };
+			const_reference back() const { return const_reference(_array[_size - 1]); };
 
 // 		// ** // MODIFIERS // ** //
 

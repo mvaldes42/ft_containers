@@ -69,10 +69,8 @@ int main()
 		std::cout << vectorTest;
 		// std::cout << vectorTest2;
 
-		std::allocator<int>::reference ref = vectorTest.front();
-		std::cout << "front:: " << ref << std::endl;
-		ref = vectorTest.back();
-		std::cout << "back:: " << ref << std::endl;
+		std::cout << "front:: " << vectorTest.front() << std::endl;
+		std::cout << "back:: " << vectorTest.back() << std::endl;
 	
 		std::cout << "result: " << ft::is_integral<int>::value << std::endl;
 
@@ -87,5 +85,25 @@ int main()
 		std::cout << "rev it operator[0]: " << rev_equals[0] << std::endl;
 		std::cout << "rev it operator[2]: " << rev_equals[2] << std::endl;
 		std::cout << "rev it operator[-1]: " << rev_equals[-1] << std::endl;
+		std::cout << rev_equals[2] << " < " << rev_equals[0] << " : " << (rev_equals[2] < rev_equals[0]) << std::endl;
+		std::cout << rev_equals[2] << " == " << rev_equals[0] << " : " << (rev_equals[2] == rev_equals[0]) << std::endl;
+		std::cout << rev_equals[2] << " != " << rev_equals[0] << " : " << (rev_equals[2] != rev_equals[0]) << std::endl;
+		std::cout << vectorTest;
+		// iter_type end(vectorTest.end());
+		// ft::reverse_iterator<iter_type> rev_end(end);
+		std::cout << "*begin: " << *begin << std::endl;
+		begin++;
+		std::cout << "*begin++: " << *begin << std::endl;
+		begin--;
+		std::cout << "*begin--: " << *begin << std::endl;
+		++begin;
+		std::cout << "*++begin: " << *begin << std::endl;
+		std::cout << "*(begin + 2): " << *(begin + 2) << std::endl;
+		std::cout << "*(begin - 1): " << *(begin - 1) << std::endl;
+		begin += 3;
+		std::cout << "*(begin += 3): " << *begin << std::endl;
+
+	// 	std::cout << "rev_end[0]: " << *rev_end << "--" << " : " << (rev_end--) << std::endl;
+	// 	std::cout << "rev_end[0]: " << *rev_end << "--" << " : " << (rev_end) << std::endl;
 	}
 }
