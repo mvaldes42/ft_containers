@@ -1,5 +1,4 @@
 #include "vector.hpp"
-#include "utils.hpp"
 
 #include <iostream>
 #include <vector>
@@ -20,13 +19,13 @@ int main()
 		// ft::vector<Buffer> vector_buffer;
 
 		ft::vector<int> vectorTest(1, 1);
-		// std::cout << vectorTest;
+		std::cout << vectorTest;
 
 		vectorTest.push_back(2);
 		vectorTest.push_back(3);
 		vectorTest.push_back(4);
 		vectorTest.push_back(5);
-		// std::cout << vectorTest;
+		std::cout << vectorTest;
 
 		vectorTest.erase(vectorTest.begin() + 1);
 		// std::cout << vectorTest;
@@ -37,7 +36,7 @@ int main()
 		vectorTest.insert(vectorTest.end(), 10, 0);
 		// std::cout << vectorTest;
 		vectorTest.insert(vectorTest.begin(), 10, 9);
-		// std::cout << vectorTest;
+		std::cout << vectorTest;
 
 		std::cout << "//// ERASE FIRST LAST //// " << std::endl;
 		vectorTest.erase(vectorTest.begin(), vectorTest.begin() + 10);
@@ -63,47 +62,52 @@ int main()
 			{ std::cerr << "Length error: " << e.what() << std::endl; }
 		// std::cout << vectorTest;
 
-		// std::cout << "//// COPY CONSTRUCTOR //// " << std::endl;
-		// ft::vector<int> vectorTest2(vectorTest);
-		// vectorTest.erase(&vectorTest[0], &vectorTest[4]);
+		std::cout << "//// COPY CONSTRUCTOR //// " << std::endl;
+		ft::vector<int> vectorTest2(vectorTest);
+		vectorTest.erase(&vectorTest[0], &vectorTest[1]);
 		std::cout << vectorTest;
-		// std::cout << vectorTest2;
+		std::cout << vectorTest2;
+		vectorTest.assign(2, 1);
+		std::cout << vectorTest;
 
 		std::cout << "front:: " << vectorTest.front() << std::endl;
 		std::cout << "back:: " << vectorTest.back() << std::endl;
 	
-		std::cout << "result: " << ft::is_integral<int>::value << std::endl;
+		std::cout << "is_integral<int>: " << ft::is_integral<int>::value << std::endl;
+		std::cout << "is_integral<std::string>: " << ft::is_integral<std::string>::value << std::endl;
 
-		typedef ft::vector<int>::iterator iter_type;
-		iter_type begin(vectorTest.begin());
-		ft::reverse_iterator<iter_type> rev_until(begin);
-		std::cout << "rev it: " << *rev_until.base() << std::endl;
-		ft::reverse_iterator<iter_type> rev_cp(rev_until);
-		std::cout << "rev it copy: " << *rev_cp.base() << std::endl;
-		ft::reverse_iterator<iter_type> rev_equals = rev_until;
-		std::cout << "rev it equals: " << *rev_equals.base() << std::endl;
-		std::cout << "rev it operator[0]: " << rev_equals[0] << std::endl;
-		std::cout << "rev it operator[2]: " << rev_equals[2] << std::endl;
-		std::cout << "rev it operator[-1]: " << rev_equals[-1] << std::endl;
-		std::cout << rev_equals[2] << " < " << rev_equals[0] << " : " << (rev_equals[2] < rev_equals[0]) << std::endl;
-		std::cout << rev_equals[2] << " == " << rev_equals[0] << " : " << (rev_equals[2] == rev_equals[0]) << std::endl;
-		std::cout << rev_equals[2] << " != " << rev_equals[0] << " : " << (rev_equals[2] != rev_equals[0]) << std::endl;
 		std::cout << vectorTest;
-		// iter_type end(vectorTest.end());
-		// ft::reverse_iterator<iter_type> rev_end(end);
-		std::cout << "*begin: " << *begin << std::endl;
-		begin++;
-		std::cout << "*begin++: " << *begin << std::endl;
-		begin--;
-		std::cout << "*begin--: " << *begin << std::endl;
-		++begin;
-		std::cout << "*++begin: " << *begin << std::endl;
-		std::cout << "*(begin + 2): " << *(begin + 2) << std::endl;
-		std::cout << "*(begin - 1): " << *(begin - 1) << std::endl;
-		begin += 3;
-		std::cout << "*(begin += 3): " << *begin << std::endl;
+		
+		typedef ft::vector<int>::iterator iter_type;
+		ft::reverse_iterator<iter_type> rbegin = vectorTest.rbegin();
+		ft::reverse_iterator<iter_type> rend = vectorTest.rend();
 
-	// 	std::cout << "rev_end[0]: " << *rev_end << "--" << " : " << (rev_end--) << std::endl;
-	// 	std::cout << "rev_end[0]: " << *rev_end << "--" << " : " << (rev_end) << std::endl;
+		std::cout << "rbegin: " << *rbegin << std::endl;
+		std::cout << "rend: " << *rend << std::endl;
+	
+		ft::reverse_iterator<iter_type> revit_copy(rbegin);
+		std::cout << "revit_copy(rbegin): " << *revit_copy << std::endl;
+		ft::reverse_iterator<iter_type> rev_equals = rbegin;
+		std::cout << "rev_equals = rbegin: " << *rev_equals << std::endl;
+		std::cout << "rend[-1]: " << rend[-1] << std::endl;
+		std::cout << "rend[-2]: " << rend[-2] << std::endl;
+		std::cout << "rend[-4]: " << rend[-4] << std::endl;
+		std::cout << rbegin[0] << " < " << rbegin[6] << " : " << (rbegin[0] < rbegin[6]) << std::endl;
+		std::cout << rbegin[0] << " == " << rbegin[6] << " : " << (rbegin[0] == rbegin[6]) << std::endl;
+		std::cout << rbegin[0] << " != " << rbegin[6] << " : " << (rbegin[0] != rbegin[6]) << std::endl;
+	
+		std::cout << "*rend: " << *rend << std::endl;
+		rend--;
+		std::cout << "*rend--: " << *rend << std::endl;
+		rend -= 3;
+		std::cout << "*rend -= 3: " << *rend << std::endl;
+		rend++;
+		std::cout << "*rend++: " << *rend << std::endl;
+		++rend;
+		std::cout << "*++rend: " << *rend << std::endl;
+		std::cout << "*(rend - 2): " << *(rend - 2) << std::endl;
+		std::cout << "*(rend + 1): " << *(rend + 1) << std::endl;
+		rend += 1;
+		std::cout << "*(rend += 1): " << *rend << std::endl;
 	}
 }

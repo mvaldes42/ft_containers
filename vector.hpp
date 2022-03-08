@@ -3,18 +3,15 @@
 
 #include <iostream>
 #include <memory>
-
 #include "reverse_iterator.hpp"
+#include "utils.hpp"
 
 namespace ft
 {
 	template<typename T, class Alloc = std::allocator<T> >
 	class vector
 	{
-
 		public:
-
-
 			typedef T value_type;													//value_type				||	(T)	
 			typedef	Alloc allocator_type;											// allocator_type			||	(Alloc)																					||	defaults to: allocator<value_type>
 			typedef	typename allocator_type::reference reference;					// reference				||	allocator_type::reference																||	for the default allocator: value_type&
@@ -23,10 +20,10 @@ namespace ft
 			typedef	typename allocator_type::const_pointer const_pointer;			// const_pointer			||	allocator_type::const_pointer															||	for the default allocator: const value_type*
 			typedef	typename allocator_type::pointer iterator;						// iterator					||	a random access iterator to value_type													||	convertible to const_iterator
 			typedef	typename allocator_type::const_pointer const_iterator;			// const_iterator			||	a random access iterator to const value_type											||
-			typedef	ft::reverse_iterator<iterator>	reverse_iterator; 					// reverse_iterator			||	reverse_iterator<iterator>																||
-			// typedef	ft::reverse_iterator<const_iterator> const_reverse_iterator;		// const_reverse_iterator	||	reverse_iterator<const_iterator>														||
+			typedef	ft::reverse_iterator<iterator>	reverse_iterator; 				// reverse_iterator			||	reverse_iterator<iterator>																||
+			typedef	ft::reverse_iterator<const_iterator> const_reverse_iterator;	// const_reverse_iterator	||	reverse_iterator<const_iterator>														||
 			typedef	typename allocator_type::difference_type difference_type;		// difference_type			||	a signed integral type, identical to: iterator_traits<iterator>::difference_type		||	usually the same as ptrdiff_t
-			typedef ssize_t size_type;					// size_type				||	an unsigned integral type that can represent any non-negative value of difference_type	||	usually the same as size_t
+			typedef size_t size_type;												// size_type				||	an unsigned integral type that can represent any non-negative value of difference_type	||	usually the same as size_t
 
 
 		private:
@@ -40,10 +37,10 @@ namespace ft
 
 			/*
 			explicit vector (const allocator_type& alloc = allocator_type()); 														✅
-			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type());	❌
+			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type());	✅
 			template <class InputIterator>
-					vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());				🚧 
-			vector (const vector& x)				🚧 
+					vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());				✅ 
+			vector (const vector& x)				✅
 			~vector();								✅
 			vector& operator= (const vector& x)		✅
 			*/
@@ -59,26 +56,35 @@ namespace ft
 					_alloc.construct(&_array[i], val);
 			};
 
-			// template <class InputIterator>
-			// vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
-			// : _size(0), _capacity(0), _array(NULL), _alloc(alloc)
-			// {
-			// 	for (InputIterator it = first; it != last; ++it)
-			// 		_size++;
-			// 	_capacity = _size;
-			// 	_array = _alloc.allocate(_size);
-			// 	for (size_type i = 0; i < _size; ++i)
-			// 		_alloc.construct(&_array[i], (first++));
-			// };
+			template <class InputIterator>
+			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0)
+			: _size(0), _capacity(0), _array(NULL), _alloc(alloc)
+			{
+				for (InputIterator it = first; it != last; ++it)
+					_size++;
+				_capacity = _size;
+				_array = _alloc.allocate(_size);
+				for (size_type i = 0; i < _size; ++i)
+					_alloc.construct(&_array[i], (first++));
+			};
 			
-			// vector (const vector& x) : _size(x._size), _capacity(x._capacity), _array(NULL), _alloc(x._alloc)
-			// {
-			// 	insert(begin(), x.begin(), x.end());
-			// };
-
+			vector (const vector& x)
+			: _size(x._size), _capacity(x._capacity), _array(NULL), _alloc(x._alloc)
+			{
+				_array = _alloc.allocate(_capacity);
+				const_iterator itX= x.begin();
+				for (iterator it = begin(); itX < x.end(); it++, itX++)
+					_alloc.construct(it, *itX);
+			};
+			///////////
 			~vector()
 			{
+				if (!_array)
+					return ;
 				clear();
+				_alloc.deallocate(_array, _capacity);
+				_capacity = 0;
 			};
 			vector& operator= (const vector& x)
 			{
@@ -88,13 +94,13 @@ namespace ft
 					push_back(x._array[i]);
 			};
 
-// 		// ** // ITERATORS // ** // ✅ ❌
+// 		// ** // ITERATORS // ** //
 
 // 			/*
 // 			begin	✅
 // 			end		✅
-// 			rbegin	❌
-// 			rend	❌
+// 			rbegin	✅
+// 			rend	✅
 // 			*/
 
 			iterator begin() { return (&_array[0]); };
@@ -103,11 +109,11 @@ namespace ft
 			iterator end() { return (&_array[_size]); };
 			const_iterator end() const { return const_iterator(&_array[_size]); };
 
-// 			// reverse_iterator rbegin();
-// 			// const_reverse_iterator rbegin() const;
+			reverse_iterator rbegin() { return reverse_iterator(end()); };
+			const_reverse_iterator rbegin() const { return reverse_iterator(end()); };
 
-// 			// reverse_iterator rend();
-// 			// const_reverse_iterator rend() const;
+			reverse_iterator rend() { return reverse_iterator(begin()); };
+			const_reverse_iterator rend() const { return reverse_iterator(begin()); };
 
 // 		// ** // CAPACITY // ** //
 
@@ -204,7 +210,8 @@ namespace ft
 
 // 			/*
 			template <class InputIterator>
-			void assign (InputIterator first, InputIterator last)
+			void assign (InputIterator first, InputIterator last,
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0)
 			{
 				clear();
 				insert(begin(), first, last);
@@ -261,22 +268,33 @@ namespace ft
 					swap(tmpVect);
 				}
 			};
-			// ENABLE IF
-			// template <class InputIterator>
-			// void insert (iterator position, InputIterator first, InputIterator last)
-			// {
-			// 	vector tmpVect;
-			// 	iterator it = begin();
+			template <class InputIterator>
+			void insert (iterator position, InputIterator first, InputIterator last,
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0)
+			{
+				vector tmp;
+				iterator it = begin();
+				if(begin() != NULL)
+				{
+					while (it != position)
+					{
+						tmp.push_back(*it);
+						it++;
+					}
+				}
+				while (first != last)
+				{
+					tmp.push_back(*first);
+					first++;
+				}
+				while (it != end())
+				{
+					tmp.push_back(*it);
+					it++;
+				}
+				swap(tmp);
+			};
 
-			// 	// tmpVect.reserve(_size + n); HOW ??
-			// 	while (it < position)
-			// 		tmpVect.push_back(*(it++));
-			// 	while (first < last)
-			// 		tmpVect.push_back(*(first++));
-			// 	while (it < end())
-			// 		tmpVect.push_back(*(it++));
-			// 	swap(tmpVect);	
-			// };
 			iterator erase (iterator position)
 			{
 				iterator it = position;
@@ -330,8 +348,6 @@ namespace ft
 				for (iterator it = begin(); it != end(); ++it)
 					_alloc.destroy(it);
 				_size = 0;
-				_alloc.deallocate(_array, _capacity);
-				_capacity = 0;
 			};
 
 // 		// ** // ALLOCATOR // ** //
