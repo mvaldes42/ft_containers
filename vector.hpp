@@ -65,15 +65,15 @@ namespace ft
 					_size++;
 				_capacity = _size;
 				_array = _alloc.allocate(_size);
-				for (size_type i = 0; i < _size; ++i)
-					_alloc.construct(&_array[i], (first++));
+				for (size_type i = 0; i <= _size; ++i)
+					_alloc.construct(&_array[i], *first++);
 			};
 			
 			vector (const vector& x)
 			: _size(x._size), _capacity(x._capacity), _array(NULL), _alloc(x._alloc)
 			{
 				_array = _alloc.allocate(_capacity);
-				const_iterator itX= x.begin();
+				const_iterator itX = x.begin();
 				for (iterator it = begin(); itX < x.end(); it++, itX++)
 					_alloc.construct(it, *itX);
 			};
@@ -92,6 +92,7 @@ namespace ft
 				reserve(x._size);
 				for (size_type i = 0; i < x._size; ++i)
 					push_back(x._array[i]);
+				return (*this);
 			};
 
 // 		// ** // ITERATORS // ** //
@@ -259,11 +260,11 @@ namespace ft
 					iterator it = begin();
 
 					tmpVect.reserve(_size + n);
-					while (it < position)
+					while (it != position)
 						tmpVect.push_back(*(it++));
-					while (n-- > 0)
+					while (n-- != 0)
 						tmpVect.push_back(val);
-					while (it < end())
+					while (it != end())
 						tmpVect.push_back(*(it++));
 					swap(tmpVect);
 				}
@@ -272,41 +273,29 @@ namespace ft
 			void insert (iterator position, InputIterator first, InputIterator last,
 			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0)
 			{
-				vector tmp;
+				vector tmpVect;
 				iterator it = begin();
-				if(begin() != NULL)
-				{
-					while (it != position)
-					{
-						tmp.push_back(*it);
-						it++;
-					}
-				}
+				while (it != position)
+					tmpVect.push_back(*(it++));
 				while (first != last)
-				{
-					tmp.push_back(*first);
-					first++;
-				}
+					tmpVect.push_back(*(first++));
 				while (it != end())
-				{
-					tmp.push_back(*it);
-					it++;
-				}
-				swap(tmp);
+					tmpVect.push_back(*(it++));
+				swap(tmpVect);
 			};
 
 			iterator erase (iterator position)
 			{
 				iterator it = position;
 				_alloc.destroy(it);
-				for (; it + 1 < end(); ++it)
+				for (; it + 1 != end(); ++it)
 				{
 					_alloc.construct(it, *(it + 1));
 					_alloc.destroy(it + 1);
 				}
 				_alloc.destroy(it);
 				_size -= 1;
-				return (it);
+				return (position);
 			};
 			iterator erase (iterator first, iterator last)
 			{
