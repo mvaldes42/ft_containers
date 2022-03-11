@@ -12,11 +12,11 @@ namespace ft
 	{
 		public:
 			typedef iterator iterator_type;
-			typedef typename std::iterator_traits<iterator>::iterator_category iterator_category;
-			typedef typename std::iterator_traits<iterator>::value_type value_type;
-			typedef typename std::iterator_traits<iterator>::difference_type difference_type;
-			typedef typename std::iterator_traits<iterator>::pointer pointer;
-			typedef typename std::iterator_traits<iterator>::reference reference;
+			typedef typename ft::iterator_traits<iterator>::iterator_category iterator_category;
+			typedef typename ft::iterator_traits<iterator>::value_type value_type;
+			typedef typename ft::iterator_traits<iterator>::difference_type difference_type;
+			typedef typename ft::iterator_traits<iterator>::pointer pointer;
+			typedef typename ft::iterator_traits<iterator>::reference reference;
 
 		protected:
 			iterator_type _current;
