@@ -1,4 +1,6 @@
 #include "vector.hpp"
+#include "stack.hpp"
+#include "map.hpp"
 
 #include <iostream>
 #include <vector>

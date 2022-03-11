@@ -376,19 +376,19 @@ namespace ft
 		return true;
 	};
 	template <class T, class Alloc>
-	bool operator !=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) { return !(operator==(lhs, rhs)); };
+	bool operator !=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) { return !(operator==(lhs, rhs)); };
 	template <class T, class Alloc>
-	bool operator <(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	bool operator <(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{ return (lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())); };
 	template <class T, class Alloc>
-	bool operator <=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) { return (!(rhs<lhs)); };
+	bool operator <=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) { return (!(rhs<lhs)); };
 	template <class T, class Alloc>
-	bool operator >(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) { return (rhs < lhs); };
+	bool operator >(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) { return (rhs < lhs); };
 	template <class T, class Alloc>
-	bool operator >=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs) { return (!(lhs < rhs)); };
+	bool operator >=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) { return (!(lhs < rhs)); };
 
 	template <class T, class Alloc>
-	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y) { x.swap(y); };
+	void swap (ft::vector<T,Alloc>& x, ft::vector<T,Alloc>& y) { x.swap(y); };
 }
 
 #endif
