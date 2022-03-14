@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "vector.hpp"
+
 # define RELA_OPE(OPE) template <class T1, class Container1> friend bool operator OPE (const stack<T1,Container1>& lhs, const stack<T1,Container1>& rhs);
 
 namespace ft
@@ -18,17 +19,6 @@ namespace ft
 		protected:
 			container_type c;
 		public:
-			// ** // FUNCTIONS // ** // ✅
-
-			/*
-				constructor
-				=		✅
-				empty	✅
-				size	✅
-				top		✅
-				push	✅
-				pop		✅
-			*/
 			explicit stack( const Container& cont = Container() ) : c(cont) {};
 			stack( const stack& other ) { c = other.c; };
 			~stack(){};

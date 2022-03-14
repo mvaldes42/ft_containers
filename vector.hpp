@@ -33,18 +33,6 @@ namespace ft
 			allocator_type	_alloc;
 
 		public:
-		// ** // CONSTRUCTOR // ** // ✅
-
-			/*
-			explicit vector (const allocator_type& alloc = allocator_type()); 														✅
-			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type());	✅
-			template <class InputIterator>
-					vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());				✅ 
-			vector (const vector& x)				✅
-			~vector();								✅
-			vector& operator= (const vector& x)		✅
-			*/
-
 			explicit vector(const allocator_type & alloc = allocator_type())
 			: _size(0), _capacity(0), _array(NULL), _alloc(alloc) {};
 
@@ -77,7 +65,7 @@ namespace ft
 				for (iterator it = begin(); itX < x.end(); it++, itX++)
 					_alloc.construct(it, *itX);
 			};
-			///////////
+
 			~vector()
 			{
 				if (!_array)
@@ -95,15 +83,6 @@ namespace ft
 				return (*this);
 			};
 
-		// ** // ITERATORS // ** //
-
-			/*
-			begin	✅
-			end		✅
-			rbegin	✅
-			rend	✅
-			*/
-
 			iterator begin() { return (&_array[0]); };
 			const_iterator begin() const { return const_iterator(&_array[0]); };
 
@@ -115,17 +94,6 @@ namespace ft
 
 			reverse_iterator rend() { return reverse_iterator(begin()); };
 			const_reverse_iterator rend() const { return const_reverse_iterator(begin()); };
-
-		// ** // CAPACITY // ** //
-
-			/*
-			size		✅ 
-			max_size	✅ 
-			resize		✅
-			capacity	✅
-			empty		✅
-			reserve		✅
-			*/
 
 			size_type size() const { return (_size); };
 		
@@ -166,15 +134,6 @@ namespace ft
 				}
 			};
 
-		// ** // ELEMENT ACCESS // ** //
-
-			/*
-			operator[]	✅ 
-			at			✅
-			front		✅
-			back		✅
-			*/
-
 			reference operator[] (size_type n) { return (_array[n]); };
 			const_reference operator[] (size_type n) const { return (const_reference(_array[n])); };
 
@@ -196,18 +155,6 @@ namespace ft
 
 			reference back() { return (_array[_size - 1]); };
 			const_reference back() const { return const_reference(_array[_size - 1]); };
-
-		// ** // MODIFIERS // ** //
-
-			/*
-			assign		✅ 
-			push_back	✅ 
-			pop_back	✅
-			insert		✅ 
-			erase		✅ 
-			swap		✅ 
-			clear		✅ 
-			*/
 
 			template <class InputIterator>
 			void assign (InputIterator first, InputIterator last,
@@ -328,12 +275,6 @@ namespace ft
 				_size = 0;
 			};
 
-		// ** // ALLOCATOR // ** //
-
-			/*
-			get_allocator	✅ 
-			*/
-
 			allocator_type get_allocator() const { return (_alloc); };
 
 			friend std::ostream &operator<<(std::ostream &ostr, const vector&vector)
@@ -350,18 +291,6 @@ namespace ft
 			};
 
 	};
-	// ** // NON MEMBER FUNCTION OVERLOADS // ** //
-
-	/*
-		relational operators :
-		==		✅ 
-		!=		✅ 
-		<		✅ 
-		<=		✅ 
-		>		✅ 
-		>=		✅ 
-		swap	✅ 
-	*/
 
 	template <class T, class Alloc>
 	bool operator ==(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)

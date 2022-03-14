@@ -36,7 +36,6 @@ namespace ft
 				return (*this);
 			};
 	};
-
 	/// RELATIONAL OPERATORS
 	template <class T1, class T2>
 	bool operator== (const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs)
