@@ -18,6 +18,7 @@ namespace ft
 			int						distance;
 
 			node() : data(), father(NULL), left(NULL), right(NULL), distance(0) {};
+			node(const node &other) : data(other.data), father(other.father), left(other.left), right(other.right), distance(other.distance) {};
 	};
 	template < class Key,class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
 	class map
@@ -39,7 +40,8 @@ namespace ft
 			typedef typename Alloc::const_pointer const_pointer;
 			// typedef ft::reverse_iterator<iterator> reverse_iterator;
 			// typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
-			typedef struct ft::node<Key, T> *tree;
+			// typedef struct ft::node<Key, T> *tree;
+			typedef typename ft::node<key_type, mapped_type> node_type;
 			typedef typename Alloc::template rebind<ft::node<Key, T> >::other allocator_node; // BRACKETS ??
 
 			class value_compare : public std::binary_function<value_type,value_type,bool>
@@ -53,22 +55,19 @@ namespace ft
 			};
 
 		private:
-			tree			_racine;
+			node_type		*_racine;
 			size_type		_nbNoeuds;
 			allocator_type	_allocTree;
 			allocator_node	_allocNode;
 			key_compare		_comp;
 
-			tree createNode(value_type pair)
+			node_type *createNode(value_type pair)
 			{
-				node<Key, T> hello;
-				std::cout << "distance " << hello.distance << std::endl;
-				// tree tmp = {NULL};
-				tree tmp = _allocNode.allocate(1);
-				_allocTree.construct(&tmp->data, pair);
-				// memset(tmp, 0, sizeof(*tmp));
-				std::cout << "distance " << tmp->distance << std::endl;
-				return (tmp);
+				node_type tempNode;
+				node_type *newNode = _allocNode.allocate(1);
+				_allocNode.construct(newNode, tempNode);
+				_allocTree.construct(&newNode->data, pair);
+				return (newNode);
 			};
 
 		public:
