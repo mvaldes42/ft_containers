@@ -7,6 +7,18 @@
 
 namespace ft
 {
+	template <class Key, class T>
+	struct node
+	{
+		public :
+			ft::pair<const Key, T>	data;
+			node					*father;
+			node					*left;
+			node					*right;
+			int						distance;
+
+			node() : data(), father(NULL), left(NULL), right(NULL), distance(0) {};
+	};
 	template < class Key,class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
 	class map
 	{
@@ -27,6 +39,8 @@ namespace ft
 			typedef typename Alloc::const_pointer const_pointer;
 			// typedef ft::reverse_iterator<iterator> reverse_iterator;
 			// typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
+			typedef struct ft::node<Key, T> *tree;
+			typedef typename Alloc::template rebind<ft::node<Key, T> >::other allocator_node; // BRACKETS ??
 
 			class value_compare : public std::binary_function<value_type,value_type,bool>
 			{
@@ -38,13 +52,37 @@ namespace ft
 					bool operator()(const value_type& x, const value_type& y) const { return comp(x.first, y.first); }
 			};
 
+		private:
+			tree			_racine;
+			size_type		_nbNoeuds;
+			allocator_type	_allocTree;
+			allocator_node	_allocNode;
+			key_compare		_comp;
+
+			tree createNode(value_type pair)
+			{
+				node<Key, T> hello;
+				std::cout << "distance " << hello.distance << std::endl;
+				// tree tmp = {NULL};
+				tree tmp = _allocNode.allocate(1);
+				_allocTree.construct(&tmp->data, pair);
+				// memset(tmp, 0, sizeof(*tmp));
+				std::cout << "distance " << tmp->distance << std::endl;
+				return (tmp);
+			};
+
+		public:
 			// 23.3.1.1 construct/copy/destroy:
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());	
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _nbNoeuds(0), _allocTree(alloc), _comp(comp)
+			{
+				std::cout << "hello" << std::endl;
+				_racine = createNode(value_type());
+			};	
 			template <class InputIterator>
  			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());	
 			map (const map& x);
 			/**/
-			~map();
+			~map(){};
 			/**/
 			map& operator= (const map& x);
 			/// ITERATORS
@@ -97,6 +135,16 @@ namespace ft
 			// ft::pair<iterator,iterator> equal_range (const key_type& k);
 			/// ALLOCATOR
 			allocator_type get_allocator() const;
+
+		private:
+			bool is_empty() const { return (_nbNoeuds == 0); };
+			// node getRightSon const
+			// {
+			// 	if (is_empty())
+			// 		return NULL;
+			// 	else
+			// 		return node.filsd;
+			// };
   	};
 	template <class Key, class T, class Compare, class Alloc>
 	bool operator== ( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs );

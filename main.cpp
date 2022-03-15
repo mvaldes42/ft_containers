@@ -20,96 +20,97 @@ int main()
 		// ft::vector<int> vector_int;
 		// ft::vector<Buffer> vector_buffer;
 
-		ft::vector<int> vectorTest(1, 1);
-		std::cout << vectorTest;
-
-		vectorTest.push_back(2);
-		vectorTest.push_back(3);
-		vectorTest.push_back(4);
-		vectorTest.push_back(5);
-		std::cout << vectorTest;
-
-		vectorTest.erase(vectorTest.begin() + 1);
+		// ft::vector<int> vectorTest(1, 1);
 		// std::cout << vectorTest;
 
-		vectorTest.insert(vectorTest.begin() + 1, 2);
+		// vectorTest.push_back(2);
+		// vectorTest.push_back(3);
+		// vectorTest.push_back(4);
+		// vectorTest.push_back(5);
 		// std::cout << vectorTest;
 
-		vectorTest.insert(vectorTest.end(), 10, 0);
-		// std::cout << vectorTest;
-		vectorTest.insert(vectorTest.begin(), 10, 9);
-		std::cout << vectorTest;
+		// vectorTest.erase(vectorTest.begin() + 1);
+		// // std::cout << vectorTest;
 
-		std::cout << "//// ERASE FIRST LAST //// " << std::endl;
-		vectorTest.erase(vectorTest.begin(), vectorTest.begin() + 10);
-		// std::cout << vectorTest;
+		// vectorTest.insert(vectorTest.begin() + 1, 2);
+		// // std::cout << vectorTest;
 
-		vectorTest.erase(vectorTest.end() - 10, vectorTest.end());
-		// std::cout << vectorTest;
-
-		vectorTest.pop_back();
+		// vectorTest.insert(vectorTest.end(), 10, 0);
+		// // std::cout << vectorTest;
+		// vectorTest.insert(vectorTest.begin(), 10, 9);
 		// std::cout << vectorTest;
 
-		vectorTest.resize(10, 9);
+		// std::cout << "//// ERASE FIRST LAST //// " << std::endl;
+		// vectorTest.erase(vectorTest.begin(), vectorTest.begin() + 10);
+		// // std::cout << vectorTest;
+
+		// vectorTest.erase(vectorTest.end() - 10, vectorTest.end());
+		// // std::cout << vectorTest;
+
+		// vectorTest.pop_back();
+		// // std::cout << vectorTest;
+
+		// vectorTest.resize(10, 9);
+		// // std::cout << vectorTest;
+
+		// // std::cout << "max size: " << vectorTest.max_size() << std::endl;
+		// try
+		// 	{ vectorTest.resize(vectorTest.max_size() + 1); }
+		// catch (std::exception &e)
+		// 	{ std::cerr << "Length error: " << e.what() << std::endl; }
+		// try
+		// 	{ vectorTest.reserve(vectorTest.max_size() + 1); }
+		// catch (std::exception &e)
+		// 	{ std::cerr << "Length error: " << e.what() << std::endl; }
+		// // std::cout << vectorTest;
+
+		// std::cout << "//// COPY CONSTRUCTOR //// " << std::endl;
+		// ft::vector<int> vectorTest2(vectorTest);
+		// vectorTest.erase(&vectorTest[0], &vectorTest[1]);
+		// std::cout << vectorTest;
+		// std::cout << vectorTest2;
+		// vectorTest.assign(2, 1);
 		// std::cout << vectorTest;
 
-		// std::cout << "max size: " << vectorTest.max_size() << std::endl;
-		try
-			{ vectorTest.resize(vectorTest.max_size() + 1); }
-		catch (std::exception &e)
-			{ std::cerr << "Length error: " << e.what() << std::endl; }
-		try
-			{ vectorTest.reserve(vectorTest.max_size() + 1); }
-		catch (std::exception &e)
-			{ std::cerr << "Length error: " << e.what() << std::endl; }
-		// std::cout << vectorTest;
-
-		std::cout << "//// COPY CONSTRUCTOR //// " << std::endl;
-		ft::vector<int> vectorTest2(vectorTest);
-		vectorTest.erase(&vectorTest[0], &vectorTest[1]);
-		std::cout << vectorTest;
-		std::cout << vectorTest2;
-		vectorTest.assign(2, 1);
-		std::cout << vectorTest;
-
-		std::cout << "front:: " << vectorTest.front() << std::endl;
-		std::cout << "back:: " << vectorTest.back() << std::endl;
+		// std::cout << "front:: " << vectorTest.front() << std::endl;
+		// std::cout << "back:: " << vectorTest.back() << std::endl;
 	
-		std::cout << "is_integral<int>: " << ft::is_integral<int>::value << std::endl;
-		std::cout << "is_integral<std::string>: " << ft::is_integral<std::string>::value << std::endl;
+		// std::cout << "is_integral<int>: " << ft::is_integral<int>::value << std::endl;
+		// std::cout << "is_integral<std::string>: " << ft::is_integral<std::string>::value << std::endl;
 
-		std::cout << vectorTest;
+		// std::cout << vectorTest;
 		
-		typedef ft::vector<int>::iterator iter_type;
-		ft::reverse_iterator<iter_type> rbegin = vectorTest.rbegin();
-		ft::reverse_iterator<iter_type> rend = vectorTest.rend();
+		// typedef ft::vector<int>::iterator iter_type;
+		// ft::reverse_iterator<iter_type> rbegin = vectorTest.rbegin();
+		// ft::reverse_iterator<iter_type> rend = vectorTest.rend();
 
-		std::cout << "rbegin: " << *rbegin << std::endl;
-		std::cout << "rend: " << *rend << std::endl;
+		// std::cout << "rbegin: " << *rbegin << std::endl;
+		// std::cout << "rend: " << *rend << std::endl;
 	
-		ft::reverse_iterator<iter_type> revit_copy(rbegin);
-		std::cout << "revit_copy(rbegin): " << *revit_copy << std::endl;
-		ft::reverse_iterator<iter_type> rev_equals = rbegin;
-		std::cout << "rev_equals = rbegin: " << *rev_equals << std::endl;
-		std::cout << "rend[-1]: " << rend[-1] << std::endl;
-		std::cout << "rend[-2]: " << rend[-2] << std::endl;
-		std::cout << "rend[-4]: " << rend[-4] << std::endl;
-		std::cout << rbegin[0] << " < " << rbegin[6] << " : " << (rbegin[0] < rbegin[6]) << std::endl;
-		std::cout << rbegin[0] << " == " << rbegin[6] << " : " << (rbegin[0] == rbegin[6]) << std::endl;
-		std::cout << rbegin[0] << " != " << rbegin[6] << " : " << (rbegin[0] != rbegin[6]) << std::endl;
+		// ft::reverse_iterator<iter_type> revit_copy(rbegin);
+		// std::cout << "revit_copy(rbegin): " << *revit_copy << std::endl;
+		// ft::reverse_iterator<iter_type> rev_equals = rbegin;
+		// std::cout << "rev_equals = rbegin: " << *rev_equals << std::endl;
+		// std::cout << "rend[-1]: " << rend[-1] << std::endl;
+		// std::cout << "rend[-2]: " << rend[-2] << std::endl;
+		// std::cout << "rend[-4]: " << rend[-4] << std::endl;
+		// std::cout << rbegin[0] << " < " << rbegin[6] << " : " << (rbegin[0] < rbegin[6]) << std::endl;
+		// std::cout << rbegin[0] << " == " << rbegin[6] << " : " << (rbegin[0] == rbegin[6]) << std::endl;
+		// std::cout << rbegin[0] << " != " << rbegin[6] << " : " << (rbegin[0] != rbegin[6]) << std::endl;
 	
-		std::cout << "*rend: " << *rend << std::endl;
-		rend--;
-		std::cout << "*rend--: " << *rend << std::endl;
-		rend -= 3;
-		std::cout << "*rend -= 3: " << *rend << std::endl;
-		rend++;
-		std::cout << "*rend++: " << *rend << std::endl;
-		++rend;
-		std::cout << "*++rend: " << *rend << std::endl;
-		std::cout << "*(rend - 2): " << *(rend - 2) << std::endl;
-		std::cout << "*(rend + 1): " << *(rend + 1) << std::endl;
-		rend += 1;
-		std::cout << "*(rend += 1): " << *rend << std::endl;
+		// std::cout << "*rend: " << *rend << std::endl;
+		// rend--;
+		// std::cout << "*rend--: " << *rend << std::endl;
+		// rend -= 3;
+		// std::cout << "*rend -= 3: " << *rend << std::endl;
+		// rend++;
+		// std::cout << "*rend++: " << *rend << std::endl;
+		// ++rend;
+		// std::cout << "*++rend: " << *rend << std::endl;
+		// std::cout << "*(rend - 2): " << *(rend - 2) << std::endl;
+		// std::cout << "*(rend + 1): " << *(rend + 1) << std::endl;
+		// rend += 1;
+		// std::cout << "*(rend += 1): " << *rend << std::endl;
+		ft::map<int, char> test;
 	}
 }
