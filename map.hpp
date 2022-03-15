@@ -17,8 +17,9 @@ namespace ft
 			node					*right;
 			int						distance;
 
-			node() : data(), father(NULL), left(NULL), right(NULL), distance(0) {};
+			node() : data(), father(), left(), right(), distance(0) {};
 			node(const node &other) : data(other.data), father(other.father), left(other.left), right(other.right), distance(other.distance) {};
+			~node() { distance = 0; }
 	};
 	template < class Key,class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
 	class map
@@ -61,27 +62,44 @@ namespace ft
 			allocator_node	_allocNode;
 			key_compare		_comp;
 
+			// CREATE NOTE
 			node_type *createNode(value_type pair)
 			{
 				node_type tempNode;
 				node_type *newNode = _allocNode.allocate(1);
 				_allocNode.construct(newNode, tempNode);
 				_allocTree.construct(&newNode->data, pair);
+				newNode->distance = 10;
 				return (newNode);
 			};
+			node_type *createNode() { return (createNode(value_type())); };
+
+			// DESTROY NODE
+			void destroyNode(node_type *node)
+			{
+				_allocTree.destroy(&node->data);
+				_allocNode.destroy(node);
+				_allocNode.deallocate(node, 1);
+			}
+
+			// SEARCH NODE
+
+			// INSERT NODE
+
+			// DELETE NODE
 
 		public:
 			// 23.3.1.1 construct/copy/destroy:
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _nbNoeuds(0), _allocTree(alloc), _comp(comp)
 			{
 				std::cout << "hello" << std::endl;
-				_racine = createNode(value_type());
+				_racine = createNode();
 			};	
 			template <class InputIterator>
  			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());	
 			map (const map& x);
 			/**/
-			~map(){};
+			~map(){ destroyNode(_racine); };
 			/**/
 			map& operator= (const map& x);
 			/// ITERATORS
