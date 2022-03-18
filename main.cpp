@@ -112,5 +112,19 @@ int main()
 		// rend += 1;
 		// std::cout << "*(rend += 1): " << *rend << std::endl;
 		ft::map<int, char> test;
+
+		// test.prefix(test._racine);
+		typedef ft::map<int, char>::value_type pair_type;
+		pair_type pairTest(10, 'a');
+		test.insertNode(test._racine, test.createNode(pairTest));
+		// test.prefix(test._racine);
+		test.insertNode(test._racine, test.createNode(pair_type(30, 'b')));
+		test.insertNode(test._racine, test.createNode(pair_type(6, 'c')));
+		test.insertNode(test._racine, test.createNode(pair_type(5, 'd')));
+		test.insertNode(test._racine, test.createNode(pair_type(3, 'e')));
+		ft::map<int, char>::node_type *node1 = test.createNode(pair_type(90, 'f'));
+		test.insertNode(test._racine, node1);
+		test.prefix(test._racine);
+		std::cout << "_racine: " << test._racine->dataPair.first << ", node is found : " << test.contains(*test._racine, *node1) << std::endl;
 	}
 }

@@ -11,15 +11,17 @@ namespace ft
 	struct node
 	{
 		public :
-			ft::pair<const Key, T>	data;
+			ft::pair<const Key, T>	dataPair;
 			node					*father;
 			node					*left;
 			node					*right;
-			int						distance;
+			size_t					depth;
 
-			node() : data(), father(), left(), right(), distance(0) {};
-			node(const node &other) : data(other.data), father(other.father), left(other.left), right(other.right), distance(other.distance) {};
-			~node() { distance = 0; }
+			node() : dataPair(), father(), left(), right(), depth(0) {};
+			node(ft::pair<const Key, T> pair) :  node(), dataPair(pair) { std::cout << "Hello" << std::endl; };
+			node(size_t depth) : node(), depth(depth) {};
+			node(const node &other) : dataPair(other.dataPair), father(other.father), left(other.left), right(other.right), depth(other.depth) {};
+			~node() { depth = 0; }
 	};
 	template < class Key,class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
 	class map
@@ -55,12 +57,14 @@ namespace ft
 					bool operator()(const value_type& x, const value_type& y) const { return comp(x.first, y.first); }
 			};
 
-		private:
+		// private:
+		public :
 			node_type		*_racine;
 			size_type		_nbNoeuds;
-			allocator_type	_allocTree;
+			allocator_type	_allocPair;
 			allocator_node	_allocNode;
 			key_compare		_comp;
+			size_type		_treeHeight;
 
 			// CREATE NOTE
 			node_type *createNode(value_type pair)
@@ -68,32 +72,142 @@ namespace ft
 				node_type tempNode;
 				node_type *newNode = _allocNode.allocate(1);
 				_allocNode.construct(newNode, tempNode);
-				_allocTree.construct(&newNode->data, pair);
-				newNode->distance = 10;
+				_allocPair.construct(&newNode->dataPair, pair);
+				newNode->depth = 10;
 				return (newNode);
 			};
 			node_type *createNode() { return (createNode(value_type())); };
+			node_type *createNode(size_type depth)
+			{
+				node_type *tmp = createNode();
+				tmp->depth = depth;
+				return (tmp);
+			};
 
 			// DESTROY NODE
 			void destroyNode(node_type *node)
-			{
-				_allocTree.destroy(&node->data);
+			{ 
+				_allocPair.destroy(&node->dataPair);
 				_allocNode.destroy(node);
 				_allocNode.deallocate(node, 1);
 			}
+			// Find NODE
+			// will search node inside tree
+			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
+			bool	contains(node_type &root, node_type &needle)
+			{
+				if (isTreeEmpty(&needle))
+				{
+					return false;
+				}
+				std::cout << "current: " << needle.dataPair.first << std::endl;
+				if (_comp(needle.dataPair.first , root.dataPair.first))
+					return (contains(root, *needle.left));
+				else if (_comp(root.dataPair.first , needle.dataPair.first))
+					return contains(root, *needle.right);
+				else
+					return true;
+			}
+			node_type *findNode (node_type *root, node_type *needle) const
+			{
+				if (isTreeEmpty(needle))
+					return NULL;
+				else if (_comp(root->dataPair.first , needle->dataPair.first))
+					return findNode(root, needle->left);
+				else if (_comp(needle->dataPair.first , root->dataPair.first))
+					return findNode(root, needle->right);
+				else
+					return needle;
+			};
 
-			// SEARCH NODE
-
+			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
 			// INSERT NODE
+			void insertNode(node_type *src, node_type *node)
+			{
+				if (isTreeEmpty(src))
+					src = node;
+				else if (_comp(node->dataPair.first ,src->dataPair.first))
+				{
+					if (isTreeEmpty(getLeftTree(src)))
+						src->left = node;
+					else
+						insertNode(getLeftTree(src), node);
+				}
+				else if (!_comp(node->dataPair.first, src->dataPair.first) && node->dataPair.first != src->dataPair.first)
+				{
+					if (isTreeEmpty(getRightTree(src)))
+						src->right = node;
+					else
+						insertNode(getRightTree(src), node);
+				}
+			}
 
 			// DELETE NODE
 
+			//ISTREE EMPTY
+			bool isTreeEmpty(node_type *tree) const
+			{ return (tree == NULL); };
+
+			node_type *getRightTree(node_type *tree) const
+			{
+				if (isTreeEmpty(tree))
+					return NULL;
+				return (tree->right);
+			};
+			node_type *getLeftTree(node_type *tree) const
+			{
+				if (isTreeEmpty(tree))
+					return NULL;
+				return (tree->left);
+			};
+			bool isLeaf(node_type *node) const
+			{
+				if (isEmpty(node))
+					return false;
+				else if (isTreeEmpty(getLeftTree(node)) && isTreeEmpty(getRightTree(node)))
+					return true;
+				return false;
+			}
+			bool isInsideNode(node_type *node) const {return (!isLeaf(node)); };
+
+			//TREE HEIGHT
+			//- un arbre vide est de hauteur 0
+			// - un arbre non vide a pour hauteur 1 + la hauteur maximale entre ses fils.
+
+			size_type max(size_type a, size_type b)
+			{
+				return (a > b) ? a : b;
+			};
+			size_type treeHeight(node_type *tree)
+			{
+				if (isTreeEmpty(tree))
+					return (0);
+				return (1 + max(treeHeight(getLeftTree(tree)), treeHeight(getRightTree(tree))));
+			};
+			void setTreeHeight() { _treeHeight = treeHeight(_racine); };
+
+			// TYPE DE PARCOURS PREFIXE
+			void prefix(node_type *tree) const
+			{
+				if (!isTreeEmpty(tree))
+				{
+					std::cout << "Key: " << tree->dataPair.first <<  ", Value: " << tree->dataPair.second << std::endl;
+					prefix(getLeftTree(tree));
+					prefix(getRightTree(tree));
+				}
+			}
+
 		public:
 			// 23.3.1.1 construct/copy/destroy:
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _nbNoeuds(0), _allocTree(alloc), _comp(comp)
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _nbNoeuds(0), _allocPair(alloc), _comp(comp)
 			{
 				std::cout << "hello" << std::endl;
-				_racine = createNode();
+				_racine = createNode(0);
+				std::cout << "_racine->depth: " << _racine->depth << std::endl;
+				// prefix(_racine);
+				// value_type test;
+				// test.first = 10;
+				// insertNode(_racine, createNode(test));
 			};	
 			template <class InputIterator>
  			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());	
