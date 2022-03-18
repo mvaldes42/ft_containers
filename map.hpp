@@ -94,54 +94,65 @@ namespace ft
 			// Find NODE
 			// will search node inside tree
 			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
-			bool	contains(node_type &root, node_type &needle)
+			bool	contains(node_type &subTree, node_type const &needle)
 			{
-				if (isTreeEmpty(&needle))
-				{
+				if (isTreeEmpty(&subTree))
 					return false;
-				}
-				std::cout << "current: " << needle.dataPair.first << std::endl;
-				if (_comp(needle.dataPair.first , root.dataPair.first))
-					return (contains(root, *needle.left));
-				else if (_comp(root.dataPair.first , needle.dataPair.first))
-					return contains(root, *needle.right);
+				if (_comp(needle.dataPair.first , subTree.dataPair.first))
+					return (contains(*subTree.left, needle));
+				else if (_comp(subTree.dataPair.first , needle.dataPair.first))
+					return contains(*subTree.right, needle);
 				else
 					return true;
 			}
-			node_type *findNode (node_type *root, node_type *needle) const
+			node_type *findNode (node_type &subTree, node_type const &needle)
 			{
-				if (isTreeEmpty(needle))
+				if (isTreeEmpty(&subTree))
 					return NULL;
-				else if (_comp(root->dataPair.first , needle->dataPair.first))
-					return findNode(root, needle->left);
-				else if (_comp(needle->dataPair.first , root->dataPair.first))
-					return findNode(root, needle->right);
+				if (_comp(needle.dataPair.first , subTree.dataPair.first))
+					return (findNode(*subTree.left, needle));
+				else if (_comp(subTree.dataPair.first , needle.dataPair.first))
+					return findNode(*subTree.right, needle);
 				else
-					return needle;
+					return &subTree;
 			};
 
 			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
 			// INSERT NODE
-			void insertNode(node_type *src, node_type *node)
+			void insertNode(node_type *subTree, node_type *toInsert)
 			{
-				if (isTreeEmpty(src))
-					src = node;
-				else if (_comp(node->dataPair.first ,src->dataPair.first))
+				if (isTreeEmpty(subTree))
 				{
-					if (isTreeEmpty(getLeftTree(src)))
-						src->left = node;
-					else
-						insertNode(getLeftTree(src), node);
+					subTree = toInsert;
+					std::cout << "toInsert:" << toInsert->dataPair.first << std::endl;
 				}
-				else if (!_comp(node->dataPair.first, src->dataPair.first) && node->dataPair.first != src->dataPair.first)
-				{
-					if (isTreeEmpty(getRightTree(src)))
-						src->right = node;
-					else
-						insertNode(getRightTree(src), node);
-				}
+				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))
+					insertNode(subTree->left, toInsert);
+				else if (_comp(subTree->dataPair.first, toInsert->dataPair.first))
+					insertNode(subTree->right, toInsert);
+				else
+					;
 			}
 
+			// void insertNode(node_type *src, node_type *node)
+			// {
+			// 	if (isTreeEmpty(src))
+			// 		src = node;
+			// 	else if (_comp(node->dataPair.first ,src->dataPair.first))
+			// 	{
+			// 		if (isTreeEmpty(getLeftTree(src)))
+			// 			src->left = node;
+			// 		else
+			// 			insertNode(getLeftTree(src), node);
+			// 	}
+			// 	else if (!_comp(node->dataPair.first, src->dataPair.first) && node->dataPair.first != src->dataPair.first)
+			// 	{
+			// 		if (isTreeEmpty(getRightTree(src)))
+			// 			src->right = node;
+			// 		else
+			// 			insertNode(getRightTree(src), node);
+			// 	}
+			// }
 			// DELETE NODE
 
 			//ISTREE EMPTY

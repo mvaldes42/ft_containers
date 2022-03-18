@@ -126,5 +126,6 @@ int main()
 		test.insertNode(test._racine, node1);
 		test.prefix(test._racine);
 		std::cout << "_racine: " << test._racine->dataPair.first << ", node is found : " << test.contains(*test._racine, *node1) << std::endl;
+		// std::cout << "node is found : " << test.findNode(*test._racine, node1)->dataPair.first << std::endl;
 	}
 }

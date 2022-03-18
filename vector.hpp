@@ -308,7 +308,7 @@ namespace ft
 	bool operator !=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) { return !(operator==(lhs, rhs)); };
 	template <class T, class Alloc>
 	bool operator <(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
-	{ return (lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())); };
+	{ return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())); };
 	template <class T, class Alloc>
 	bool operator <=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) { return (!(rhs<lhs)); };
 	template <class T, class Alloc>
