@@ -73,7 +73,7 @@ namespace ft
 				node_type *newNode = _allocNode.allocate(1);
 				_allocNode.construct(newNode, tempNode);
 				_allocPair.construct(&newNode->dataPair, pair);
-				newNode->depth = 10;
+				newNode->depth = 0;
 				return (newNode);
 			};
 			node_type *createNode() { return (createNode(value_type())); };
@@ -94,70 +94,94 @@ namespace ft
 			// Find NODE
 			// will search node inside tree
 			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
-			bool	contains(node_type &subTree, node_type const &needle)
+			bool contains( node_type const *needle, node_type *subTree) const
 			{
-				if (isTreeEmpty(&subTree))
+				if( isTreeEmpty(subTree))
 					return false;
-				if (_comp(needle.dataPair.first , subTree.dataPair.first))
-					return (contains(*subTree.left, needle));
-				else if (_comp(subTree.dataPair.first , needle.dataPair.first))
-					return contains(*subTree.right, needle);
+				if (_comp(needle->dataPair.first , subTree->dataPair.first))
+					return contains(needle, subTree->left);
+				else if (_comp(subTree->dataPair.first , needle->dataPair.first))
+					return contains(needle, subTree->right);
 				else
 					return true;
 			}
-			node_type *findNode (node_type &subTree, node_type const &needle)
+			node_type *findNode( node_type const *needle, node_type *subTree) const
 			{
-				if (isTreeEmpty(&subTree))
+				if( isTreeEmpty(subTree))
 					return NULL;
-				if (_comp(needle.dataPair.first , subTree.dataPair.first))
-					return (findNode(*subTree.left, needle));
-				else if (_comp(subTree.dataPair.first , needle.dataPair.first))
-					return findNode(*subTree.right, needle);
+				if (_comp(needle->dataPair.first , subTree->dataPair.first))
+					return findNode(needle, subTree->left);
+				else if (_comp(subTree->dataPair.first , needle->dataPair.first))
+					return findNode(needle, subTree->right);
 				else
-					return &subTree;
-			};
-
+					return subTree;
+			}
+			node_type *findNode(Key const key, node_type *subTree) const
+			{
+				if(isTreeEmpty(subTree))
+					return NULL;
+				if (_comp(key , subTree->dataPair.first))
+					return findNode(key, subTree->left);
+				else if (_comp(subTree->dataPair.first , key))
+					return findNode(key, subTree->right);
+				else
+					return subTree;
+			}
 			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
 			// INSERT NODE
-			void insertNode(node_type *subTree, node_type *toInsert)
+			void insertNode(node_type *toInsert, node_type *subTree) 
 			{
 				if (isTreeEmpty(subTree))
-				{
 					subTree = toInsert;
-					std::cout << "toInsert:" << toInsert->dataPair.first << std::endl;
+				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))   
+				{
+					if (!getLeftTree(subTree))
+						subTree->left = toInsert;
+					else
+						insertNode(toInsert, subTree->left);
 				}
-				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))
-					insertNode(subTree->left, toInsert);
 				else if (_comp(subTree->dataPair.first, toInsert->dataPair.first))
-					insertNode(subTree->right, toInsert);
-				else
-					;
+				{
+					if (!getRightTree(subTree))
+						subTree->right = toInsert;
+					else
+						insertNode(toInsert, subTree->right);
+				}
 			}
-
-			// void insertNode(node_type *src, node_type *node)
-			// {
-			// 	if (isTreeEmpty(src))
-			// 		src = node;
-			// 	else if (_comp(node->dataPair.first ,src->dataPair.first))
-			// 	{
-			// 		if (isTreeEmpty(getLeftTree(src)))
-			// 			src->left = node;
-			// 		else
-			// 			insertNode(getLeftTree(src), node);
-			// 	}
-			// 	else if (!_comp(node->dataPair.first, src->dataPair.first) && node->dataPair.first != src->dataPair.first)
-			// 	{
-			// 		if (isTreeEmpty(getRightTree(src)))
-			// 			src->right = node;
-			// 		else
-			// 			insertNode(getRightTree(src), node);
-			// 	}
-			// }
 			// DELETE NODE
-
+			node_type *findMin(node_type *t)
+			{
+				if( t == nullptr )
+					return nullptr;
+				if( t->left == nullptr )
+					return t;
+				return findMin( t->left );
+			}
+			void removeNode(node_type *toRemove, node_type *subTree)
+			{
+				if(isTreeEmpty(subTree))
+					return ;
+				std::cout << "subTree->dataPair.first: " << subTree->dataPair.first << std::endl;
+				if(_comp(toRemove->dataPair.first, subTree->dataPair.first))
+					removeNode(toRemove, subTree->left);
+				else if(_comp(subTree->dataPair.first, toRemove->dataPair.first))
+					removeNode(toRemove, subTree->right); 
+				else if(!isTreeEmpty(subTree->left) && !isTreeEmpty(subTree->right) )
+				{
+					subTree = findMin(subTree->right);
+					removeNode(subTree, subTree->right);
+				}
+				else
+				{
+					destroyNode(subTree);
+					// subTree = createNode();
+					// subTree = NULL;
+					// subTree->dataPair = value_type();
+					/// DONT KNOW
+				}
+			}
 			//ISTREE EMPTY
-			bool isTreeEmpty(node_type *tree) const
-			{ return (tree == NULL); };
+			bool isTreeEmpty(node_type *tree) const { return (tree == NULL); };
 
 			node_type *getRightTree(node_type *tree) const
 			{
@@ -179,16 +203,12 @@ namespace ft
 					return true;
 				return false;
 			}
-			bool isInsideNode(node_type *node) const {return (!isLeaf(node)); };
+			bool isInsideNode(node_type *node) const { return (!isLeaf(node)); };
 
 			//TREE HEIGHT
 			//- un arbre vide est de hauteur 0
 			// - un arbre non vide a pour hauteur 1 + la hauteur maximale entre ses fils.
-
-			size_type max(size_type a, size_type b)
-			{
-				return (a > b) ? a : b;
-			};
+			size_type max(size_type a, size_type b) { return (a > b) ? a : b; };
 			size_type treeHeight(node_type *tree)
 			{
 				if (isTreeEmpty(tree))
@@ -200,7 +220,7 @@ namespace ft
 			// TYPE DE PARCOURS PREFIXE
 			void prefix(node_type *tree) const
 			{
-				if (!isTreeEmpty(tree))
+				if (tree !=NULL && !isTreeEmpty(tree))
 				{
 					std::cout << "Key: " << tree->dataPair.first <<  ", Value: " << tree->dataPair.second << std::endl;
 					prefix(getLeftTree(tree));
