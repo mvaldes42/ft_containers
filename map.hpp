@@ -1,6 +1,7 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
+#include <unistd.h>
 #include <iostream>
 #include "reverse_iterator.hpp"
 #include "pair.hpp"
@@ -85,11 +86,12 @@ namespace ft
 			};
 
 			// DESTROY NODE
-			void destroyNode(node_type *node)
+			void destroyNode(node_type *&node)
 			{ 
 				_allocPair.destroy(&node->dataPair);
 				_allocNode.destroy(node);
 				_allocNode.deallocate(node, 1);
+				node = nullptr;
 			}
 			// Find NODE
 			// will search node inside tree
@@ -157,27 +159,31 @@ namespace ft
 					return t;
 				return findMin( t->left );
 			}
-			void removeNode(node_type *toRemove, node_type *subTree)
+			void removeNode(node_type *toRemove, node_type *&subTree)
 			{
 				if(isTreeEmpty(subTree))
 					return ;
-				std::cout << "subTree->dataPair.first: " << subTree->dataPair.first << std::endl;
+				std::cout << "subTree->dataPair.first: " << subTree->dataPair.first << ", to remove: " << toRemove->dataPair.first << ", is leaf ? " << isLeaf(toRemove)<< std::endl;
 				if(_comp(toRemove->dataPair.first, subTree->dataPair.first))
 					removeNode(toRemove, subTree->left);
 				else if(_comp(subTree->dataPair.first, toRemove->dataPair.first))
 					removeNode(toRemove, subTree->right); 
 				else if(!isTreeEmpty(subTree->left) && !isTreeEmpty(subTree->right) )
 				{
-					subTree = findMin(subTree->right);
-					removeNode(subTree, subTree->right);
+					std::cout << "subTree->left: " << subTree->left << ", subTree->right: " << subTree->right << std::endl;
+					node_type *tmpNode = findMin(subTree->right);
+					node_type *newNode = createNode(tmpNode->dataPair);
+					newNode->right = subTree->right;
+					newNode->left = subTree->left;
+					subTree = newNode;
+					removeNode(tmpNode, subTree->right);
 				}
 				else
 				{
-					destroyNode(subTree);
-					// subTree = createNode();
-					// subTree = NULL;
-					// subTree->dataPair = value_type();
-					/// DONT KNOW
+					std::cout << "destroy node" << std::endl;
+					node_type *oldNode = subTree;
+					subTree = (!isTreeEmpty(subTree->left)) ? subTree->left : subTree->right;
+					destroyNode(oldNode);
 				}
 			}
 			//ISTREE EMPTY
@@ -195,11 +201,11 @@ namespace ft
 					return NULL;
 				return (tree->left);
 			};
-			bool isLeaf(node_type *node) const
+			bool isLeaf(node_type *&node) const
 			{
-				if (isEmpty(node))
+				if (isTreeEmpty(node))
 					return false;
-				else if (isTreeEmpty(getLeftTree(node)) && isTreeEmpty(getRightTree(node)))
+				else if (isTreeEmpty(node->left) && isTreeEmpty(node->right))
 					return true;
 				return false;
 			}
@@ -218,14 +224,33 @@ namespace ft
 			void setTreeHeight() { _treeHeight = treeHeight(_racine); };
 
 			// TYPE DE PARCOURS PREFIXE
-			void prefix(node_type *tree) const
+			// void prefix(node_type *tree) const
+			// {
+			// 	if (!isTreeEmpty(tree))
+			// 	{
+			// 		std::cout << "Key: " << tree->dataPair.first <<  ", Value: " << tree->dataPair.second << std::endl;
+			// 		prefix(getLeftTree(tree));
+			// 		prefix(getRightTree(tree));
+			// 	}
+			// }
+			
+			void printBT(const std::string& prefix, const node_type *node, bool isLeft)
 			{
-				if (tree !=NULL && !isTreeEmpty(tree))
+				if( node && node != NULL )
 				{
-					std::cout << "Key: " << tree->dataPair.first <<  ", Value: " << tree->dataPair.second << std::endl;
-					prefix(getLeftTree(tree));
-					prefix(getRightTree(tree));
+					usleep(125000);
+					std::cout << prefix;
+					std::cout << (isLeft ? "├──" : "└──" );
+					// print the value of the node
+					std::cout << node->dataPair.first << std::endl;
+					// enter the next tree level - left and right branch
+					printBT( prefix + (isLeft ? "│   " : "    "), node->left, true);
+					printBT( prefix + (isLeft ? "│   " : "    "), node->right, false);
 				}
+			}
+			void printBT()
+			{
+				printBT("", _racine, false);    
 			}
 
 		public:
