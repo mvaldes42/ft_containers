@@ -272,20 +272,7 @@ namespace ft
 
 		public:
 			// 23.3.1.1 construct/copy/destroy:
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _nbNodes(0), _allocPair(alloc), _comp(comp)
-			{
-				// ft::node<key_type, mapped_type> tmp;
-				// _racine = &tmp;
-				_racine = NULL;
-				// node_type tempNode;
-				// // node_type *newNode = _allocNode.allocate(1);
-				// _allocNode.construct(_racine, tempNode);
-				// // _allocPair.construct(&newNode->dataPair, pair);
-				// _racine->depth = 0;
-				// _racine = createNode();
-				// std::cout << "_racine->depth: " << _racine->depth << std::endl;
-				// insertNode(_racine, createNode(test));
-			};	
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp) {};	
 			template <class InputIterator>
  			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());	
 			map (const map& x);
