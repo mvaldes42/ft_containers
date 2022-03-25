@@ -112,7 +112,7 @@ int main()
 		// rend += 1;
 		// std::cout << "*(rend += 1): " << *rend << std::endl;
 		ft::map<int, char> test;
-		std::cout << "test[6]: " << test[6] << std::endl;
+		std::cout << "test[12]: " << test[12] << std::endl;
 
 		// test.prefix(test._racine);
 		typedef ft::map<int, char>::value_type pair_type;

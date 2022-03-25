@@ -94,6 +94,16 @@ namespace ft
 				_allocNode.deallocate(node, 1);
 				node = nullptr;
 			}
+			void destroyTree(node_type *&node)
+			{
+				if (isTreeEmpty(node))
+				{
+					destroyNode(node);
+					_nbNodes--;
+					destroyTree(node->left);
+					destroyTree(node->right);
+				}
+			}
 			// Find NODE
 			// will search node inside tree
 			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
@@ -280,9 +290,10 @@ namespace ft
  			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());	
 			map (const map& x);
 			/**/
-			~map(){
-				// destroyNode(_racine);
-				};
+			~map()
+			{
+				destroyTree(_racine);
+			};
 			/**/
 			map& operator= (const map& x);
 			/// ITERATORS
