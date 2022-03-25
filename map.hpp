@@ -18,8 +18,8 @@ namespace ft
 			node					*right;
 			size_t					depth;
 
-			node() : dataPair(), father(), left(), right(), depth(0) {};
-			node(ft::pair<const Key, T> pair) :  node(), dataPair(pair) { std::cout << "Hello" << std::endl; };
+			node() : dataPair(), father(NULL), left(NULL), right(NULL), depth(0) {};
+			node(ft::pair<const Key, T> pair) :  node(), dataPair(pair) {};
 			node(size_t depth) : node(), depth(depth) {};
 			node(const node &other) : dataPair(other.dataPair), father(other.father), left(other.left), right(other.right), depth(other.depth) {};
 			~node() { depth = 0; }
@@ -61,7 +61,7 @@ namespace ft
 		// private:
 		public :
 			node_type		*_racine;
-			size_type		_nbNoeuds;
+			size_type		_nbNodes;
 			allocator_type	_allocPair;
 			allocator_node	_allocNode;
 			key_compare		_comp;
@@ -75,6 +75,7 @@ namespace ft
 				_allocNode.construct(newNode, tempNode);
 				_allocPair.construct(&newNode->dataPair, pair);
 				newNode->depth = 0;
+				// _nbNodes++;
 				return (newNode);
 			};
 			node_type *createNode() { return (createNode(value_type())); };
@@ -97,28 +98,21 @@ namespace ft
 			// will search node inside tree
 			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
 			bool contains( node_type const *needle, node_type *subTree) const
+			{ return (contains(needle->dataPair.first, subTree)); }
+			bool contains( key_type const &key, node_type *subTree) const
 			{
 				if( isTreeEmpty(subTree))
 					return false;
-				if (_comp(needle->dataPair.first , subTree->dataPair.first))
-					return contains(needle, subTree->left);
-				else if (_comp(subTree->dataPair.first , needle->dataPair.first))
-					return contains(needle, subTree->right);
+				if (_comp(key , subTree->dataPair.first))
+					return contains(key, subTree->left);
+				else if (_comp(subTree->dataPair.first , key))
+					return contains(key, subTree->right);
 				else
 					return true;
 			}
 			node_type *findNode( node_type const *needle, node_type *subTree) const
-			{
-				if( isTreeEmpty(subTree))
-					return NULL;
-				if (_comp(needle->dataPair.first , subTree->dataPair.first))
-					return findNode(needle, subTree->left);
-				else if (_comp(subTree->dataPair.first , needle->dataPair.first))
-					return findNode(needle, subTree->right);
-				else
-					return subTree;
-			}
-			node_type *findNode(Key const key, node_type *subTree) const
+			{ return (findNode(needle->dataPair.first, subTree)); }
+			node_type *findNode(key_type const key, node_type *subTree) const
 			{
 				if(isTreeEmpty(subTree))
 					return NULL;
@@ -133,19 +127,33 @@ namespace ft
 			// INSERT NODE
 			void insertNode(node_type *toInsert, node_type *subTree) 
 			{
-				if (isTreeEmpty(subTree))
+				if (isTreeEmpty(subTree) && _nbNodes == 0)
+				{
+					_nbNodes++;
+					_racine = toInsert;
+				}
+				else if (isTreeEmpty(subTree))
+				{
+					_nbNodes++;
 					subTree = toInsert;
+				}
 				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))   
 				{
 					if (!getLeftTree(subTree))
+					{
 						subTree->left = toInsert;
+						_nbNodes++;
+					}
 					else
 						insertNode(toInsert, subTree->left);
 				}
 				else if (_comp(subTree->dataPair.first, toInsert->dataPair.first))
 				{
 					if (!getRightTree(subTree))
+					{
 						subTree->right = toInsert;
+						_nbNodes++;
+					}
 					else
 						insertNode(toInsert, subTree->right);
 				}
@@ -163,27 +171,29 @@ namespace ft
 			{
 				if(isTreeEmpty(subTree))
 					return ;
-				std::cout << "subTree->dataPair.first: " << subTree->dataPair.first << ", to remove: " << toRemove->dataPair.first << ", is leaf ? " << isLeaf(toRemove)<< std::endl;
+				// std::cout << "subTree->dataPair.first: " << subTree->dataPair.first << ", to remove: " << toRemove->dataPair.first << ", is leaf ? " << isLeaf(toRemove)<< std::endl;
 				if(_comp(toRemove->dataPair.first, subTree->dataPair.first))
 					removeNode(toRemove, subTree->left);
 				else if(_comp(subTree->dataPair.first, toRemove->dataPair.first))
 					removeNode(toRemove, subTree->right); 
 				else if(!isTreeEmpty(subTree->left) && !isTreeEmpty(subTree->right) )
 				{
-					std::cout << "subTree->left: " << subTree->left << ", subTree->right: " << subTree->right << std::endl;
+					// std::cout << "subTree->left: " << subTree->left << ", subTree->right: " << subTree->right << std::endl;
 					node_type *tmpNode = findMin(subTree->right);
 					node_type *newNode = createNode(tmpNode->dataPair);
 					newNode->right = subTree->right;
 					newNode->left = subTree->left;
+					// parent dont forget
 					subTree = newNode;
+					destroyNode(newNode); // ?? sure ??
 					removeNode(tmpNode, subTree->right);
 				}
 				else
 				{
-					std::cout << "destroy node" << std::endl;
 					node_type *oldNode = subTree;
 					subTree = (!isTreeEmpty(subTree->left)) ? subTree->left : subTree->right;
 					destroyNode(oldNode);
+					_nbNodes--;
 				}
 			}
 			//ISTREE EMPTY
@@ -248,28 +258,31 @@ namespace ft
 					printBT( prefix + (isLeft ? "│   " : "    "), node->right, false);
 				}
 			}
-			void printBT()
-			{
-				printBT("", _racine, false);    
-			}
+			void printBT() { printBT("", _racine, false); }
 
 		public:
 			// 23.3.1.1 construct/copy/destroy:
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _nbNoeuds(0), _allocPair(alloc), _comp(comp)
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _nbNodes(0), _allocPair(alloc), _comp(comp)
 			{
-				std::cout << "hello" << std::endl;
-				_racine = createNode(0);
-				std::cout << "_racine->depth: " << _racine->depth << std::endl;
-				// prefix(_racine);
-				// value_type test;
-				// test.first = 10;
+				// ft::node<key_type, mapped_type> tmp;
+				// _racine = &tmp;
+				_racine = NULL;
+				// node_type tempNode;
+				// // node_type *newNode = _allocNode.allocate(1);
+				// _allocNode.construct(_racine, tempNode);
+				// // _allocPair.construct(&newNode->dataPair, pair);
+				// _racine->depth = 0;
+				// _racine = createNode();
+				// std::cout << "_racine->depth: " << _racine->depth << std::endl;
 				// insertNode(_racine, createNode(test));
 			};	
 			template <class InputIterator>
  			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());	
 			map (const map& x);
 			/**/
-			~map(){ destroyNode(_racine); };
+			~map(){
+				// destroyNode(_racine);
+				};
 			/**/
 			map& operator= (const map& x);
 			/// ITERATORS
@@ -285,16 +298,31 @@ namespace ft
 			// reverse_iterator rend();
 			// const_reverse_iterator rend() const;
 			/// CAPACITY
+
+			/* Returns whether the map container is empty (i.e. whether its size is 0). */
 			bool empty() const;
-			size_type size() const;
-			size_type max_size() const;
+			/* Returns the number of elements in the map container. */
+			size_type size() const {return (_nbNodes); };
+			size_type max_size() const { return (_allocNode.max_size()); }; 
 			/// ELEMENT ACCESS
-			mapped_type& operator[] (const key_type& k);
+			mapped_type& operator[] (const key_type& k)
+			{
+				node_type *newNode = findNode(k, _racine);
+				if (!isTreeEmpty(newNode))
+					return (newNode->dataPair.second);
+				newNode = createNode(value_type(k, mapped_type()));
+				insertNode(newNode, _racine);
+				return (newNode->dataPair.second);
+			};
 			/// MODIFIERS
 			// ft::pair<iterator,bool> insert (const value_type& val);	
 			// iterator insert (iterator position, const value_type& val);
 			template <class InputIterator>
-			void insert (InputIterator first, InputIterator last);
+			void insert (InputIterator first, InputIterator last)
+			{
+				for (; first != last; first++)
+					insert(*first);
+			};
 			/**/
 			// void erase (iterator position);
 			size_type erase (const key_type& k);
@@ -324,7 +352,7 @@ namespace ft
 			allocator_type get_allocator() const;
 
 		private:
-			bool is_empty() const { return (_nbNoeuds == 0); };
+			bool is_empty() const { return (_nbNodes == 0); };
 			// node getRightSon const
 			// {
 			// 	if (is_empty())

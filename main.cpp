@@ -112,12 +112,17 @@ int main()
 		// rend += 1;
 		// std::cout << "*(rend += 1): " << *rend << std::endl;
 		ft::map<int, char> test;
+		std::cout << "test[6]: " << test[6] << std::endl;
 
 		// test.prefix(test._racine);
 		typedef ft::map<int, char>::value_type pair_type;
 		pair_type pairTest(10, 'a');
-		test.insertNode(test.createNode(pairTest), test._racine);
-		// test.prefix(test._racine);
+		ft::map<int, char>::node_type *node3 = test.createNode(pairTest);
+		(void)node3;
+		// std::cout << "cool" << std::endl;
+		test.insertNode(node3, test._racine);
+		std::cout << "super" << std::endl;
+
 		ft::map<int, char>::node_type *node2 = test.createNode(pair_type(30, 'b'));
 		test.insertNode(node2, test._racine);
 		test.insertNode(test.createNode(pair_type(6, 'c')), test._racine);
@@ -128,16 +133,19 @@ int main()
 		test.insertNode(test.createNode(pair_type(15, 'g')), test._racine);
 		// test.insertNode(test.createNode(pair_type(15, 'h')), test._racine);
 		test.insertNode(test.createNode(pair_type(14, 'i')), test._racine);
-		// test.prefix(test._racine);
-		// std::cout << "node is found : " << test.contains(node1, test._racine) << std::endl;
-		// std::cout << "node is found : " << test.findNode(test.createNode(pair_type(90, 'f')), test._racine)->dataPair.second << std::endl;
-		// std::cout << "node is found : " << test.findNode(90, test._racine)->dataPair.second << std::endl;
+
+		std::cout << "node is found : " << test.contains(node1, test._racine) << std::endl;
+		std::cout << "node is found : " << test.findNode(test.createNode(pair_type(90, 'f')), test._racine)->dataPair.second << std::endl;
+		std::cout << "node is found : " << test.findNode(90, test._racine)->dataPair.second << std::endl;
 		// test.removeNode(node1, test._racine);
 		// std::cout << "removed node 90, f" << std::endl;
-		// test.prefix(test._racine);
+
 		test.printBT();
 		std::cout << "removed node 10, a" << std::endl;
-		test.removeNode(node2, test._racine);
+		test.removeNode(node1, test._racine);
 		test.printBT();
+		std::cout << "test[6]: " << test[6] << std::endl;
+		test.printBT();
+		std::cout << "nb nodes: " << test.size() << std::endl;
 	}
 }
