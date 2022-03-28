@@ -14,15 +14,15 @@ namespace ft
 	{
 		public :
 			ft::pair<const Key, T>	dataPair;
-			node					*father;
+			node					*parent;
 			node					*left;
 			node					*right;
 			size_t					depth;
 
-			node() : dataPair(), father(NULL), left(NULL), right(NULL), depth(0) {};
+			node() : dataPair(), parent(NULL), left(NULL), right(NULL), depth(0) {};
 			node(ft::pair<const Key, T> pair) :  node(), dataPair(pair) {};
 			node(size_t depth) : node(), depth(depth) {};
-			node(const node &other) : dataPair(other.dataPair), father(other.father), left(other.left), right(other.right), depth(other.depth) {};
+			node(const node &other) : dataPair(other.dataPair), parent(other.parent), left(other.left), right(other.right), depth(other.depth) {};
 			~node() { depth = 0; }
 	};
 	template < class Key,class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
@@ -47,9 +47,9 @@ namespace ft
 			typedef typename Alloc::template rebind<ft::node<Key, T> >::other allocator_node; // BRACKETS ??
 
 			typedef	typename ft::mapIterator<Key, T, node_type, false>	iterator;
-			typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
+			typedef typename ft::reverse_iterator<iterator>				reverse_iterator;
 			typedef	typename ft::mapIterator<Key, T, node_type, true>	const_iterator;
-			typedef typename ft::reverse_iterator<iterator>			const_reverse_iterator;
+			typedef typename ft::reverse_iterator<iterator>				const_reverse_iterator;
 
 			class value_compare : public std::binary_function<value_type,value_type,bool>
 			{

@@ -20,7 +20,7 @@ namespace ft
 	struct chooseConst<true, falseConst, trueConst>
 	{ typedef trueConst type; };
 
-	template < class Key, class T, typename node, bool isConst = false, class Compare = std::less<Key> >
+	template < class Key, class T, typename Node, bool isConst = false, class Compare = std::less<Key> >
 	class mapIterator
 	{
 		public:
@@ -37,7 +37,8 @@ namespace ft
 
 		private:
 
-			node		*_node;
+			Node		*_node;
+			Node		*_root;
 			key_compare	_comp;
 
 		public:
@@ -58,21 +59,111 @@ namespace ft
 
 				6- Can be decremented (if a dereferenceable iterator value precedes it). (--a; a--; *a--)
 			*/
-			mapIterator() {};
-			mapIterator(const mapIterator &src);
+			mapIterator(Node *node = NULL, Node *root = NULL, const key_compare& comp = key_compare()) : _node(node), _root(root), _comp(comp)
+			{
+				if (_node == NULL && _root == NULL)
+				{
+					_node = Node();
+					_root = _node;
+				}
+			};
+			mapIterator(const mapIterator &other) : _node(other._node), _comp(other._comp) {};
 			~mapIterator() {};
-			mapIterator & operator = (const mapIterator &rhs);
-
+			mapIterator & operator = (const mapIterator &rhs)
+			{
+				if (this != rhs)
+				{
+					_node = rhs._node;
+					_comp = rhs._comp;
+				}
+				return (*this);
+			};
 			bool operator == (const mapIterator & rhs) const { return (_node == rhs._node); };
 			bool operator != (const mapIterator & rhs) const { return !(this == rhs); };
 			reference operator *() const { return _node->dataPair; };
 			pointer operator ->() const { return &_node->dataPair; };
 
-			mapIterator & operator ++() {};
-			mapIterator & operator ++(int) {};
+			mapIterator & operator ++()
+			{
+				// https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
+			// template <class Comparable>
+			// typename BinarySearchTree<Comparable>::BstIterator&
+			// BinarySearchTree<Comparable>::BstIterator::operator++ ()
+			// {
+			// BinaryNode<Comparable> *p;
+			
+			// if (nodePtr == nullptr)
+			// 	{
+			// 	// ++ from end(). get the root of the tree
+			// 	nodePtr = tree->root;
+				
+			// 	// error! ++ requested for an empty tree
+			// 	if (nodePtr == nullptr)
+			// 		throw UnderflowException { };
+				
+			// 	// move to the smallest value in the tree,
+			// 	// which is the first node inorder
+			// 	while (nodePtr->left != nullptr) {
+			// 		nodePtr = nodePtr->left;
+			// 	}
+			// 	}
+			// else
+			// 	if (nodePtr->right != nullptr)
+			// 	{
+			// 		// successor is the farthest left node of
+			// 		// right subtree
+			// 		nodePtr = nodePtr->right;
+					
+			// 		while (nodePtr->left != nullptr) {
+			// 		nodePtr = nodePtr->left;
+			// 		}
+			// 	}
+			// 	else
+			// 	{
+			// 		// have already processed the left subtree, and
+			// 		// there is no right subtree. move up the tree,
+			// 		// looking for a parent for which nodePtr is a left child,
+			// 		// stopping if the parent becomes NULL. a non-NULL parent
+			// 		// is the successor. if parent is NULL, the original node
+			// 		// was the last node inorder, and its successor
+			// 		// is the end of the list
+			// 		p = nodePtr->parent;
+			// 		while (p != nullptr && nodePtr == p->right)
+			// 		{
+			// 			nodePtr = p;
+			// 			p = p->parent;
+			// 		}
+					
+			// 		// if we were previously at the right-most node in
+			// 		// the tree, nodePtr = nullptr, and the iterator specifies
+			// 		// the end of the list
+			// 		nodePtr = p;
+			// 	}
+			
+			// return *this;
+			// }
 
-			mapIterator & operator --() {};
-			mapIterator & operator --(int) {};
+			};
+			mapIterator & operator ++(int)
+			{
+
+			};
+
+			mapIterator & operator --()
+			{
+
+			};
+			mapIterator & operator --(int)
+			{
+
+			};
+
+		private:
+
+			// mapIterator begin() const
+			// {
+			// 	return ();
+			// }
 	};
 }
 
