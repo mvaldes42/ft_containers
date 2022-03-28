@@ -5,6 +5,7 @@
 #include <iostream>
 #include "reverse_iterator.hpp"
 #include "pair.hpp"
+#include "iterator_map.hpp"
 
 namespace ft
 {
@@ -28,7 +29,7 @@ namespace ft
 	class map
 	{
 		public:
-			// types:
+
 			typedef Key key_type;
 			typedef T mapped_type;
 			typedef ft::pair<const Key, T> value_type;
@@ -36,17 +37,19 @@ namespace ft
 			typedef Alloc allocator_type;
 			typedef typename Alloc::reference reference;
 			typedef typename Alloc::const_reference const_reference;
-			// typedef	typename Alloc::pointer iterator; ==> DO IT YOURSELF
-			// typedef	typename Alloc::const_pointer const_iterator; ==> DO IT YOURSELF
+
 			typedef size_t size_type;
 			typedef	typename Alloc::difference_type difference_type;
 			typedef typename Alloc::pointer pointer;
 			typedef typename Alloc::const_pointer const_pointer;
-			// typedef ft::reverse_iterator<iterator> reverse_iterator;
-			// typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
-			// typedef struct ft::node<Key, T> *tree;
+
 			typedef typename ft::node<key_type, mapped_type> node_type;
 			typedef typename Alloc::template rebind<ft::node<Key, T> >::other allocator_node; // BRACKETS ??
+
+			typedef	typename ft::mapIterator<Key, T, node_type, false>	iterator;
+			typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
+			typedef	typename ft::mapIterator<Key, T, node_type, true>	const_iterator;
+			typedef typename ft::reverse_iterator<iterator>			const_reverse_iterator;
 
 			class value_compare : public std::binary_function<value_type,value_type,bool>
 			{
@@ -181,14 +184,12 @@ namespace ft
 			{
 				if(isTreeEmpty(subTree))
 					return ;
-				// std::cout << "subTree->dataPair.first: " << subTree->dataPair.first << ", to remove: " << toRemove->dataPair.first << ", is leaf ? " << isLeaf(toRemove)<< std::endl;
 				if(_comp(toRemove->dataPair.first, subTree->dataPair.first))
 					removeNode(toRemove, subTree->left);
 				else if(_comp(subTree->dataPair.first, toRemove->dataPair.first))
 					removeNode(toRemove, subTree->right); 
 				else if(!isTreeEmpty(subTree->left) && !isTreeEmpty(subTree->right) )
 				{
-					// std::cout << "subTree->left: " << subTree->left << ", subTree->right: " << subTree->right << std::endl;
 					node_type *tmpNode = findMin(subTree->right);
 					node_type *newNode = createNode(tmpNode->dataPair);
 					newNode->right = subTree->right;
@@ -243,17 +244,6 @@ namespace ft
 			};
 			void setTreeHeight() { _treeHeight = treeHeight(_racine); };
 
-			// TYPE DE PARCOURS PREFIXE
-			// void prefix(node_type *tree) const
-			// {
-			// 	if (!isTreeEmpty(tree))
-			// 	{
-			// 		std::cout << "Key: " << tree->dataPair.first <<  ", Value: " << tree->dataPair.second << std::endl;
-			// 		prefix(getLeftTree(tree));
-			// 		prefix(getRightTree(tree));
-			// 	}
-			// }
-			
 			void printBT(const std::string& prefix, const node_type *node, bool isLeft)
 			{
 				if( node && node != NULL )
@@ -271,7 +261,7 @@ namespace ft
 			void printBT() { printBT("", _racine, false); }
 
 		public:
-			// 23.3.1.1 construct/copy/destroy:
+		
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp) {};	
 			template <class InputIterator>
  			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());	
@@ -284,17 +274,17 @@ namespace ft
 			/**/
 			map& operator= (const map& x);
 			/// ITERATORS
-			// iterator begin();
-			// const_iterator begin() const;
+			iterator begin();
+			const_iterator begin() const;
 			// /**/
-			// iterator end();
-			// const_iterator end() const;
+			iterator end();
+			const_iterator end() const;
 			/**/
-			// reverse_iterator rbegin();
-			// const_reverse_iterator rbegin() const;
+			reverse_iterator rbegin();
+			const_reverse_iterator rbegin() const;
 			/**/
-			// reverse_iterator rend();
-			// const_reverse_iterator rend() const;
+			reverse_iterator rend();
+			const_reverse_iterator rend() const;
 			/// CAPACITY
 
 			/* Returns whether the map container is empty (i.e. whether its size is 0). */
@@ -313,8 +303,8 @@ namespace ft
 				return (newNode->dataPair.second);
 			};
 			/// MODIFIERS
-			// ft::pair<iterator,bool> insert (const value_type& val);	
-			// iterator insert (iterator position, const value_type& val);
+			ft::pair<iterator,bool> insert (const value_type& val);	
+			iterator insert (iterator position, const value_type& val);
 			template <class InputIterator>
 			void insert (InputIterator first, InputIterator last)
 			{
@@ -322,42 +312,36 @@ namespace ft
 					insert(*first);
 			};
 			/**/
-			// void erase (iterator position);
+			void erase (iterator position);
 			size_type erase (const key_type& k);
-			// void erase (iterator first, iterator last);
+			void erase (iterator first, iterator last);
 			/**/
 			void swap (map& x);
 			/**/
 			void clear();
 			/// OBSERVERS
 			key_compare key_comp() const;
-			value_compare value_comp() const;
+			value_compare value_comp() const; // FRIEND ??
 			/// OPERATIONS
-			// iterator find (const key_type& k);
-			// const_iterator find (const key_type& k) const;
+			iterator find (const key_type& k);
+			const_iterator find (const key_type& k) const;
 			/**/
 			size_type count (const key_type& k) const;
 			/**/
-			// iterator lower_bound (const key_type& k);
-			// const_iterator lower_bound (const key_type& k) const;
+			iterator lower_bound (const key_type& k);
+			const_iterator lower_bound (const key_type& k) const;
 			/**/
-			// iterator upper_bound (const key_type& k);
-			// const_iterator upper_bound (const key_type& k) const;
+			iterator upper_bound (const key_type& k);
+			const_iterator upper_bound (const key_type& k) const;
 			/**/
-			// ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
-			// ft::pair<iterator,iterator> equal_range (const key_type& k);
+			ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
+			ft::pair<iterator,iterator> equal_range (const key_type& k);
 			/// ALLOCATOR
 			allocator_type get_allocator() const;
 
 		private:
 			bool is_empty() const { return (_nbNodes == 0); };
-			// node getRightSon const
-			// {
-			// 	if (is_empty())
-			// 		return NULL;
-			// 	else
-			// 		return node.filsd;
-			// };
+
   	};
 	template <class Key, class T, class Compare, class Alloc>
 	bool operator== ( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs );
