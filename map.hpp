@@ -174,7 +174,6 @@ namespace ft
 						toInsert->parent = subTree;
 						subTree->right = toInsert;
 						_nbNodes++;
-						// std::cout << "subTree->right: " << parent->dataPair.first << std::endl;
 					}
 					else
 						insertNode(toInsert, subTree->right, subTree);
@@ -189,7 +188,8 @@ namespace ft
 					return t;
 				return findMin( t->left );
 			}
-			// void removeNode
+			void removeNode(node_type *toRemove)
+			{ removeNode(toRemove, _racine); }
 			void removeNode(node_type *toRemove, node_type *&subTree)
 			{
 				if(isTreeEmpty(subTree))
@@ -221,10 +221,6 @@ namespace ft
 						subTree = NULL;
 					destroyNode(oldNode); // sure ??
 					_nbNodes--;
-					// node_type *oldNode = subTree;
-					// subTree = (!isTreeEmpty(subTree->left)) ? subTree->left : subTree->right;
-					// destroyNode(oldNode);
-					// _nbNodes--;
 				}
 			}
 			//ISTREE EMPTY

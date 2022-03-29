@@ -63,7 +63,7 @@ namespace ft
 			{
 				if (_node == NULL && _root == NULL)
 				{
-					_node = Node();
+					_node = _node.createNode();
 					_root = _node;
 				}
 			};
@@ -85,54 +85,42 @@ namespace ft
 
 			mapIterator & operator ++()
 			{
-			// 	// https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
-			// template <class Comparable>
-			// typename BinarySearchTree<Comparable>::BstIterator&
-			// BinarySearchTree<Comparable>::BstIterator::operator++ ()
-			// {
-			// 	BinaryNode<Comparable> *currentNode;
-			// 	if (nodePtr == nullptr)
-			// 	{
-			// 		nodePtr = tree->root;
-			// 		if (nodePtr == nullptr)
-			// 			throw UnderflowException { };
-			// 		while (nodePtr->left != nullptr)
-			// 			nodePtr = nodePtr->left;
-			// 	}
-			// 	else
-			// 	{
-			// 		if (nodePtr->right != nullptr)
-			// 		{
-			// 			nodePtr = nodePtr->right;
-			// 			while (nodePtr->left != nullptr)
-			// 				nodePtr = nodePtr->left;
-			// 		}
-			// 		else
-			// 		{
-			// 			currentNode = nodePtr->parent;
-			// 			while (currentNode != nullptr && nodePtr == currentNode->right)
-			// 			{
-			// 				nodePtr = currentNode;
-			// 				currentNode = currentNode->parent;
-			// 			}
-			// 			nodePtr = p;
-			// 		}
-			// 	}
-			// 	return *this;
+				// https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
+				Node *currentNode;
+				std::cout << "current node: " << _node->dataPair.first << std::endl;
+				if (_node == nullptr)
+				{
+					_node = _root;
+					if (_node == nullptr)
+						// throw UnderflowException { };
+						return NULL;
+					while (_node->left != nullptr)
+						_node = _node->left;
+				}
+				else
+				{
+					if (_node->right != nullptr)
+					{
+						_node = _node->right;
+						while (_node->left != nullptr)
+							_node = _node->left;
+					}
+					else
+					{
+						currentNode = _node->parent;
+						while (currentNode != nullptr && _node == currentNode->right)
+						{
+							_node = currentNode;
+							currentNode = currentNode->parent;
+						}
+						_node = currentNode;
+					}
+				}
+				return *this;
 			};
-			mapIterator & operator ++(int)
-			{
-
-			};
-
-			mapIterator & operator --()
-			{
-
-			};
-			mapIterator & operator --(int)
-			{
-
-			};
+			mapIterator & operator ++(int) {std::cout << "euuh" << std::endl; };
+			mapIterator & operator --();
+			mapIterator & operator --(int);
 
 		private:
 
