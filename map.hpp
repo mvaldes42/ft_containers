@@ -137,11 +137,11 @@ namespace ft
 			}
 			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
 			// INSERT NODE
-			void insertNode(node_type *toInsert, node_type *subTree)
+			void insertNode(node_type *toInsert)
 			{
-				if (isTreeEmpty(subTree))
-					return insertNode(toInsert, subTree, NULL);
-				insertNode(toInsert, subTree, subTree->parent);
+				if (isTreeEmpty(_racine))
+					return insertNode(toInsert, _racine, NULL);
+				insertNode(toInsert, _racine, _racine->parent);
 			}
 			void insertNode(node_type *toInsert, node_type *subTree, node_type *parent) 
 			{
@@ -160,7 +160,7 @@ namespace ft
 				{
 					if (!getLeftTree(subTree))
 					{
-						toInsert->parent = parent;
+						toInsert->parent = subTree;
 						subTree->left = toInsert;
 						_nbNodes++;
 					}
@@ -171,9 +171,10 @@ namespace ft
 				{
 					if (!getRightTree(subTree))
 					{
-						toInsert->parent = parent;
+						toInsert->parent = subTree;
 						subTree->right = toInsert;
 						_nbNodes++;
+						// std::cout << "subTree->right: " << parent->dataPair.first << std::endl;
 					}
 					else
 						insertNode(toInsert, subTree->right, subTree);
@@ -188,6 +189,7 @@ namespace ft
 					return t;
 				return findMin( t->left );
 			}
+			// void removeNode
 			void removeNode(node_type *toRemove, node_type *&subTree)
 			{
 				if(isTreeEmpty(subTree))
@@ -202,7 +204,7 @@ namespace ft
 					node_type *newNode = createNode(tmpNode->dataPair);
 					newNode->right = subTree->right;
 					newNode->left = subTree->left;
-					// parent dont forget
+					newNode->parent = subTree->parent;
 					subTree = newNode;
 					destroyNode(newNode); // ?? sure ??
 					removeNode(tmpNode, subTree->right);
@@ -210,9 +212,19 @@ namespace ft
 				else
 				{
 					node_type *oldNode = subTree;
-					subTree = (!isTreeEmpty(subTree->left)) ? subTree->left : subTree->right;
-					destroyNode(oldNode);
+					if (!isTreeEmpty(subTree->left))
+					{
+						subTree->left->parent = subTree->parent;
+						subTree = subTree->left;
+					}
+					else
+						subTree = NULL;
+					destroyNode(oldNode); // sure ??
 					_nbNodes--;
+					// node_type *oldNode = subTree;
+					// subTree = (!isTreeEmpty(subTree->left)) ? subTree->left : subTree->right;
+					// destroyNode(oldNode);
+					// _nbNodes--;
 				}
 			}
 			//ISTREE EMPTY
@@ -307,7 +319,7 @@ namespace ft
 				if (!isTreeEmpty(newNode))
 					return (newNode->dataPair.second);
 				newNode = createNode(value_type(k, mapped_type()));
-				insertNode(newNode, _racine);
+				insertNode(newNode);
 				return (newNode->dataPair.second);
 			};
 			/// MODIFIERS

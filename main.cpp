@@ -118,32 +118,29 @@ int main()
 		typedef ft::map<int, char>::value_type pair_type;
 		pair_type pairTest(10, 'a');
 		ft::map<int, char>::node_type *node3 = test.createNode(pairTest);
-		(void)node3;
-		// std::cout << "cool" << std::endl;
-		test.insertNode(node3, test._racine);
-		std::cout << "super" << std::endl;
-
+		test.insertNode(node3);
 		ft::map<int, char>::node_type *node2 = test.createNode(pair_type(30, 'b'));
-		test.insertNode(node2, test._racine);
-		test.insertNode(test.createNode(pair_type(6, 'c')), test._racine);
-		test.insertNode(test.createNode(pair_type(5, 'd')), test._racine);
-		test.insertNode(test.createNode(pair_type(3, 'e')), test._racine);
+		test.insertNode(node2);
+		test.insertNode(test.createNode(pair_type(6, 'c')));
+		test.insertNode(test.createNode(pair_type(5, 'd')));
+		test.insertNode(test.createNode(pair_type(3, 'e')));
 		ft::map<int, char>::node_type *node1 = test.createNode(pair_type(90, 'f'));
-		test.insertNode(node1, test._racine);
-		test.insertNode(test.createNode(pair_type(15, 'g')), test._racine);
+		test.insertNode(node1);
+		test.insertNode(test.createNode(pair_type(15, 'g')));
 		// test.insertNode(test.createNode(pair_type(15, 'h')), test._racine);
-		test.insertNode(test.createNode(pair_type(14, 'i')), test._racine);
-
-		std::cout << "node is found : " << test.contains(node1, test._racine) << std::endl;
-		std::cout << "node is found : " << test.findNode(test.createNode(pair_type(90, 'f')), test._racine)->dataPair.second << std::endl;
-		std::cout << "node is found : " << test.findNode(90, test._racine)->dataPair.second << std::endl;
+		test.insertNode(test.createNode(pair_type(14, 'i')));
+		std::cout << "test[30] parent : " << test.findNode(6, test._racine)->parent->dataPair.first << std::endl;
+		// std::cout << "node is found : " << test.contains(node1, test._racine) << std::endl;
+		// std::cout << "node is found : " << test.findNode(test.createNode(pair_type(90, 'f')), test._racine)->dataPair.second << std::endl;
+		// std::cout << "node is found : " << test.findNode(90, test._racine)->dataPair.second << std::endl;
 		// test.removeNode(node1, test._racine);
 		// std::cout << "removed node 90, f" << std::endl;
 
 		test.printBT();
-		std::cout << "removed node 10, a" << std::endl;
+		std::cout << "removed node 90, f" << std::endl;
 		test.removeNode(node1, test._racine);
 		test.printBT();
+		// std::cout << "test[30] parent : " << test.findNode(6, test._racine)->parent->dataPair.first << std::endl;
 		std::cout << "test[6]: " << test[6] << std::endl;
 		test.printBT();
 		std::cout << "nb nodes: " << test.size() << std::endl;
