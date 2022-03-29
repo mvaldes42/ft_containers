@@ -108,7 +108,6 @@ namespace ft
 				}
 			}
 			// Find NODE
-			// will search node inside tree
 			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
 			bool contains( node_type const *needle, node_type *subTree) const
 			{ return (contains(needle->dataPair.first, subTree)); }
@@ -138,7 +137,13 @@ namespace ft
 			}
 			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
 			// INSERT NODE
-			void insertNode(node_type *toInsert, node_type *subTree) 
+			void insertNode(node_type *toInsert, node_type *subTree)
+			{
+				if (isTreeEmpty(subTree))
+					return insertNode(toInsert, subTree, NULL);
+				insertNode(toInsert, subTree, subTree->parent);
+			}
+			void insertNode(node_type *toInsert, node_type *subTree, node_type *parent) 
 			{
 				if (isTreeEmpty(subTree) && _nbNodes == 0)
 				{
@@ -148,27 +153,30 @@ namespace ft
 				else if (isTreeEmpty(subTree))
 				{
 					_nbNodes++;
+					toInsert->parent = parent;
 					subTree = toInsert;
 				}
 				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))   
 				{
 					if (!getLeftTree(subTree))
 					{
+						toInsert->parent = parent;
 						subTree->left = toInsert;
 						_nbNodes++;
 					}
 					else
-						insertNode(toInsert, subTree->left);
+						insertNode(toInsert, subTree->left, subTree);
 				}
 				else if (_comp(subTree->dataPair.first, toInsert->dataPair.first))
 				{
 					if (!getRightTree(subTree))
 					{
+						toInsert->parent = parent;
 						subTree->right = toInsert;
 						_nbNodes++;
 					}
 					else
-						insertNode(toInsert, subTree->right);
+						insertNode(toInsert, subTree->right, subTree);
 				}
 			}
 			// DELETE NODE

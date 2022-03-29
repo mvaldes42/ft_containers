@@ -85,64 +85,40 @@ namespace ft
 
 			mapIterator & operator ++()
 			{
-				// https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
+			// 	// https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
 			// template <class Comparable>
 			// typename BinarySearchTree<Comparable>::BstIterator&
 			// BinarySearchTree<Comparable>::BstIterator::operator++ ()
 			// {
-			// BinaryNode<Comparable> *p;
-			
-			// if (nodePtr == nullptr)
-			// 	{
-			// 	// ++ from end(). get the root of the tree
-			// 	nodePtr = tree->root;
-				
-			// 	// error! ++ requested for an empty tree
+			// 	BinaryNode<Comparable> *currentNode;
 			// 	if (nodePtr == nullptr)
-			// 		throw UnderflowException { };
-				
-			// 	// move to the smallest value in the tree,
-			// 	// which is the first node inorder
-			// 	while (nodePtr->left != nullptr) {
-			// 		nodePtr = nodePtr->left;
-			// 	}
-			// 	}
-			// else
-			// 	if (nodePtr->right != nullptr)
 			// 	{
-			// 		// successor is the farthest left node of
-			// 		// right subtree
-			// 		nodePtr = nodePtr->right;
-					
-			// 		while (nodePtr->left != nullptr) {
-			// 		nodePtr = nodePtr->left;
-			// 		}
+			// 		nodePtr = tree->root;
+			// 		if (nodePtr == nullptr)
+			// 			throw UnderflowException { };
+			// 		while (nodePtr->left != nullptr)
+			// 			nodePtr = nodePtr->left;
 			// 	}
 			// 	else
 			// 	{
-			// 		// have already processed the left subtree, and
-			// 		// there is no right subtree. move up the tree,
-			// 		// looking for a parent for which nodePtr is a left child,
-			// 		// stopping if the parent becomes NULL. a non-NULL parent
-			// 		// is the successor. if parent is NULL, the original node
-			// 		// was the last node inorder, and its successor
-			// 		// is the end of the list
-			// 		p = nodePtr->parent;
-			// 		while (p != nullptr && nodePtr == p->right)
+			// 		if (nodePtr->right != nullptr)
 			// 		{
-			// 			nodePtr = p;
-			// 			p = p->parent;
+			// 			nodePtr = nodePtr->right;
+			// 			while (nodePtr->left != nullptr)
+			// 				nodePtr = nodePtr->left;
 			// 		}
-					
-			// 		// if we were previously at the right-most node in
-			// 		// the tree, nodePtr = nullptr, and the iterator specifies
-			// 		// the end of the list
-			// 		nodePtr = p;
+			// 		else
+			// 		{
+			// 			currentNode = nodePtr->parent;
+			// 			while (currentNode != nullptr && nodePtr == currentNode->right)
+			// 			{
+			// 				nodePtr = currentNode;
+			// 				currentNode = currentNode->parent;
+			// 			}
+			// 			nodePtr = p;
+			// 		}
 			// 	}
-			
-			// return *this;
-			// }
-
+			// 	return *this;
 			};
 			mapIterator & operator ++(int)
 			{
