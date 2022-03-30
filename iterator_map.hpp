@@ -59,19 +59,20 @@ namespace ft
 
 				6- Can be decremented (if a dereferenceable iterator value precedes it). (--a; a--; *a--)
 			*/
-			mapIterator(Node *node = NULL, Node *root = NULL, const key_compare& comp = key_compare()) : _node(node), _root(root), _comp(comp)
+			mapIterator(Node *root = NULL, Node *node = NULL, const key_compare& comp = key_compare()) : _node(node), _root(root), _comp(comp)
 			{
-				if (_node == NULL && _root == NULL)
-				{
-					_node = _node.createNode();
-					_root = _node;
-				}
+				// if (_node != NULL)
+				// {
+				// 	_node = _root;
+				// 	while (_node->left != nullptr)
+				// 		_node = _node->left;
+				// }
 			};
 			mapIterator(const mapIterator &other) : _node(other._node), _comp(other._comp) {};
 			~mapIterator() {};
 			mapIterator & operator = (const mapIterator &rhs)
 			{
-				if (this != rhs)
+				if (*this != rhs)
 				{
 					_node = rhs._node;
 					_comp = rhs._comp;
@@ -79,7 +80,7 @@ namespace ft
 				return (*this);
 			};
 			bool operator == (const mapIterator & rhs) const { return (_node == rhs._node); };
-			bool operator != (const mapIterator & rhs) const { return !(this == rhs); };
+			bool operator != (const mapIterator & rhs) const { return (_node != rhs._node); };
 			reference operator *() const { return _node->dataPair; };
 			pointer operator ->() const { return &_node->dataPair; };
 
@@ -87,13 +88,15 @@ namespace ft
 			{
 				// https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
 				Node *currentNode;
-				std::cout << "current node: " << _node->dataPair.first << std::endl;
+				// std::cout << "current node: " << _node->dataPair.first << std::endl;
 				if (_node == nullptr)
 				{
 					_node = _root;
 					if (_node == nullptr)
-						// throw UnderflowException { };
-						return NULL;
+					{// throw UnderflowException { };
+						*this = NULL;
+						return *this;
+					}
 					while (_node->left != nullptr)
 						_node = _node->left;
 				}
@@ -114,11 +117,12 @@ namespace ft
 							currentNode = currentNode->parent;
 						}
 						_node = currentNode;
+						// std::cout << "hey" << _node->dataPair.first << std::endl;
 					}
 				}
 				return *this;
 			};
-			mapIterator & operator ++(int) {std::cout << "euuh" << std::endl; };
+			mapIterator & operator ++(int);
 			mapIterator & operator --();
 			mapIterator & operator --(int);
 

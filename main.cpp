@@ -123,7 +123,8 @@ int main()
 		test.insertNode(node2);
 		test.insertNode(test.createNode(pair_type(6, 'c')));
 		test.insertNode(test.createNode(pair_type(5, 'd')));
-		test.insertNode(test.createNode(pair_type(3, 'e')));
+		ft::map<int, char>::node_type *node5 = test.createNode(pair_type(3, 'e'));
+		test.insertNode(node5);
 		ft::map<int, char>::node_type *node1 = test.createNode(pair_type(90, 'f'));
 		test.insertNode(node1);
 		test.insertNode(test.createNode(pair_type(15, 'g')));
@@ -147,10 +148,14 @@ int main()
 		std::cout << "test[15] parent : " << test.findNode(15, test._racine)->parent->dataPair.first << std::endl;
 		std::cout << "test[6]: " << test[6] << std::endl;
 		test.printBT();
-		ft::map<int, char>::iterator itera(node2);
-		// std::cout << (node2++)->dataPair.first << std::endl;
-		// std::cout << (node2++)->dataPair.first << std::endl;
+		ft::map<int, char>::iterator itera(test._racine);
+		// std::cout << node3->dataPair.first << ", "<< itera->first << std::endl;
+		while (++itera != NULL)
+		{
+			std::cout << "++ " << itera->first << std::endl;
+		}
+		// std::cout << (node2)->dataPair.first << std::endl;
 		// std::cout << test._racine->dataPair.first<< std::endl;
-		std::cout << "nb nodes: " << test.size() << std::endl;
+		// std::cout << "nb nodes: " << test.size() << std::endl;
 	}
 }
