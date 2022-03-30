@@ -42,32 +42,7 @@ namespace ft
 			key_compare	_comp;
 
 		public:
-			/*
-				1- Is default-constructible, copy-constructible, copy-assignable and destructible (X a; X b(a); b = a;)
-
-				2- Can be compared for equivalence using the equality/inequality operators
-				(meaningful when both iterator values iterate over the same underlying sequence). (a == b; a!=b )
-
-				3- Can be dereferenced as an rvalue (if in a dereferenceable state). (*a; a-> b)
-
-				4- For mutable iterators (non-constant iterators):
-					Can be dereferenced as an lvalue (if in a dereferenceable state). (*a = t)
-
-				5- Can be incremented (if in a dereferenceable state).
-				The result is either also dereferenceable or a past-the-end iterator.
-				Two iterators that compare equal, keep comparing equal after being both increased. (++a; a++; *a++)
-
-				6- Can be decremented (if a dereferenceable iterator value precedes it). (--a; a--; *a--)
-			*/
-			mapIterator(Node *root = NULL, Node *node = NULL, const key_compare& comp = key_compare()) : _node(node), _root(root), _comp(comp)
-			{
-				// if (_node != NULL)
-				// {
-				// 	_node = _root;
-				// 	while (_node->left != nullptr)
-				// 		_node = _node->left;
-				// }
-			};
+			mapIterator(Node *root = NULL, Node *node = NULL, const key_compare& comp = key_compare()) : _node(node), _root(root), _comp(comp) {};
 			mapIterator(const mapIterator &other) : _node(other._node), _comp(other._comp) {};
 			~mapIterator() {};
 			mapIterator & operator = (const mapIterator &rhs)
@@ -75,63 +50,87 @@ namespace ft
 				if (*this != rhs)
 				{
 					_node = rhs._node;
+					_root = rhs._root;
 					_comp = rhs._comp;
 				}
 				return (*this);
 			};
-			bool operator == (const mapIterator & rhs) const { return (_node == rhs._node); };
-			bool operator != (const mapIterator & rhs) const { return (_node != rhs._node); };
+			bool operator == (const mapIterator & rhs) const { return (_node == rhs._node && _root == rhs._root); };
+			bool operator != (const mapIterator & rhs) const { return (_node != rhs._node && _root != rhs._root); };
 			reference operator *() const { return _node->dataPair; };
 			pointer operator ->() const { return &_node->dataPair; };
 
+			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
 			mapIterator & operator ++()
 			{
-				// https://www.cs.odu.edu/~zeil/cs361/latest/Public/treetraversal/index.html
 				Node *currentNode;
-				// std::cout << "current node: " << _node->dataPair.first << std::endl;
 				if (_node == nullptr)
 				{
 					_node = _root;
 					if (_node == nullptr)
-					{// throw UnderflowException { };
-						*this = NULL;
-						return *this;
-					}
+						std::underflow_error("tree iterator operator++: tree empty");
+					while (_node->left != nullptr)
+						_node = _node->left;
+				}
+				else if (_node->right != nullptr)
+				{
+					_node = _node->right;
 					while (_node->left != nullptr)
 						_node = _node->left;
 				}
 				else
 				{
-					if (_node->right != nullptr)
+					currentNode = _node->parent;
+					while (currentNode != nullptr && _node == currentNode->right)
 					{
-						_node = _node->right;
-						while (_node->left != nullptr)
-							_node = _node->left;
-					}
-					else
-					{
-						currentNode = _node->parent;
-						while (currentNode != nullptr && _node == currentNode->right)
-						{
-							_node = currentNode;
-							currentNode = currentNode->parent;
-						}
 						_node = currentNode;
-						// std::cout << "hey" << _node->dataPair.first << std::endl;
+						currentNode = currentNode->parent;
 					}
+					_node = currentNode;
 				}
 				return *this;
 			};
-			mapIterator & operator ++(int);
-			mapIterator & operator --();
-			mapIterator & operator --(int);
-
-		private:
-
-			// mapIterator begin() const
-			// {
-			// 	return ();
-			// }
+			mapIterator operator ++(int)
+			{
+				mapIterator temp = *this;
+				++(*this);
+				return temp;
+			};
+			mapIterator & operator --()
+			{
+				Node *currentNode;
+				if (_node == nullptr)
+				{
+					_node = _root;
+					if (_node == nullptr)
+						throw std::underflow_error("tree iterator operator--: tree empty");
+					while (_node->right != nullptr)
+						_node = _node->right;
+				}
+				else if (_node->left != nullptr)
+				{
+					_node = _node->left;
+					while (_node->right != nullptr)
+						_node = _node->right;
+				}
+				else
+				{
+					currentNode = _node->parent;
+					while (currentNode != nullptr && _node == currentNode->left)
+					{
+						_node = currentNode;
+						currentNode = currentNode->parent;
+					}
+					_node = currentNode;
+				}
+				return *this;			
+			};
+			mapIterator operator --(int)
+			{
+				mapIterator temp = *this;
+				--(*this);
+				return temp;
+			};
 	};
 }
 
