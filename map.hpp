@@ -23,7 +23,13 @@ namespace ft
 			node(ft::pair<const Key, T> pair) :  node(), dataPair(pair) {};
 			node(size_t depth) : node(), depth(depth) {};
 			node(const node &other) : dataPair(other.dataPair), parent(other.parent), left(other.left), right(other.right), depth(other.depth) {};
-			~node() { depth = 0; }
+			~node()
+			{
+				parent = nullptr;
+				left = nullptr;
+				right = nullptr;
+				depth = 0;
+			}
 	};
 	template < class Key,class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
 	class map
