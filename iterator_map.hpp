@@ -45,6 +45,9 @@ namespace ft
 			mapIterator(Node *root = NULL, Node *node = NULL, const key_compare& comp = key_compare()) : _node(node), _root(root), _comp(comp) {};
 			mapIterator(const mapIterator &other) : _node(other._node), _comp(other._comp) {};
 			~mapIterator() {};
+
+			Node *getNode() const { return _node; };
+
 			mapIterator & operator = (const mapIterator &rhs)
 			{
 				if (*this != rhs)

@@ -270,7 +270,7 @@ namespace ft
 			{
 				if( node && node != NULL )
 				{
-					usleep(125000);
+					// usleep(90000);
 					std::cout << prefix;
 					std::cout << (isLeft ? "├──" : "└──" );
 					// print the value of the node
@@ -281,6 +281,21 @@ namespace ft
 				}
 			}
 			void printBT() { printBT("", _racine, false); }
+
+			node_type *getFirst()
+			{
+				iterator it(_racine);
+				while (it++ != NULL)
+					;
+				return (it.getNode());
+			};
+			node_type *getLast()
+			{
+				iterator it(_racine);
+				while (it-- != NULL)
+					;
+				return (it.getNode());
+			};
 
 		public:
 		
@@ -296,8 +311,16 @@ namespace ft
 			/**/
 			map& operator= (const map& x);
 			/// ITERATORS
-			iterator begin();
-			const_iterator begin() const;
+			iterator begin()
+			{
+				node_type *first = getFirst();
+				return (iterator(_racine, first));
+			};
+			const_iterator begin() const
+			{
+				node_type *first = getFirst();
+				return (const_iterator(_racine, first));
+			};
 			// /**/
 			iterator end();
 			const_iterator end() const;
