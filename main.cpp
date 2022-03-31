@@ -123,7 +123,7 @@ int main()
 		test.insertNode(node2);
 		test.insertNode(test.createNode(pair_type(6, 'c')));
 		test.insertNode(test.createNode(pair_type(5, 'd')));
-		ft::map<int, char>::node_type *node5 = test.createNode(pair_type(3, 'e'));
+		ft::map<int, char>::node_type *node5 = test.createNode(pair_type(1, 'e'));
 		test.insertNode(node5);
 		ft::map<int, char>::node_type *node1 = test.createNode(pair_type(90, 'f'));
 		test.insertNode(node1);
@@ -152,23 +152,34 @@ int main()
 		// std::cout << node3->dataPair.first << ", "<< itera->first << std::endl;
 		while (--itera != NULL)
 		{
-			std::cout << "-- " << itera->first << std::endl;
+			std::cout << "--itera " << itera->first << std::endl;
 		}
 		std::cout << "First: " << test.getFirst()->dataPair.first << std::endl;
 		std::cout << "Last: " << test.getLast()->dataPair.first << std::endl;
-		try
-		{
-			ft::map<int, char> test2;
-			ft::map<int, char>::iterator firstSecond = test2.begin();
-			while(firstSecond++ != NULL)
-			{
-				std::cout << "++ begin " << firstSecond->first << std::endl;
-			}
-		}
-		catch (const std::exception& e)
-		{
-			std::cout << "Error : " << e.what() << std::endl;
-		}
+
+		// ft::map<int, char>::iterator last = test.end();
+		// while(--last != NULL)
+		// {
+		// 	std::cout << "--last: " << last->first << std::endl;
+		// 	// last++;
+		// }
+		// try
+		// {
+		// 	ft::map<int, char> test2;
+		// 	ft::map<int, char>::iterator firstSecond = test2.end();
+		// 	while(firstSecond-- != NULL)
+		// 	{
+		// 		std::cout << "-- end " << firstSecond->first << std::endl;
+		// 	}
+		// }
+		// catch (const std::exception& e)
+		// {
+		// 	std::cout << "Error : " << e.what() << std::endl;
+		// }
+
+		test.clear();
+		// test.printBT();
+
 		// std::cout << (node2)->dataPair.first << std::endl;
 		// std::cout << test._racine->dataPair.first<< std::endl;
 		// std::cout << "nb nodes: " << test.size() << std::endl;

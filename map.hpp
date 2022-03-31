@@ -74,7 +74,7 @@ namespace ft
 			allocator_type	_allocPair;
 			allocator_node	_allocNode;
 			key_compare		_comp;
-			size_type		_treeHeight;
+			// size_type		_treeHeight;
 
 			// CREATE NOTE
 			node_type *createNode(value_type pair)
@@ -97,11 +97,12 @@ namespace ft
 
 			// DESTROY NODE
 			void destroyNode(node_type *&node)
-			{ 
+			{
+				std::cout << "node destroyed is: " << node->dataPair.first << std::endl;
 				_allocPair.destroy(&node->dataPair);
 				_allocNode.destroy(node);
 				_allocNode.deallocate(node, 1);
-				node = nullptr;
+				// node = nullptr;
 			}
 			void destroyTree(node_type *&node)
 			{
@@ -258,13 +259,13 @@ namespace ft
 			//- un arbre vide est de hauteur 0
 			// - un arbre non vide a pour hauteur 1 + la hauteur maximale entre ses fils.
 			size_type max(size_type a, size_type b) { return (a > b) ? a : b; };
-			size_type treeHeight(node_type *tree)
-			{
-				if (isTreeEmpty(tree))
-					return (0);
-				return (1 + max(treeHeight(getLeftTree(tree)), treeHeight(getRightTree(tree))));
-			};
-			void setTreeHeight() { _treeHeight = treeHeight(_racine); };
+			// size_type treeHeight(node_type *tree)
+			// {
+			// 	if (isTreeEmpty(tree))
+			// 		return (0);
+			// 	return (1 + max(treeHeight(getLeftTree(tree)), treeHeight(getRightTree(tree))));
+			// };
+			// void setTreeHeight() { _treeHeight = treeHeight(_racine); };
 
 			void printBT(const std::string& prefix, const node_type *node, bool isLeft)
 			{
@@ -315,8 +316,10 @@ namespace ft
 			iterator begin()
 			{
 				node_type *first;
-				if (_nbNodes != 0)
+				if (!empty())
+				{
 					first = getFirst();
+				}
 				else
 					first = nullptr;
 				return (iterator(_racine, first));
@@ -329,25 +332,34 @@ namespace ft
 			iterator end()
 			{
 				node_type *end;
-				if (_nbNodes != 0)
+				node_type *afterEnd;
+				if (!empty())
+				{
 					end = getLast();
+					afterEnd = createNode();
+					afterEnd->parent = end;
+				}
 				else
-					end = nullptr;
-				return (iterator(_racine, end));
+					return (begin());
+				return (iterator(_racine, afterEnd));
 			};
-			const_iterator end() const;
+			const_iterator end() const
+			{
+				return (const_iterator(end()));
+			};
 			/**/
-			reverse_iterator rbegin();
-			const_reverse_iterator rbegin() const;
-			/**/
-			reverse_iterator rend();
-			const_reverse_iterator rend() const;
+
+			reverse_iterator rbegin() { return reverse_iterator(end()); };
+			const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); };
+
+			reverse_iterator rend() { return reverse_iterator(begin()); };
+			const_reverse_iterator rend() const { return const_reverse_iterator(begin()); };
 			/// CAPACITY
 
-			/* Returns whether the map container is empty (i.e. whether its size is 0). */
-			bool empty() const;
-			/* Returns the number of elements in the map container. */
+			bool empty() const { return (_nbNodes == 0); };
+
 			size_type size() const {return (_nbNodes); };
+
 			size_type max_size() const { return (_allocNode.max_size()); }; 
 			/// ELEMENT ACCESS
 			mapped_type& operator[] (const key_type& k)
@@ -373,9 +385,41 @@ namespace ft
 			size_type erase (const key_type& k);
 			void erase (iterator first, iterator last);
 			/**/
-			void swap (map& x);
+			void swap (map& x)
+			{
+				node_type		*_racineTemp = x._racine;
+				size_type		_nbNodesTemp = x._nbNodes;
+				allocator_type	_allocPairTemp = x._allocPair;
+				allocator_node	_allocNodeTemp = x._allocNode;
+				key_compare		_compTemp = x._comp;
+
+				x._racine = _racine;
+				x._nbNodes = _nbNodes;
+				x._allocPair = _allocPair;
+				x._allocNode = _allocNode;
+				x._comp = _comp;
+
+				_racine = _racineTemp;
+				_nbNodes = _nbNodesTemp;
+				_allocPair = _allocPairTemp;
+				_allocNode = _allocNodeTemp;
+				_comp = _compTemp;
+			};
 			/**/
-			void clear();
+			void clear()
+			{
+				iterator it = begin();
+				while(it != end())
+				{
+					// std::cout << "it: "<<it.getNode()->dataPair.first << std::endl;
+					node_type *node = it.getNode();
+					// node_type *node = 
+					// if (it != begin() && node->parent)
+					removeNode(node, _racine);
+					++it;
+				}
+				_nbNodes = 0;
+			};
 			/// OBSERVERS
 			key_compare key_comp() const;
 			value_compare value_comp() const; // FRIEND ??

@@ -57,8 +57,8 @@ namespace ft
 				}
 				return (*this);
 			};
-			bool operator == (const mapIterator & rhs) const { return (_node == rhs._node && _root == rhs._root); };
-			bool operator != (const mapIterator & rhs) const { return (_node != rhs._node && _root != rhs._root); };
+			bool operator == (const mapIterator & rhs) const { return (_node == rhs._node); };
+			bool operator != (const mapIterator & rhs) const { return !(*this == rhs); };
 			reference operator *() const { return _node->dataPair; };
 			pointer operator ->() const { return &_node->dataPair; };
 
@@ -70,7 +70,7 @@ namespace ft
 				{
 					_node = _root;
 					if (_node == nullptr)
-						throw (std::underflow_error("tree iterator operator++: tree empty"));
+						return *this;
 					while (_node->left != nullptr)
 						_node = _node->left;
 				}
@@ -105,7 +105,7 @@ namespace ft
 				{
 					_node = _root;
 					if (_node == nullptr)
-						throw std::underflow_error("tree iterator operator--: tree empty");
+						return *this;
 					while (_node->right != nullptr)
 						_node = _node->right;
 				}
