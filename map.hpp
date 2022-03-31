@@ -323,11 +323,18 @@ namespace ft
 			};
 			const_iterator begin() const
 			{
-				node_type *first = getFirst();
-				return (const_iterator(_racine, first));
+				return (const_iterator(begin()));
 			};
 			// /**/
-			iterator end();
+			iterator end()
+			{
+				node_type *end;
+				if (_nbNodes != 0)
+					end = getLast();
+				else
+					end = nullptr;
+				return (iterator(_racine, end));
+			};
 			const_iterator end() const;
 			/**/
 			reverse_iterator rbegin();

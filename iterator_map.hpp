@@ -1,8 +1,7 @@
 #ifndef ITERATOR_MAP_HPP
 #define ITERATOR_MAP_HPP
 
-#include <iostream>     // std::cout
-#include <iterator>     // std::iterator, std::input_iterator_tag
+#include <iostream>
 
 namespace ft
 {
