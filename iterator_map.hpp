@@ -83,10 +83,15 @@ namespace ft
 				else
 				{
 					currentNode = _node->parent;
-					while (currentNode != nullptr && _node == currentNode->right)
+					while (currentNode != nullptr && currentNode->right != nullptr)
 					{
-						_node = currentNode;
-						currentNode = currentNode->parent;
+						if (_node == currentNode->right)
+						{
+							_node = currentNode;
+							currentNode = currentNode->parent;
+						}
+						else
+							break;
 					}
 					_node = currentNode;
 				}

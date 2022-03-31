@@ -96,7 +96,7 @@ namespace ft
 			};
 
 			// DESTROY NODE
-			void destroyNode(node_type *&node)
+			void destroyNode(node_type *node)
 			{
 				std::cout << "node destroyed is: " << node->dataPair.first << std::endl;
 				_allocPair.destroy(&node->dataPair);
@@ -337,7 +337,7 @@ namespace ft
 				{
 					end = getLast();
 					afterEnd = createNode();
-					afterEnd->parent = end;
+					afterEnd->parent = end; // sure ???
 				}
 				else
 					return (begin());
@@ -381,9 +381,26 @@ namespace ft
 					insert(*first);
 			};
 			/**/
-			void erase (iterator position);
-			size_type erase (const key_type& k);
-			void erase (iterator first, iterator last);
+			void erase (iterator position)
+			{
+				removeNode(position.getNode());
+			};
+			size_type erase (const key_type& k)
+			{
+				node_type *foundNode = findNode(k);
+				if (foundNode == nullptr)
+					return 0;
+				removeNode(foundNode->getNode());
+				return 1;
+			};
+			void erase (iterator first, iterator last)
+			{
+				while (first != last)
+				{
+					if (first != last)
+						erase(first++);
+				}
+			};
 			/**/
 			void swap (map& x)
 			{
@@ -408,16 +425,17 @@ namespace ft
 			/**/
 			void clear()
 			{
-				iterator it = begin();
-				while(it != end())
-				{
-					// std::cout << "it: "<<it.getNode()->dataPair.first << std::endl;
-					node_type *node = it.getNode();
-					// node_type *node = 
-					// if (it != begin() && node->parent)
-					removeNode(node, _racine);
-					++it;
-				}
+				// iterator it = begin();
+				// while(it != end())
+				// {
+				// 	// std::cout << "it: "<<it.getNode()->dataPair.first << std::endl;
+				// 	node_type *node = it.getNode();
+				// 	// node_type *node = 
+				// 	// if (it != begin() && node->parent)
+				// 	removeNode(node, _racine);
+				// 	++it;
+				// }
+				erase(begin(), end());
 				_nbNodes = 0;
 			};
 			/// OBSERVERS
