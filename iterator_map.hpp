@@ -71,7 +71,7 @@ namespace ft
 				{
 					_node = _root;
 					if (_node == nullptr)
-						std::underflow_error("tree iterator operator++: tree empty");
+						throw (std::underflow_error("tree iterator operator++: tree empty"));
 					while (_node->left != nullptr)
 						_node = _node->left;
 				}

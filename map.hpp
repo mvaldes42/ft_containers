@@ -306,14 +306,19 @@ namespace ft
 			/**/
 			~map()
 			{
-				destroyTree(_racine);
+				if (_racine)
+					destroyTree(_racine);
 			};
 			/**/
 			map& operator= (const map& x);
 			/// ITERATORS
 			iterator begin()
 			{
-				node_type *first = getFirst();
+				node_type *first;
+				if (_nbNodes != 0)
+					first = getFirst();
+				else
+					first = nullptr;
 				return (iterator(_racine, first));
 			};
 			const_iterator begin() const

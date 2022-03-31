@@ -156,9 +156,19 @@ int main()
 		}
 		std::cout << "First: " << test.getFirst()->dataPair.first << std::endl;
 		std::cout << "Last: " << test.getLast()->dataPair.first << std::endl;
-		ft::map<int, char>::iterator first = test.begin();
-		while(++first != NULL)
-			std::cout << "++ begin " << first->first << std::endl;
+		try
+		{
+			ft::map<int, char> test2;
+			ft::map<int, char>::iterator firstSecond = test2.begin();
+			while(firstSecond++ != NULL)
+			{
+				std::cout << "++ begin " << firstSecond->first << std::endl;
+			}
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << "Error : " << e.what() << std::endl;
+		}
 		// std::cout << (node2)->dataPair.first << std::endl;
 		// std::cout << test._racine->dataPair.first<< std::endl;
 		// std::cout << "nb nodes: " << test.size() << std::endl;
