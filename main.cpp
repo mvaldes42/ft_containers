@@ -178,7 +178,8 @@ int main()
 		// }
 
 		test.clear();
-		// test.printBT();
+		// test.removeNode(test._racine);
+		test.printBT();
 
 		// std::cout << (node2)->dataPair.first << std::endl;
 		// std::cout << test._racine->dataPair.first<< std::endl;

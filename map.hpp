@@ -98,6 +98,7 @@ namespace ft
 			// DESTROY NODE
 			void destroyNode(node_type *node)
 			{
+				std::cout << "node destroyed is: " << node->dataPair.first << std::endl;
 				_allocPair.destroy(&node->dataPair);
 				_allocNode.destroy(node);
 				_allocNode.deallocate(node, 1);
@@ -212,7 +213,9 @@ namespace ft
 					newNode->left = subTree->left;
 					newNode->parent = subTree->parent;
 					subTree = newNode;
-					destroyNode(newNode); // ?? sure ??
+					if (toRemove == _racine)
+						_racine = subTree;
+					// destroyNode(newNode); // ?? sure ??
 					removeNode(tmpNode, subTree->right);
 				}
 				else
@@ -222,6 +225,8 @@ namespace ft
 					{
 						subTree->left->parent = subTree->parent;
 						subTree = subTree->left;
+						if (toRemove == _racine)
+							_racine = subTree;
 					}
 					else
 						subTree = NULL;
@@ -316,9 +321,7 @@ namespace ft
 			{
 				node_type *first;
 				if (!empty())
-				{
 					first = getFirst();
-				}
 				else
 					first = nullptr;
 				return (iterator(_racine, first));
@@ -330,13 +333,13 @@ namespace ft
 			// /**/
 			iterator end()
 			{
-				node_type *end;
+				// node_type *end;
 				node_type *afterEnd;
 				if (!empty())
 				{
-					end = getLast();
-					afterEnd = createNode();
-					afterEnd->parent = end; // sure ???
+					afterEnd = getLast();
+					// afterEnd = createNode();
+					// afterEnd->parent = end; // sure ???
 				}
 				else
 					return (begin());
@@ -382,8 +385,8 @@ namespace ft
 			/**/
 			void erase (iterator position)
 			{
-				std::cout << "node erased is: " << position.getNode()->dataPair.first << std::endl;
 				removeNode(position.getNode());
+				// printBT();
 			};
 			size_type erase (const key_type& k)
 			{
@@ -397,8 +400,10 @@ namespace ft
 			{
 				while (first != last)
 				{
+					// std::cout << "racine: " << _racine->dataPair.first << std::endl;	
 					if (first.getNode() != nullptr)
 						erase(first++);
+					printBT();
 				}
 			};
 			/**/
