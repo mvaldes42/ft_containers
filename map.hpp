@@ -98,7 +98,6 @@ namespace ft
 			// DESTROY NODE
 			void destroyNode(node_type *node)
 			{
-				std::cout << "node destroyed is: " << node->dataPair.first << std::endl;
 				_allocPair.destroy(&node->dataPair);
 				_allocNode.destroy(node);
 				_allocNode.deallocate(node, 1);
@@ -383,6 +382,7 @@ namespace ft
 			/**/
 			void erase (iterator position)
 			{
+				std::cout << "node erased is: " << position.getNode()->dataPair.first << std::endl;
 				removeNode(position.getNode());
 			};
 			size_type erase (const key_type& k)
@@ -397,7 +397,7 @@ namespace ft
 			{
 				while (first != last)
 				{
-					if (first != last)
+					if (first.getNode() != nullptr)
 						erase(first++);
 				}
 			};
