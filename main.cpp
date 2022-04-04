@@ -114,7 +114,6 @@ int main()
 		ft::map<int, char> test;
 		std::cout << "test[12]: " << test[12] << std::endl;
 
-		// test.prefix(test._racine);
 		typedef ft::map<int, char>::value_type pair_type;
 		pair_type pairTest(10, 'a');
 		ft::map<int, char>::node_type *node3 = test.createNode(pairTest);
@@ -130,7 +129,7 @@ int main()
 		test.insertNode(test.createNode(pair_type(15, 'g')));
 		ft::map<int, char>::node_type *node4 = test.createNode(pair_type(14, 'i'));
 		test.insertNode(node4);
-		std::cout << "test[30] parent : " << test.findNode(6, test._racine)->parent->dataPair.first << std::endl;
+		std::cout << "test[6] parent : " << test.findNode(6, test._racine)->parent->dataPair.first << std::endl;
 		// std::cout << "node is found : " << test.contains(node1, test._racine) << std::endl;
 		// std::cout << "node is found : " << test.findNode(test.createNode(pair_type(90, 'f')), test._racine)->dataPair.second << std::endl;
 		// std::cout << "node is found : " << test.findNode(90, test._racine)->dataPair.second << std::endl;
@@ -177,10 +176,9 @@ int main()
 		// 	std::cout << "Error : " << e.what() << std::endl;
 		// }
 
-		test.clear();
-		// test.removeNode(test._racine);
+		// test.clear();
+		test.removeNode(test._racine);
 		test.printBT();
-
 		// std::cout << (node2)->dataPair.first << std::endl;
 		// std::cout << test._racine->dataPair.first<< std::endl;
 		// std::cout << "nb nodes: " << test.size() << std::endl;

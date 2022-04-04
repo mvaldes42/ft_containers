@@ -215,6 +215,7 @@ namespace ft
 					subTree = newNode;
 					if (toRemove == _racine)
 						_racine = subTree;
+					std::cout << "Going to destroy node " << newNode->dataPair.first << std::endl;
 					// destroyNode(newNode); // ?? sure ??
 					removeNode(tmpNode, subTree->right);
 				}
@@ -230,6 +231,7 @@ namespace ft
 					}
 					else
 						subTree = NULL;
+					std::cout << "Going to destroy node(second) " << oldNode->dataPair.first << std::endl;
 					destroyNode(oldNode); // sure ??
 					_nbNodes--;
 				}
@@ -385,6 +387,7 @@ namespace ft
 			/**/
 			void erase (iterator position)
 			{
+				// std::cout << "Removed node " << position.getNode()->dataPair.first << std::endl;
 				removeNode(position.getNode());
 				// printBT();
 			};
@@ -400,9 +403,16 @@ namespace ft
 			{
 				while (first != last)
 				{
-					// std::cout << "racine: " << _racine->dataPair.first << std::endl;	
+					std::cout << "first is null: " << (first.getNode() == nullptr) <<std::endl;	
 					if (first.getNode() != nullptr)
+					{
+						std::cout << "first: " << first.getNode()->dataPair.first << ", last: " << last.getNode()->dataPair.first <<std::endl;
+						if (_racine != nullptr)
+							std::cout << "racine: " << _racine->dataPair.first << std::endl;
+						else
+							std::cout << "racine is null" << std::endl;
 						erase(first++);
+					}
 					printBT();
 				}
 			};
