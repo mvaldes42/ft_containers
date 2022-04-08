@@ -107,16 +107,16 @@ namespace ft
 
 			// Find NODE
 			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
-			bool contains( node_type const *needle, node_type *subTree) const
-			{ return (contains(needle->dataPair.first, subTree)); }
-			bool contains( key_type const &key, node_type *subTree) const
+			bool containsNode( node_type const *needle, node_type *subTree) const
+			{ return (containsNode(needle->dataPair.first, subTree)); }
+			bool containsNode( key_type const &key, node_type *subTree) const
 			{
 				if( isTreeEmpty(subTree))
 					return false;
 				if (_comp(key , subTree->dataPair.first))
-					return contains(key, subTree->left);
+					return containsNode(key, subTree->left);
 				else if (_comp(subTree->dataPair.first , key))
-					return contains(key, subTree->right);
+					return containsNode(key, subTree->right);
 				else
 					return true;
 			}
@@ -454,13 +454,36 @@ namespace ft
 				return (const_iterator(end()));
 			};
 			/**/
-			size_type count (const key_type& k) const;
+			size_type count (const key_type& k) const
+			{
+				if (containsNode(k, _racine))
+					return (1);
+				return (0);
+			};
 			/**/
-			iterator lower_bound (const key_type& k);
-			const_iterator lower_bound (const key_type& k) const;
+			// the function returns an iterator to the first element whose key is not less than k.
+			iterator lower_bound (const key_type& k)
+			{
+				iterator it = begin();
+				iterator itEnd = end();
+				for (; it != itEnd && (key_comp())(it.getNode()->dataPair.first, k) == true; it++)
+					;
+				return (it);
+			};
+			const_iterator lower_bound (const key_type& k) const
+			{ return const_iterator(lower_bound(k)); };
 			/**/
-			iterator upper_bound (const key_type& k);
-			const_iterator upper_bound (const key_type& k) const;
+			// the function returns an iterator to the first element whose key is greater than k.
+			iterator upper_bound (const key_type& k)
+			{
+				iterator it = begin();
+				iterator itEnd = end();
+				for (; it != itEnd && (key_comp())(k, it.getNode()->dataPair.first) == false; it++)
+					;
+				return (it);				
+			};
+			const_iterator upper_bound (const key_type& k) const
+			{ return const_iterator(upper_bound(k)); };
 			/**/
 			ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
 			ft::pair<iterator,iterator> equal_range (const key_type& k);

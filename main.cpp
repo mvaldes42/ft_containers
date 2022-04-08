@@ -149,6 +149,11 @@ int main()
 
 		test.find(15);
 		test.find(30000);
+		std::cout << "occurence of key 15: " << test.count(15) << std::endl;
+		std::cout << "occurence of key 300000: " << test.count(300000) << std::endl;
+
+		std::cout << "Lowerbound of 100: " << test.lower_bound(100).getNode()->dataPair.first << std::endl;
+		std::cout << "Upperbound of 100: " << test.upper_bound(100).getNode()->dataPair.first << std::endl;
 		// ft::map<int, char>::iterator itera(test._racine);
 		// std::cout << node3->dataPair.first << ", "<< itera->first << std::endl;
 		// while (--itera != NULL)
@@ -185,5 +190,6 @@ int main()
 		// std::cout << (node2)->dataPair.first << std::endl;
 		// std::cout << test._racine->dataPair.first<< std::endl;
 		// std::cout << "nb nodes: " << test.size() << std::endl;
+		std::cout << std::endl << "////////DESTRUCTOR/////////" << std::endl << std::endl;
 	}
 }
