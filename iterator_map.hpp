@@ -82,12 +82,9 @@ namespace ft
 				}
 				else
 				{
-					std::cout << "_node: " << _node->dataPair.first << std::endl;
 					currentNode = _node->parent;
-					std::cout << "currentNode: " << currentNode->dataPair.first << std::endl;
 					while (currentNode != nullptr && currentNode->right != nullptr)
 					{
-						// std::cout << "currentNode: " << currentNode->dataPair.first << std::endl;
 						if (_node == currentNode->right)
 						{
 							_node = currentNode;

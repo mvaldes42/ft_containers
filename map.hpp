@@ -208,7 +208,7 @@ namespace ft
 					destroyNode(subTree);
 					if (toRemove == _racine)
 						_racine = newNode;
-					std::cout << "Going to destroy node(first case) " << newNode->dataPair.first << std::endl;
+					// std::cout << "Going to destroy node(first case) " << newNode->dataPair.first << std::endl;
 					removeNode(tmpNode, newNode->right);
 				}
 				else
@@ -233,7 +233,7 @@ namespace ft
 						else
 							subTree = nullptr;
 					}
-					std::cout << "Going to destroy node(second case) " << oldNode->dataPair.first << std::endl;
+					// std::cout << "Going to destroy node(second case) " << oldNode->dataPair.first << std::endl;
 					destroyNode(oldNode);
 					_nbNodes--;
 				}
@@ -403,20 +403,11 @@ namespace ft
 			{
 				while (first != last)
 				{
-					// std::cout << "first iterator is null?: " << (first.getNode() == nullptr) <<std::endl;	
-					// if (first.getNode() != nullptr)
-					// {
-					// 	std::cout << "first iterator: " << first.getNode()->dataPair.first << ", last: " << last.getNode()->dataPair.first <<std::endl;
-					// 	if (_racine != nullptr)
-					// 		std::cout << "racine: " << _racine->dataPair.first << std::endl;
-					// 	else
-					// 		std::cout << "racine is null oups" << std::endl;
-						erase(first++);
-					// }
-					printBT();
+					erase(first++);
+					// printBT();
 				}
 				erase(first);
-				printBT();
+				// printBT();
 			};
 			/**/
 			void swap (map& x)
@@ -442,25 +433,26 @@ namespace ft
 			/**/
 			void clear()
 			{
-				// iterator it = begin();
-				// while(it != end())
-				// {
-				// 	// std::cout << "it: "<<it.getNode()->dataPair.first << std::endl;
-				// 	node_type *node = it.getNode();
-				// 	// node_type *node = 
-				// 	// if (it != begin() && node->parent)
-				// 	removeNode(node, _racine);
-				// 	++it;
-				// }
 				erase(begin(), end());
-				_nbNodes = 0;
 			};
 			/// OBSERVERS
-			key_compare key_comp() const;
-			value_compare value_comp() const; // FRIEND ??
+			key_compare key_comp() const { return (_comp); };
+			value_compare value_comp() const { return (value_compare(_comp)); };
 			/// OPERATIONS
-			iterator find (const key_type& k);
-			const_iterator find (const key_type& k) const;
+			iterator find (const key_type& k)
+			{
+				node_type *foundNode = findNode(k, _racine);
+				if (foundNode)
+					return (iterator(_racine, foundNode));
+				return (end());
+			};
+			const_iterator find (const key_type& k) const
+			{
+				node_type *foundNode = findNode(k, _racine);
+				if (foundNode)
+					return (const_iterator(_racine, foundNode));
+				return (const_iterator(end()));
+			};
 			/**/
 			size_type count (const key_type& k) const;
 			/**/

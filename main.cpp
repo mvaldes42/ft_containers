@@ -146,6 +146,9 @@ int main()
 		// std::cout << "test[15] parent : " << test.findNode(15, test._racine)->parent->dataPair.first << std::endl;
 		// std::cout << "test[6]: " << test[6] << std::endl;
 		test.printBT();
+
+		test.find(15);
+		test.find(30000);
 		// ft::map<int, char>::iterator itera(test._racine);
 		// std::cout << node3->dataPair.first << ", "<< itera->first << std::endl;
 		// while (--itera != NULL)
