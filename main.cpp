@@ -133,17 +133,13 @@ int main()
 		// std::cout << "node is found : " << test.contains(node1, test._racine) << std::endl;
 		// std::cout << "node is found : " << test.findNode(test.createNode(pair_type(90, 'f')), test._racine)->dataPair.second << std::endl;
 		// std::cout << "node is found : " << test.findNode(90, test._racine)->dataPair.second << std::endl;
-		// test.removeNode(node1);
-		// std::cout << "removed node 90, f" << std::endl;
-
-		// test.printBT();
-		// std::cout << "removed node 90, f" << std::endl;
-		// test.removeNode(node1);
-		// std::cout << "removed node 10, a" << std::endl;
-		// test.removeNode(node3);
-		std::cout << "removed node 14, i" << std::endl;
+		test.removeNode(node1);
+		std::cout << "removed node 90, f" << std::endl;
+		test.removeNode(node3);
+		std::cout << "removed node 10, a" << std::endl;
 		test.removeNode(node4);
-		// test.printBT();
+		std::cout << "removed node 14, i" << std::endl;
+
 		std::cout << "test[15] parent : " << test.findNode(15, test._racine)->parent->dataPair.first << std::endl;
 		std::cout << "test[6]: " << test[6] << std::endl;
 		test.printBT();
@@ -177,7 +173,8 @@ int main()
 		// }
 
 		// test.clear();
-		test.removeNode(test._racine);
+		// test.removeNode(test._racine);
+		// test.removeNode(test._racine);
 		test.printBT();
 		// std::cout << (node2)->dataPair.first << std::endl;
 		// std::cout << test._racine->dataPair.first<< std::endl;

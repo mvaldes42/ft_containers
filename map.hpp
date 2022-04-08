@@ -104,16 +104,7 @@ namespace ft
 				_allocNode.deallocate(node, 1);
 				// node = nullptr;
 			}
-			void destroyTree(node_type *&node)
-			{
-				if (isTreeEmpty(node))
-				{
-					destroyNode(node);
-					_nbNodes--;
-					destroyTree(node->left);
-					destroyTree(node->right);
-				}
-			}
+
 			// Find NODE
 			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
 			bool contains( node_type const *needle, node_type *subTree) const
@@ -212,12 +203,11 @@ namespace ft
 					newNode->right = subTree->right;
 					newNode->left = subTree->left;
 					newNode->parent = subTree->parent;
-					subTree = newNode;
+					destroyNode(subTree);
 					if (toRemove == _racine)
-						_racine = subTree;
-					std::cout << "Going to destroy node " << newNode->dataPair.first << std::endl;
-					// destroyNode(newNode); // ?? sure ??
-					removeNode(tmpNode, subTree->right);
+						_racine = newNode;
+					std::cout << "Going to destroy node(first case) " << newNode->dataPair.first << std::endl;
+					removeNode(tmpNode, newNode->right);
 				}
 				else
 				{
@@ -230,14 +220,24 @@ namespace ft
 							_racine = subTree;
 					}
 					else
-						subTree = NULL;
-					std::cout << "Going to destroy node(second) " << oldNode->dataPair.first << std::endl;
-					destroyNode(oldNode); // sure ??
+					{
+						if (toRemove == _racine && subTree == _racine)
+						{
+							if (!isTreeEmpty(subTree->right))
+								_racine = subTree->right;
+							else
+								_racine = nullptr;
+						}
+						else
+							subTree = nullptr;
+					}
+					std::cout << "Going to destroy node(second case) " << oldNode->dataPair.first << std::endl;
+					destroyNode(oldNode);
 					_nbNodes--;
 				}
 			}
 			//ISTREE EMPTY
-			bool isTreeEmpty(node_type *tree) const { return (tree == NULL); };
+			bool isTreeEmpty(node_type *tree) const { return (tree == nullptr); };
 
 			node_type *getRightTree(node_type *tree) const
 			{
@@ -313,8 +313,8 @@ namespace ft
 			/**/
 			~map()
 			{
-				if (_racine)
-					destroyTree(_racine);
+				if (!empty())
+					clear();
 			};
 			/**/
 			map& operator= (const map& x);
@@ -387,9 +387,7 @@ namespace ft
 			/**/
 			void erase (iterator position)
 			{
-				// std::cout << "Removed node " << position.getNode()->dataPair.first << std::endl;
 				removeNode(position.getNode());
-				// printBT();
 			};
 			size_type erase (const key_type& k)
 			{
@@ -403,18 +401,20 @@ namespace ft
 			{
 				while (first != last)
 				{
-					std::cout << "first is null: " << (first.getNode() == nullptr) <<std::endl;	
-					if (first.getNode() != nullptr)
-					{
-						std::cout << "first: " << first.getNode()->dataPair.first << ", last: " << last.getNode()->dataPair.first <<std::endl;
-						if (_racine != nullptr)
-							std::cout << "racine: " << _racine->dataPair.first << std::endl;
-						else
-							std::cout << "racine is null" << std::endl;
+					// std::cout << "first iterator is null?: " << (first.getNode() == nullptr) <<std::endl;	
+					// if (first.getNode() != nullptr)
+					// {
+					// 	std::cout << "first iterator: " << first.getNode()->dataPair.first << ", last: " << last.getNode()->dataPair.first <<std::endl;
+					// 	if (_racine != nullptr)
+					// 		std::cout << "racine: " << _racine->dataPair.first << std::endl;
+					// 	else
+					// 		std::cout << "racine is null oups" << std::endl;
 						erase(first++);
-					}
+					// }
 					printBT();
 				}
+				erase(first);
+				printBT();
 			};
 			/**/
 			void swap (map& x)
