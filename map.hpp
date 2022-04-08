@@ -102,7 +102,7 @@ namespace ft
 				_allocPair.destroy(&node->dataPair);
 				_allocNode.destroy(node);
 				_allocNode.deallocate(node, 1);
-				// node = nullptr;
+				node = nullptr;
 			}
 
 			// Find NODE
@@ -203,6 +203,8 @@ namespace ft
 					newNode->right = subTree->right;
 					newNode->left = subTree->left;
 					newNode->parent = subTree->parent;
+					newNode->right->parent = newNode;
+					newNode->left->parent = newNode;
 					destroyNode(subTree);
 					if (toRemove == _racine)
 						_racine = newNode;

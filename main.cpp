@@ -129,28 +129,31 @@ int main()
 		test.insertNode(test.createNode(pair_type(15, 'g')));
 		ft::map<int, char>::node_type *node4 = test.createNode(pair_type(14, 'i'));
 		test.insertNode(node4);
-		std::cout << "test[6] parent : " << test.findNode(6, test._racine)->parent->dataPair.first << std::endl;
+
+		// std::cout << "test[6] parent : " << test.findNode(6, test._racine)->parent->dataPair.first << std::endl;
 		// std::cout << "node is found : " << test.contains(node1, test._racine) << std::endl;
 		// std::cout << "node is found : " << test.findNode(test.createNode(pair_type(90, 'f')), test._racine)->dataPair.second << std::endl;
 		// std::cout << "node is found : " << test.findNode(90, test._racine)->dataPair.second << std::endl;
-		test.removeNode(node1);
-		std::cout << "removed node 90, f" << std::endl;
-		test.removeNode(node3);
-		std::cout << "removed node 10, a" << std::endl;
-		test.removeNode(node4);
-		std::cout << "removed node 14, i" << std::endl;
+		// test.removeNode(node1);
+		// std::cout << "removed node 90, f" << std::endl;
+		// test.removeNode(node2);
+		// test.removeNode(node3);
+		// std::cout << "removed node 10, a" << std::endl;
+		// test.removeNode(node4);
+		// std::cout << "removed node 14, i" << std::endl;
+		// test.removeNode(node5);
 
-		std::cout << "test[15] parent : " << test.findNode(15, test._racine)->parent->dataPair.first << std::endl;
-		std::cout << "test[6]: " << test[6] << std::endl;
+		// std::cout << "test[15] parent : " << test.findNode(15, test._racine)->parent->dataPair.first << std::endl;
+		// std::cout << "test[6]: " << test[6] << std::endl;
 		test.printBT();
-		ft::map<int, char>::iterator itera(test._racine);
+		// ft::map<int, char>::iterator itera(test._racine);
 		// std::cout << node3->dataPair.first << ", "<< itera->first << std::endl;
-		while (--itera != NULL)
-		{
-			std::cout << "--itera " << itera->first << std::endl;
-		}
-		std::cout << "First: " << test.getFirst()->dataPair.first << std::endl;
-		std::cout << "Last: " << test.getLast()->dataPair.first << std::endl;
+		// while (--itera != NULL)
+		// {
+		// 	std::cout << "--itera " << itera->first << std::endl;
+		// }
+		// std::cout << "First: " << test.getFirst()->dataPair.first << std::endl;
+		// std::cout << "Last: " << test.getLast()->dataPair.first << std::endl;
 
 		// ft::map<int, char>::iterator last = test.end();
 		// while(--last != NULL)
@@ -174,7 +177,7 @@ int main()
 
 		// test.clear();
 		// test.removeNode(test._racine);
-		// test.removeNode(test._racine);
+		test.removeNode(test._racine);
 		test.printBT();
 		// std::cout << (node2)->dataPair.first << std::endl;
 		// std::cout << test._racine->dataPair.first<< std::endl;
