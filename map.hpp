@@ -135,24 +135,26 @@ namespace ft
 			}
 			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
 			// INSERT NODE
-			void insertNode(node_type *toInsert)
+			node_type *insertNode(node_type *toInsert)
 			{
 				if (isTreeEmpty(_racine))
 					return insertNode(toInsert, _racine, NULL);
-				insertNode(toInsert, _racine, _racine->parent);
+				return insertNode(toInsert, _racine, _racine->parent);
 			}
-			void insertNode(node_type *toInsert, node_type *subTree, node_type *parent) 
+			node_type *insertNode(node_type *toInsert, node_type *subTree, node_type *parent) 
 			{
 				if (isTreeEmpty(subTree) && _nbNodes == 0)
 				{
 					_nbNodes++;
 					_racine = toInsert;
+					return (_racine);
 				}
 				else if (isTreeEmpty(subTree))
 				{
 					_nbNodes++;
 					toInsert->parent = parent;
 					subTree = toInsert;
+					return (subTree);
 				}
 				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))   
 				{
@@ -161,6 +163,7 @@ namespace ft
 						toInsert->parent = subTree;
 						subTree->left = toInsert;
 						_nbNodes++;
+						return (subTree->left);
 					}
 					else
 						insertNode(toInsert, subTree->left, subTree);
@@ -172,10 +175,12 @@ namespace ft
 						toInsert->parent = subTree;
 						subTree->right = toInsert;
 						_nbNodes++;
+						return (subTree->right);
 					}
 					else
 						insertNode(toInsert, subTree->right, subTree);
 				}
+				return nullptr;
 			}
 			// DELETE NODE
 			node_type *findMin(node_type *t)
@@ -378,8 +383,20 @@ namespace ft
 				return (newNode->dataPair.second);
 			};
 			/// MODIFIERS
-			ft::pair<iterator,bool> insert (const value_type& val);	
-			iterator insert (iterator position, const value_type& val);
+			ft::pair<iterator,bool> insert (const value_type& val)
+			{
+				size_type preNbNodes = _nbNodes;
+				node_type *toInsert = createNode(val);
+				node_type *insertedNode = insertNode(toInsert);
+				if (preNbNodes < _nbNodes)
+					return (ft::pair<iterator, bool>(iterator(_racine, insertedNode), true));
+				else
+					return (ft::pair<iterator, bool>(iterator(_racine, insertedNode), false));
+			};	
+			// iterator insert (iterator position, const value_type& val)
+			// {
+
+			// };
 			template <class InputIterator>
 			void insert (InputIterator first, InputIterator last)
 			{
@@ -387,10 +404,7 @@ namespace ft
 					insert(*first);
 			};
 			/**/
-			void erase (iterator position)
-			{
-				removeNode(position.getNode());
-			};
+			void erase (iterator position) { removeNode(position.getNode()); };
 			size_type erase (const key_type& k)
 			{
 				node_type *foundNode = findNode(k);
@@ -431,10 +445,7 @@ namespace ft
 				_comp = _compTemp;
 			};
 			/**/
-			void clear()
-			{
-				erase(begin(), end());
-			};
+			void clear() { erase(begin(), end()); };
 			/// OBSERVERS
 			key_compare key_comp() const { return (_comp); };
 			value_compare value_comp() const { return (value_compare(_comp)); };
@@ -461,6 +472,7 @@ namespace ft
 				return (0);
 			};
 			/**/
+			// /!\ END /!\ //
 			// the function returns an iterator to the first element whose key is not less than k.
 			iterator lower_bound (const key_type& k)
 			{
@@ -485,10 +497,18 @@ namespace ft
 			const_iterator upper_bound (const key_type& k) const
 			{ return const_iterator(upper_bound(k)); };
 			/**/
-			ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
-			ft::pair<iterator,iterator> equal_range (const key_type& k);
+			ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const
+			{
+				ft::pair<const_iterator, const_iterator> result(lower_bound(k), upper_bound(k));
+				return (result);
+			};
+			ft::pair<iterator,iterator> equal_range (const key_type& k)
+			{
+				ft::pair<iterator, iterator> result(lower_bound(k), upper_bound(k));
+				return (result);
+			};
 			/// ALLOCATOR
-			allocator_type get_allocator() const;
+			allocator_type get_allocator() const { return (_allocNode); };
 
 		private:
 			bool is_empty() const { return (_nbNodes == 0); };
