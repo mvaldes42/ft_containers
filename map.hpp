@@ -84,7 +84,6 @@ namespace ft
 				_allocNode.construct(newNode, tempNode);
 				_allocPair.construct(&newNode->dataPair, pair);
 				newNode->depth = 0;
-				// _nbNodes++;
 				return (newNode);
 			};
 			node_type *createNode() { return (createNode(value_type())); };
@@ -120,7 +119,9 @@ namespace ft
 				else
 					return true;
 			}
-			node_type *findNode( node_type const *needle, node_type *subTree) const
+			node_type *findNode(key_type const key) const
+			{ return (findNode(key, _racine)); };
+			node_type *findNode(node_type const *needle, node_type *subTree) const
 			{ return (findNode(needle->dataPair.first, subTree)); }
 			node_type *findNode(key_type const key, node_type *subTree) const
 			{
@@ -135,6 +136,9 @@ namespace ft
 			}
 			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
 			// INSERT NODE
+
+			node_type *insertNode(node_type *toInsert, node_type *subTree)
+			{ return insertNode(toInsert, subTree, subTree->parent);}
 			node_type *insertNode(node_type *toInsert)
 			{
 				if (isTreeEmpty(_racine))
@@ -396,10 +400,24 @@ namespace ft
 				}
 				return (ft::pair<iterator, bool>(iterator(_racine, insertedNode), isInserted));
 			};	
-			// iterator insert (iterator position, const value_type& val)
-			// {
-
-			// };
+			iterator insert (iterator position, const value_type& val)
+			{
+				node_type *foundNode = findNode(val.first);
+				if (foundNode)
+					return (iterator(_racine, foundNode));
+				if (_comp(val.first, position.getNode()->dataPair.first))
+				{
+					for (; position != end() && _comp(val.first, position.getNode()->dataPair.first); position--);
+					position++;	
+				}
+				else if (_comp(position.getNode()->dataPair.first, val.first))
+				{
+					for (; position != end() && _comp(position.getNode()->dataPair.first, val.first); position++);
+					position--;
+				}
+				node_type *insertedNode = insertNode(createNode(val), position.getNode());
+				return (iterator(_racine, insertedNode));
+			};
 			template <class InputIterator>
 			void insert (InputIterator first, InputIterator last)
 			{
@@ -419,12 +437,8 @@ namespace ft
 			void erase (iterator first, iterator last)
 			{
 				while (first != last)
-				{
 					erase(first++);
-					// printBT();
-				}
 				erase(first);
-				// printBT();
 			};
 			/**/
 			void swap (map& x)
@@ -481,8 +495,7 @@ namespace ft
 			{
 				iterator it = begin();
 				iterator itEnd = end();
-				for (; it != itEnd && (key_comp())(it.getNode()->dataPair.first, k) == true; it++)
-					;
+				for (; it != itEnd && (key_comp())(it.getNode()->dataPair.first, k) == true; it++);
 				return (it);
 			};
 			const_iterator lower_bound (const key_type& k) const
@@ -493,8 +506,7 @@ namespace ft
 			{
 				iterator it = begin();
 				iterator itEnd = end();
-				for (; it != itEnd && (key_comp())(k, it.getNode()->dataPair.first) == false; it++)
-					;
+				for (; it != itEnd && (key_comp())(k, it.getNode()->dataPair.first) == false; it++);
 				return (it);				
 			};
 			const_iterator upper_bound (const key_type& k) const

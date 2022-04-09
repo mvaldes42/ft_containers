@@ -156,6 +156,9 @@ int main()
 
 		std::cout << "Lowerbound of 100: " << test.lower_bound(100).getNode()->dataPair.first << std::endl;
 		std::cout << "Upperbound of 100: " << test.upper_bound(100).getNode()->dataPair.first << std::endl;
+
+		std::cout << "insert 80 near 30: " << test.insert(test.find(30), pair_type(80, 'd')).getNode()->dataPair.first << std::endl;
+		test.printBT();
 		// ft::map<int, char>::iterator itera(test._racine);
 		// std::cout << node3->dataPair.first << ", "<< itera->first << std::endl;
 		// while (--itera != NULL)
