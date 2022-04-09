@@ -166,7 +166,7 @@ namespace ft
 						return (subTree->left);
 					}
 					else
-						insertNode(toInsert, subTree->left, subTree);
+						return insertNode(toInsert, subTree->left, subTree);
 				}
 				else if (_comp(subTree->dataPair.first, toInsert->dataPair.first))
 				{
@@ -178,9 +178,9 @@ namespace ft
 						return (subTree->right);
 					}
 					else
-						insertNode(toInsert, subTree->right, subTree);
+						return insertNode(toInsert, subTree->right, subTree);
 				}
-				return nullptr;
+				return subTree;
 			}
 			// DELETE NODE
 			node_type *findMin(node_type *t)
@@ -388,10 +388,13 @@ namespace ft
 				size_type preNbNodes = _nbNodes;
 				node_type *toInsert = createNode(val);
 				node_type *insertedNode = insertNode(toInsert);
-				if (preNbNodes < _nbNodes)
-					return (ft::pair<iterator, bool>(iterator(_racine, insertedNode), true));
-				else
-					return (ft::pair<iterator, bool>(iterator(_racine, insertedNode), false));
+				bool isInserted = true;
+				if (preNbNodes == _nbNodes)
+				{
+					destroyNode(toInsert);
+					isInserted = false;
+				}
+				return (ft::pair<iterator, bool>(iterator(_racine, insertedNode), isInserted));
 			};	
 			// iterator insert (iterator position, const value_type& val)
 			// {

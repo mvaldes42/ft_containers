@@ -130,7 +130,8 @@ int main()
 		ft::map<int, char>::node_type *node4 = test.createNode(pair_type(14, 'i'));
 		test.insertNode(node4);
 
-		test.insert(pair_type(500, 'y'));
+		std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
+		std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
 		// std::cout << "test[6] parent : " << test.findNode(6, test._racine)->parent->dataPair.first << std::endl;
 		// std::cout << "node is found : " << test.contains(node1, test._racine) << std::endl;
 		// std::cout << "node is found : " << test.findNode(test.createNode(pair_type(90, 'f')), test._racine)->dataPair.second << std::endl;
