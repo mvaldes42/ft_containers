@@ -124,14 +124,14 @@ int main()
 		test.insert(pair_type(15, 'g'));
 		test.insert(pair_type(14, 'i'));
 
-		std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
+		// std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
 		// std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
 		// std::cout << "test[6] parent : " << test.findNode(6, test._racine)->parent->dataPair.first << std::endl;
 		// std::cout << "node is found : " << test.contains(node1, test._racine) << std::endl;
 		// std::cout << "node is found : " << test.findNode(test.createNode(pair_type(90, 'f')), test._racine)->dataPair.second << std::endl;
 		// std::cout << "node is found : " << test.findNode(90, test._racine)->dataPair.second << std::endl;
-		// test.removeNode(node1);
-		// std::cout << "removed node 90, f" << std::endl;
+		// test.erase(14);
+		// std::cout << "removed node 14" << std::endl;
 		// test.removeNode(node2);
 		// test.removeNode(node3);
 		// std::cout << "removed node 10, a" << std::endl;
@@ -190,18 +190,18 @@ int main()
 		// std::cout << test._racine->dataPair.first<< std::endl;
 		// std::cout << "nb nodes: " << test.size() << std::endl;
 
-		ft::map<int, char> testCopy(test);
-		testCopy.erase(90);
-		testCopy.insert(pair_type(80, 'f'));
+		// ft::map<int, char> testCopy(test);
+		// testCopy.erase(90);
+		// testCopy.insert(pair_type(80, 'f'));
 		// testCopy.insert(pair_type(400, 'y'));
-		testCopy.printBT();
+		// testCopy.printBT();
 
-		std::cout << "does (testCopy < test)? " << (test > testCopy) << std::endl;
+		// std::cout << "does (testCopy < test)? " << (test > testCopy) << std::endl;
 
-		ft::map<int, char> testPartCopy(test.begin(), test.find(15));
-		testPartCopy.printBT();
-		testCopy = testPartCopy;
-		testCopy.printBT();
+		// ft::map<int, char> testPartCopy(test.begin(), test.find(15));
+		// testPartCopy.printBT();
+		// testCopy = testPartCopy;
+		// testCopy.printBT();
 		std::cout << std::endl << "////////DESTRUCTOR/////////" << std::endl << std::endl;
 	}
 }
