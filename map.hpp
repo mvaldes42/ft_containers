@@ -529,8 +529,25 @@ namespace ft
 			bool is_empty() const { return (_nbNodes == 0); };
 
   	};
+	
 	template <class Key, class T, class Compare, class Alloc>
-	bool operator== ( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs );
+	bool operator== ( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
+	{
+		if (lhs.size() != rhs.size())
+			return false;
+			typedef typename ft::node<key_type, mapped_type>
+		typedef	typename ft::mapIterator<Key, T, node_type, true>	const_iterator;
+		const_iterator startLeft = lhs.begin();
+		const_iterator startRight = rhs.begin();
+		const_iterator endRight = rhs.end();
+		for (; startLeft != lhs.end(); startLeft++)
+		{
+			if (lhs[i] != rhs[i] || startRight == endRight)
+				return false;
+			startRight++;
+		}
+		return true;
+	};
 	template <class Key, class T, class Compare, class Alloc>
 	bool operator!= ( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs );
 	template <class Key, class T, class Compare, class Alloc>
