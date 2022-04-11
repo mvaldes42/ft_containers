@@ -66,6 +66,7 @@ namespace ft
 
 		private:
 			node_type		*_racine;
+			node_type		*_endNode;
 			size_type		_nbNodes;
 			allocator_type	_allocPair;
 			allocator_node	_allocNode;
@@ -91,7 +92,7 @@ namespace ft
 			// DESTROY NODE
 			void destroyNode(node_type *node)
 			{
-				// std::cout << "node destroyed is: " << node->dataPair.first << std::endl;
+				std::cout << "node destroyed is: " << node->dataPair.first << std::endl;
 				_allocPair.destroy(&node->dataPair);
 				_allocNode.destroy(node);
 				_allocNode.deallocate(node, 1);
@@ -143,22 +144,30 @@ namespace ft
 				{
 					_nbNodes++;
 					_racine = toInsert;
+					_racine->right = _endNode;
+					_endNode->left = _racine;
 					return (_racine);
 				}
 				else if (isTreeEmpty(subTree))
 				{
+					std::cout << "toInsert: " << toInsert->dataPair.first << std::endl;
 					_nbNodes++;
 					toInsert->parent = parent;
 					subTree = toInsert;
+					// setEndNode();
 					return (subTree);
 				}
 				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))   
 				{
-					if (!getLeftTree(subTree))
+					if (isTreeEmpty(subTree->left) || subTree->left == _endNode)
 					{
 						toInsert->parent = subTree;
 						subTree->left = toInsert;
 						_nbNodes++;
+						// if (subTree->left == getFirst())
+						// {
+						// 	subTree->left->
+						// }
 						return (subTree->left);
 					}
 					else
@@ -166,11 +175,16 @@ namespace ft
 				}
 				else if (_comp(subTree->dataPair.first, toInsert->dataPair.first))
 				{
-					if (!getRightTree(subTree))
+					if (isTreeEmpty(subTree->right) || subTree->right == _endNode)
 					{
 						toInsert->parent = subTree;
 						subTree->right = toInsert;
 						_nbNodes++;
+						if (subTree->right == getLast())
+						{
+							subTree->right->right = _endNode;
+							_endNode->left = subTree->right;
+						}
 						return (subTree->right);
 					}
 					else
@@ -263,39 +277,65 @@ namespace ft
 			// bool isInsideNode(node_type *node) const { return (!isLeaf(node)); };
 			node_type *getFirst() const
 			{
-				iterator it(_racine);
-				while (it++ != NULL)
+				iterator it(_racine, _endNode);
+				while (it++ != _endNode)
 					;
 				return (it.getNode());
 			};
 			node_type *getLast() const
 			{
-				iterator it(_racine);
-				while (it-- != NULL)
+				iterator it(_racine, _endNode);
+				while (it-- != _endNode)
 					;
 				return (it.getNode());
+			};
+
+			void setEndNodeFirst()
+			{
+				node_type *first = getFirst();
+				_endNode->right = first;
+				first->left = _endNode;
+			};
+			void setEndNodeLast()
+			{
+				node_type *last = getLast();
+				_endNode->left = last;
+				last->right = _endNode;
+			};
+			void setEndNode()
+			{
+				setEndNodeFirst();
+				setEndNodeLast();
 			};
 
 		public:
 		
 			/*✅*/
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp) {};
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp)
+			{
+				_endNode = createNode();
+			};
 			/*✅*/
 			template <class InputIterator>
  			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
 			: _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp)
 			{
+				_endNode = createNode();
 				for (; first != last; first++)
 		 			insert(*first);
 			};
 			/*✅*/
 			map (const map& x) : _racine(NULL), _nbNodes(0), _allocPair(x.get_allocator()), _comp(x.key_comp())
-			{ insert(x.begin(), x.end()); };
+			{
+				_endNode = createNode();
+				insert(x.begin(), x.end());
+			};
 			/*✅*/
 			~map()
 			{
 				if (!empty())
 					clear();
+				destroyNode(_endNode);
 			};
 			/* NO */
 			map& operator= (const map& x)
@@ -314,7 +354,7 @@ namespace ft
 					first = getFirst();
 				else
 					first = nullptr;
-				return (iterator(_racine, first));
+				return (iterator(_racine, _endNode, first));
 			};
 			/*✅*/
 			const_iterator begin() const
@@ -324,7 +364,7 @@ namespace ft
 					first = getFirst();
 				else
 					first = nullptr;
-				return (const_iterator(_racine, first));
+				return (const_iterator(_racine, _endNode, first));
 			};
 			/*✅*/
 			iterator end()
@@ -334,7 +374,7 @@ namespace ft
 					afterEnd = getLast();
 				else
 					return (begin());
-				return (iterator(_racine, afterEnd));
+				return (iterator(_racine, _endNode, afterEnd));
 			};
 			/*✅*/
 			const_iterator end() const
@@ -344,7 +384,7 @@ namespace ft
 					afterEnd = getLast();
 				else
 					return (begin());
-				return (const_iterator(_racine, afterEnd));
+				return (const_iterator(_racine, _endNode, afterEnd));
 			};
 			/*✅*/
 			reverse_iterator rbegin() { return reverse_iterator(end()); };
@@ -395,7 +435,7 @@ namespace ft
 			{
 				node_type *foundNode = findNode(val.first);
 				if (foundNode)
-					return (iterator(_racine, foundNode));
+					return (iterator(_racine, _endNode, foundNode));
 				if (_comp(val.first, position.getNode()->dataPair.first))
 				{
 					for (; position != end() && _comp(val.first, position.getNode()->dataPair.first); position--);
@@ -407,7 +447,7 @@ namespace ft
 					position--;
 				}
 				node_type *insertedNode = insertNode(createNode(val), position.getNode());
-				return (iterator(_racine, insertedNode));
+				return (iterator(_racine, _endNode, insertedNode));
 			};
 			/*✅*/
 			template <class InputIterator>
@@ -470,7 +510,7 @@ namespace ft
 			{
 				node_type *foundNode = findNode(k, _racine);
 				if (foundNode)
-					return (iterator(_racine, foundNode));
+					return (iterator(_racine, _endNode, foundNode));
 				return (end());
 			};
 			/*✅*/
@@ -478,7 +518,7 @@ namespace ft
 			{
 				node_type *foundNode = findNode(k, _racine);
 				if (foundNode)
-					return (const_iterator(_racine, foundNode));
+					return (const_iterator(_racine, _endNode, foundNode));
 				return (const_iterator(end()));
 			};
 			/*✅*/
@@ -530,7 +570,7 @@ namespace ft
 			//PRINT TREE
 			void printBT(const std::string& prefix, const node_type *node, bool isLeft)
 			{
-				if( node && node != NULL )
+				if( node && node != NULL && node != _endNode)
 				{
 					// usleep(90000);
 					std::cout << prefix;

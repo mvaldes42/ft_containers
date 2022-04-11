@@ -190,18 +190,18 @@ int main()
 		// std::cout << test._racine->dataPair.first<< std::endl;
 		// std::cout << "nb nodes: " << test.size() << std::endl;
 
-		ft::map<int, char> testCopy(test);
-		testCopy.erase(90);
-		testCopy.insert(pair_type(80, 'f'));
-		// testCopy.insert(pair_type(400, 'y'));
-		testCopy.printBT();
+		// ft::map<int, char> testCopy(test);
+		// testCopy.erase(90);
+		// testCopy.insert(pair_type(80, 'f'));
+		// // testCopy.insert(pair_type(400, 'y'));
+		// testCopy.printBT();
 
-		std::cout << "does (testCopy < test)? " << (test > testCopy) << std::endl;
+		// std::cout << "does (testCopy < test)? " << (test > testCopy) << std::endl;
 
-		ft::map<int, char> testPartCopy(test.begin(), test.find(15));
-		testPartCopy.printBT();
-		testCopy = testPartCopy;
-		testCopy.printBT();
+		// ft::map<int, char> testPartCopy(test.begin(), test.find(15));
+		// testPartCopy.printBT();
+		// testCopy = testPartCopy;
+		// testCopy.printBT();
 		std::cout << std::endl << "////////DESTRUCTOR/////////" << std::endl << std::endl;
 	}
 }

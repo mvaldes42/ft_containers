@@ -38,11 +38,12 @@ namespace ft
 
 			Node		*_node;
 			Node		*_root;
+			Node		*_endNode;
 			key_compare	_comp;
 
 		public:
-			mapIterator(Node *root = NULL, Node *node = NULL, const key_compare& comp = key_compare()) : _node(node), _root(root), _comp(comp) {};
-			mapIterator(const mapIterator &other) : _node(other._node), _comp(other._comp) {};
+			mapIterator(Node *root = NULL,  Node *endNode = NULL, Node *node = NULL, const key_compare& comp = key_compare()) : _node(node), _root(root), _endNode(endNode),_comp(comp) {};
+			mapIterator(const mapIterator &other) : _node(other._node), _endNode(other._endNode), _comp(other._comp) {};
 			~mapIterator() {};
 
 			Node *getNode() const { return _node; };
@@ -66,24 +67,26 @@ namespace ft
 			mapIterator & operator ++()
 			{
 				Node *currentNode;
+				// if (_node != nullptr)
+					// std::cout << "node: " << _node->dataPair.first << std::endl;
 				if (_node == nullptr)
 				{
 					_node = _root;
 					if (_node == nullptr)
 						return *this;
-					while (_node->left != nullptr)
+					while (_node->left != nullptr && _node->left != _endNode)
 						_node = _node->left;
 				}
-				else if (_node->right != nullptr)
+				else if (_node->right != nullptr && _node->right != _endNode)
 				{
 					_node = _node->right;
-					while (_node->left != nullptr)
+					while (_node->left != nullptr && _node->left != _endNode)
 						_node = _node->left;
 				}
-				else
+				else if (_node->right == nullptr)
 				{
 					currentNode = _node->parent;
-					while (currentNode != nullptr && currentNode->right != nullptr)
+					while (currentNode != nullptr && currentNode != _endNode && currentNode->right != nullptr && currentNode->right != _endNode)
 					{
 						if (_node == currentNode->right)
 						{
