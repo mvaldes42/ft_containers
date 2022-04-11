@@ -115,23 +115,17 @@ int main()
 		std::cout << "test[12]: " << test[12] << std::endl;
 
 		typedef ft::map<int, char>::value_type pair_type;
-		pair_type pairTest(10, 'a');
-		ft::map<int, char>::node_type *node3 = test.createNode(pairTest);
-		test.insertNode(node3);
-		ft::map<int, char>::node_type *node2 = test.createNode(pair_type(30, 'b'));
-		test.insertNode(node2);
-		test.insertNode(test.createNode(pair_type(6, 'c')));
-		test.insertNode(test.createNode(pair_type(5, 'd')));
-		ft::map<int, char>::node_type *node5 = test.createNode(pair_type(1, 'e'));
-		test.insertNode(node5);
-		ft::map<int, char>::node_type *node1 = test.createNode(pair_type(90, 'f'));
-		test.insertNode(node1);
-		test.insertNode(test.createNode(pair_type(15, 'g')));
-		ft::map<int, char>::node_type *node4 = test.createNode(pair_type(14, 'i'));
-		test.insertNode(node4);
+		test.insert(pair_type(10, 'a'));
+		test.insert(pair_type(30, 'b'));
+		test.insert(pair_type(6, 'c'));
+		test.insert(pair_type(5, 'd'));
+		test.insert(pair_type(1, 'e'));
+		test.insert(pair_type(90, 'f'));
+		test.insert(pair_type(15, 'g'));
+		test.insert(pair_type(14, 'i'));
 
 		std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
-		std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
+		// std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
 		// std::cout << "test[6] parent : " << test.findNode(6, test._racine)->parent->dataPair.first << std::endl;
 		// std::cout << "node is found : " << test.contains(node1, test._racine) << std::endl;
 		// std::cout << "node is found : " << test.findNode(test.createNode(pair_type(90, 'f')), test._racine)->dataPair.second << std::endl;
@@ -190,7 +184,7 @@ int main()
 
 		// test.clear();
 		// test.removeNode(test._racine);
-		test.removeNode(test._racine);
+		// test.removeNode(test._racine);
 		test.printBT();
 		// std::cout << (node2)->dataPair.first << std::endl;
 		// std::cout << test._racine->dataPair.first<< std::endl;
@@ -199,10 +193,15 @@ int main()
 		ft::map<int, char> testCopy(test);
 		testCopy.erase(90);
 		testCopy.insert(pair_type(80, 'f'));
-		testCopy.insert(pair_type(400, 'y'));
+		// testCopy.insert(pair_type(400, 'y'));
 		testCopy.printBT();
 
 		std::cout << "does (testCopy < test)? " << (test > testCopy) << std::endl;
+
+		ft::map<int, char> testPartCopy(test.begin(), test.find(15));
+		testPartCopy.printBT();
+		testCopy = testPartCopy;
+		testCopy.printBT();
 		std::cout << std::endl << "////////DESTRUCTOR/////////" << std::endl << std::endl;
 	}
 }

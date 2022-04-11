@@ -17,18 +17,15 @@ namespace ft
 			node					*parent;
 			node					*left;
 			node					*right;
-			size_t					depth;
 
-			node() : dataPair(), parent(NULL), left(NULL), right(NULL), depth(0) {};
+			node() : dataPair(), parent(NULL), left(NULL), right(NULL){};
 			node(ft::pair<const Key, T> pair) :  node(), dataPair(pair) {};
-			node(size_t depth) : node(), depth(depth) {};
-			node(const node &other) : dataPair(other.dataPair), parent(other.parent), left(other.left), right(other.right), depth(other.depth) {};
+			node(const node &other) : dataPair(other.dataPair), parent(other.parent), left(other.left), right(other.right) {};
 			~node()
 			{
 				parent = nullptr;
 				left = nullptr;
 				right = nullptr;
-				depth = 0;
 			}
 	};
 	template < class Key,class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
@@ -50,7 +47,7 @@ namespace ft
 			typedef typename Alloc::const_pointer const_pointer;
 
 			typedef typename ft::node<key_type, mapped_type> node_type;
-			typedef typename Alloc::template rebind<ft::node<Key, T> >::other allocator_node; // BRACKETS ??
+			typedef typename Alloc::template rebind<ft::node<Key, T> >::other allocator_node;
 
 			typedef	typename ft::mapIterator<Key, T, node_type, false>	iterator;
 			typedef typename ft::reverse_iterator<iterator>				reverse_iterator;
@@ -67,14 +64,12 @@ namespace ft
 					bool operator()(const value_type& x, const value_type& y) const { return comp(x.first, y.first); }
 			};
 
-		// private:
-		public :
+		private:
 			node_type		*_racine;
 			size_type		_nbNodes;
 			allocator_type	_allocPair;
 			allocator_node	_allocNode;
 			key_compare		_comp;
-			// size_type		_treeHeight;
 
 			// CREATE NOTE
 			node_type *createNode(value_type pair)
@@ -83,7 +78,6 @@ namespace ft
 				node_type *newNode = _allocNode.allocate(1);
 				_allocNode.construct(newNode, tempNode);
 				_allocPair.construct(&newNode->dataPair, pair);
-				newNode->depth = 0;
 				return (newNode);
 			};
 			node_type *createNode() { return (createNode(value_type())); };
@@ -97,7 +91,7 @@ namespace ft
 			// DESTROY NODE
 			void destroyNode(node_type *node)
 			{
-				std::cout << "node destroyed is: " << node->dataPair.first << std::endl;
+				// std::cout << "node destroyed is: " << node->dataPair.first << std::endl;
 				_allocPair.destroy(&node->dataPair);
 				_allocNode.destroy(node);
 				_allocNode.deallocate(node, 1);
@@ -105,7 +99,6 @@ namespace ft
 			}
 
 			// Find NODE
-			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
 			bool containsNode( node_type const *needle, node_type *subTree) const
 			{ return (containsNode(needle->dataPair.first, subTree)); }
 			bool containsNode( key_type const &key, node_type *subTree) const
@@ -134,9 +127,8 @@ namespace ft
 				else
 					return subTree;
 			}
-			// https://www.cs.odu.edu/~zeil/cs361/latest/Public/bst/index.html
-			// INSERT NODE
 
+			// INSERT NODE
 			node_type *insertNode(node_type *toInsert, node_type *subTree)
 			{ return insertNode(toInsert, subTree, subTree->parent);}
 			node_type *insertNode(node_type *toInsert)
@@ -217,7 +209,6 @@ namespace ft
 					destroyNode(subTree);
 					if (toRemove == _racine)
 						_racine = newNode;
-					// std::cout << "Going to destroy node(first case) " << newNode->dataPair.first << std::endl;
 					removeNode(tmpNode, newNode->right);
 				}
 				else
@@ -242,7 +233,6 @@ namespace ft
 						else
 							subTree = nullptr;
 					}
-					// std::cout << "Going to destroy node(second case) " << oldNode->dataPair.first << std::endl;
 					destroyNode(oldNode);
 					_nbNodes--;
 				}
@@ -262,44 +252,15 @@ namespace ft
 					return NULL;
 				return (tree->left);
 			};
-			bool isLeaf(node_type *&node) const
-			{
-				if (isTreeEmpty(node))
-					return false;
-				else if (isTreeEmpty(node->left) && isTreeEmpty(node->right))
-					return true;
-				return false;
-			}
-			bool isInsideNode(node_type *node) const { return (!isLeaf(node)); };
-
-			//TREE HEIGHT
-			//- un arbre vide est de hauteur 0
-			// - un arbre non vide a pour hauteur 1 + la hauteur maximale entre ses fils.
-			size_type max(size_type a, size_type b) { return (a > b) ? a : b; };
-			// size_type treeHeight(node_type *tree)
+			// bool isLeaf(node_type *&node) const
 			// {
-			// 	if (isTreeEmpty(tree))
-			// 		return (0);
-			// 	return (1 + max(treeHeight(getLeftTree(tree)), treeHeight(getRightTree(tree))));
-			// };
-			// void setTreeHeight() { _treeHeight = treeHeight(_racine); };
-
-			void printBT(const std::string& prefix, const node_type *node, bool isLeft)
-			{
-				if( node && node != NULL )
-				{
-					// usleep(90000);
-					std::cout << prefix;
-					std::cout << (isLeft ? "├──" : "└──" );
-					// print the value of the node
-					std::cout << node->dataPair.first << std::endl;
-					// enter the next tree level - left and right branch
-					printBT( prefix + (isLeft ? "│   " : "    "), node->left, true);
-					printBT( prefix + (isLeft ? "│   " : "    "), node->right, false);
-				}
-			}
-			void printBT() { printBT("", _racine, false); }
-
+			// 	if (isTreeEmpty(node))
+			// 		return false;
+			// 	else if (isTreeEmpty(node->left) && isTreeEmpty(node->right))
+			// 		return true;
+			// 	return false;
+			// }
+			// bool isInsideNode(node_type *node) const { return (!isLeaf(node)); };
 			node_type *getFirst() const
 			{
 				iterator it(_racine);
@@ -317,22 +278,35 @@ namespace ft
 
 		public:
 		
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp) {};	
+			/*✅*/
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp) {};
+			/*✅*/
 			template <class InputIterator>
- 			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());	
-			map (const map& x) : _racine(NULL), _nbNodes(0), _allocPair(x.get_allocator()), _comp(x.key_comp())
+ 			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
+			: _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp)
 			{
-				insert(x.begin(), x.end());
+				for (; first != last; first++)
+		 			insert(*first);
 			};
-			/**/
+			/*✅*/
+			map (const map& x) : _racine(NULL), _nbNodes(0), _allocPair(x.get_allocator()), _comp(x.key_comp())
+			{ insert(x.begin(), x.end()); };
+			/*✅*/
 			~map()
 			{
 				if (!empty())
 					clear();
 			};
-			/**/
-			map& operator= (const map& x);
-			/// ITERATORS
+			/* NO */
+			map& operator= (const map& x)
+			{
+				if (!empty())
+					clear();
+				insert(x.begin(), x.end());
+				return (*this);
+			};
+			// ITERATORS
+			/*✅*/
 			iterator begin()
 			{
 				node_type *first;
@@ -342,6 +316,7 @@ namespace ft
 					first = nullptr;
 				return (iterator(_racine, first));
 			};
+			/*✅*/
 			const_iterator begin() const
 			{
 				node_type *first;
@@ -351,7 +326,7 @@ namespace ft
 					first = nullptr;
 				return (const_iterator(_racine, first));
 			};
-			// /**/
+			/*✅*/
 			iterator end()
 			{
 				node_type *afterEnd;
@@ -361,6 +336,7 @@ namespace ft
 					return (begin());
 				return (iterator(_racine, afterEnd));
 			};
+			/*✅*/
 			const_iterator end() const
 			{
 				node_type *afterEnd;
@@ -370,21 +346,25 @@ namespace ft
 					return (begin());
 				return (const_iterator(_racine, afterEnd));
 			};
-			/**/
-
+			/*✅*/
 			reverse_iterator rbegin() { return reverse_iterator(end()); };
+			/*✅*/
 			const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); };
-
+			/*✅*/
 			reverse_iterator rend() { return reverse_iterator(begin()); };
+			/*✅*/
 			const_reverse_iterator rend() const { return const_reverse_iterator(begin()); };
+
 			/// CAPACITY
-
+			/*✅*/
 			bool empty() const { return (_nbNodes == 0); };
-
+			/*✅*/
 			size_type size() const {return (_nbNodes); };
+			/*✅*/
+			size_type max_size() const { return (_allocNode.max_size()); };
 
-			size_type max_size() const { return (_allocNode.max_size()); }; 
 			/// ELEMENT ACCESS
+			/*✅*/
 			mapped_type& operator[] (const key_type& k)
 			{
 				node_type *newNode = findNode(k, _racine);
@@ -394,7 +374,9 @@ namespace ft
 				insertNode(newNode);
 				return (newNode->dataPair.second);
 			};
+
 			/// MODIFIERS
+			/*✅*/
 			ft::pair<iterator,bool> insert (const value_type& val)
 			{
 				size_type preNbNodes = _nbNodes;
@@ -407,7 +389,8 @@ namespace ft
 					isInserted = false;
 				}
 				return (ft::pair<iterator, bool>(iterator(_racine, insertedNode), isInserted));
-			};	
+			};
+			/*✅*/
 			iterator insert (iterator position, const value_type& val)
 			{
 				node_type *foundNode = findNode(val.first);
@@ -426,14 +409,16 @@ namespace ft
 				node_type *insertedNode = insertNode(createNode(val), position.getNode());
 				return (iterator(_racine, insertedNode));
 			};
+			/*✅*/
 			template <class InputIterator>
 			void insert (InputIterator first, InputIterator last)
 			{
 				for (; first != last; first++)
 					insert(*first);
 			};
-			/**/
+			/*✅*/
 			void erase (iterator position) { removeNode(position.getNode()); };
+			/*✅*/
 			size_type erase (const key_type& k)
 			{
 				node_type *foundNode = findNode(k);
@@ -442,13 +427,14 @@ namespace ft
 				removeNode(foundNode);
 				return 1;
 			};
+			/*✅*/
 			void erase (iterator first, iterator last)
 			{
 				while (first != last)
 					erase(first++);
 				erase(first);
 			};
-			/**/
+			/*✅*/
 			void swap (map& x)
 			{
 				node_type		*_racineTemp = x._racine;
@@ -469,12 +455,17 @@ namespace ft
 				_allocNode = _allocNodeTemp;
 				_comp = _compTemp;
 			};
-			/**/
+			/*✅*/
 			void clear() { erase(begin(), end()); };
+
 			/// OBSERVERS
+			/*✅*/
 			key_compare key_comp() const { return (_comp); };
+			/*✅*/
 			value_compare value_comp() const { return (value_compare(_comp)); };
+
 			/// OPERATIONS
+			/*✅*/
 			iterator find (const key_type& k)
 			{
 				node_type *foundNode = findNode(k, _racine);
@@ -482,6 +473,7 @@ namespace ft
 					return (iterator(_racine, foundNode));
 				return (end());
 			};
+			/*✅*/
 			const_iterator find (const key_type& k) const
 			{
 				node_type *foundNode = findNode(k, _racine);
@@ -489,16 +481,14 @@ namespace ft
 					return (const_iterator(_racine, foundNode));
 				return (const_iterator(end()));
 			};
-			/**/
+			/*✅*/
 			size_type count (const key_type& k) const
 			{
 				if (containsNode(k, _racine))
 					return (1);
 				return (0);
 			};
-			/**/
-			// /!\ END /!\ //
-			// the function returns an iterator to the first element whose key is not less than k.
+			/*✅*/
 			iterator lower_bound (const key_type& k)
 			{
 				iterator it = begin();
@@ -506,10 +496,10 @@ namespace ft
 				for (; it != itEnd && (key_comp())(it.getNode()->dataPair.first, k) == true; it++);
 				return (it);
 			};
+			/*✅*/
 			const_iterator lower_bound (const key_type& k) const
 			{ return const_iterator(lower_bound(k)); };
-			/**/
-			// the function returns an iterator to the first element whose key is greater than k.
+			/*✅*/
 			iterator upper_bound (const key_type& k)
 			{
 				iterator it = begin();
@@ -517,24 +507,43 @@ namespace ft
 				for (; it != itEnd && (key_comp())(k, it.getNode()->dataPair.first) == false; it++);
 				return (it);				
 			};
+			/*✅*/
 			const_iterator upper_bound (const key_type& k) const
 			{ return const_iterator(upper_bound(k)); };
-			/**/
+			/*✅*/
 			ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const
 			{
 				ft::pair<const_iterator, const_iterator> result(lower_bound(k), upper_bound(k));
 				return (result);
 			};
+			/*✅*/
 			ft::pair<iterator,iterator> equal_range (const key_type& k)
 			{
 				ft::pair<iterator, iterator> result(lower_bound(k), upper_bound(k));
 				return (result);
 			};
+
 			/// ALLOCATOR
+			/*✅*/
 			allocator_type get_allocator() const { return (_allocNode); };
 
-		private:
-			bool is_empty() const { return (_nbNodes == 0); };
+			//PRINT TREE
+			void printBT(const std::string& prefix, const node_type *node, bool isLeft)
+			{
+				if( node && node != NULL )
+				{
+					// usleep(90000);
+					std::cout << prefix;
+					std::cout << (isLeft ? "├──" : "└──" );
+					// print the value of the node
+					std::cout << node->dataPair.first << std::endl;
+					// enter the next tree level - left and right branch
+					printBT( prefix + (isLeft ? "│   " : "    "), node->left, true);
+					printBT( prefix + (isLeft ? "│   " : "    "), node->right, false);
+				}
+			}
+			void printBT() { printBT("", _racine, false); }
+			//////////////////////////////////////////////////////////////////////////////////
 
   	};
 	
