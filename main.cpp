@@ -147,18 +147,18 @@ int main()
 
 		// std::cout << "test[15] parent : " << test.findNode(15, test._racine)->parent->dataPair.first << std::endl;
 		// std::cout << "test[6]: " << test[6] << std::endl;
-		test.printBT();
+		// test.printBT();
 
-		test.find(15);
-		test.find(30000);
-		std::cout << "occurence of key 15: " << test.count(15) << std::endl;
-		std::cout << "occurence of key 300000: " << test.count(300000) << std::endl;
+		// test.find(15);
+		// test.find(30000);
+		// std::cout << "occurence of key 15: " << test.count(15) << std::endl;
+		// std::cout << "occurence of key 300000: " << test.count(300000) << std::endl;
 
-		std::cout << "Lowerbound of 100: " << test.lower_bound(100).getNode()->dataPair.first << std::endl;
-		std::cout << "Upperbound of 100: " << test.upper_bound(100).getNode()->dataPair.first << std::endl;
+		// std::cout << "Lowerbound of 100: " << test.lower_bound(100).getNode()->dataPair.first << std::endl;
+		// std::cout << "Upperbound of 100: " << test.upper_bound(100).getNode()->dataPair.first << std::endl;
 
-		std::cout << "insert 80 near 30: " << test.insert(test.find(30), pair_type(80, 'd')).getNode()->dataPair.first << std::endl;
-		test.printBT();
+		// std::cout << "insert 80 near 30: " << test.insert(test.find(30), pair_type(80, 'd')).getNode()->dataPair.first << std::endl;
+		// test.printBT();
 		// ft::map<int, char>::iterator itera(test._racine);
 		// std::cout << node3->dataPair.first << ", "<< itera->first << std::endl;
 		// while (--itera != NULL)
@@ -195,6 +195,14 @@ int main()
 		// std::cout << (node2)->dataPair.first << std::endl;
 		// std::cout << test._racine->dataPair.first<< std::endl;
 		// std::cout << "nb nodes: " << test.size() << std::endl;
+
+		ft::map<int, char> testCopy(test);
+		testCopy.erase(90);
+		testCopy.insert(pair_type(80, 'f'));
+		testCopy.insert(pair_type(400, 'y'));
+		testCopy.printBT();
+
+		std::cout << "does (testCopy < test)? " << (test > testCopy) << std::endl;
 		std::cout << std::endl << "////////DESTRUCTOR/////////" << std::endl << std::endl;
 	}
 }
