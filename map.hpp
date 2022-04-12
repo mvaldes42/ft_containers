@@ -144,8 +144,8 @@ namespace ft
 				{
 					_nbNodes++;
 					_racine = toInsert;
-					_racine->right = _endNode;
-					_endNode->left = _racine;
+					setEndNodeLast(_racine);
+					setEndNodeFirst(_racine);
 					return (_racine);
 				}
 				else if (isTreeEmpty(subTree))
@@ -154,7 +154,7 @@ namespace ft
 					_nbNodes++;
 					toInsert->parent = parent;
 					subTree = toInsert;
-					// setEndNode();
+					setEndNode();
 					return (subTree);
 				}
 				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))   
@@ -165,9 +165,7 @@ namespace ft
 						subTree->left = toInsert;
 						_nbNodes++;
 						// if (subTree->left == getFirst())
-						// {
-						// 	subTree->left->
-						// }
+						// 	setEndNodeFirst(subTree->left);
 						return (subTree->left);
 					}
 					else
@@ -181,10 +179,7 @@ namespace ft
 						subTree->right = toInsert;
 						_nbNodes++;
 						if (subTree->right == getLast())
-						{
-							subTree->right->right = _endNode;
-							_endNode->left = subTree->right;
-						}
+							setEndNodeLast(subTree->right);
 						return (subTree->right);
 					}
 					else
@@ -290,18 +285,20 @@ namespace ft
 				return (it.getNode());
 			};
 
-			void setEndNodeFirst()
+			void setEndNodeFirst(node_type *first)
 			{
-				node_type *first = getFirst();
 				_endNode->right = first;
 				first->left = _endNode;
 			};
-			void setEndNodeLast()
+			void setEndNodeFirst()
+			{ setEndNodeFirst(getFirst()); };
+			void setEndNodeLast(node_type *last)
 			{
-				node_type *last = getLast();
 				_endNode->left = last;
 				last->right = _endNode;
 			};
+			void setEndNodeLast()
+			{ setEndNodeLast(getLast()); };
 			void setEndNode()
 			{
 				setEndNodeFirst();
@@ -371,7 +368,7 @@ namespace ft
 			{
 				node_type *afterEnd;
 				if (!empty())
-					afterEnd = getLast();
+					afterEnd = _endNode;
 				else
 					return (begin());
 				return (iterator(_racine, _endNode, afterEnd));
@@ -381,7 +378,7 @@ namespace ft
 			{
 				node_type *afterEnd;
 				if (!empty())
-					afterEnd = getLast();
+					afterEnd = _endNode;
 				else
 					return (begin());
 				return (const_iterator(_racine, _endNode, afterEnd));
@@ -470,9 +467,14 @@ namespace ft
 			/*✅*/
 			void erase (iterator first, iterator last)
 			{
+				// int i = 0;
 				while (first != last)
+				{
+					// i++;
+					// std::cout << "first: " << first.getNode()->dataPair.first << std::endl;
 					erase(first++);
-				erase(first);
+				}
+				// erase(first);
 			};
 			/*✅*/
 			void swap (map& x)

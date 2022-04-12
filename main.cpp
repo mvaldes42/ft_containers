@@ -124,7 +124,7 @@ int main()
 		test.insert(pair_type(15, 'g'));
 		test.insert(pair_type(14, 'i'));
 
-		std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
+		std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).second << std::endl;
 		// std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
 		// std::cout << "test[6] parent : " << test.findNode(6, test._racine)->parent->dataPair.first << std::endl;
 		// std::cout << "node is found : " << test.contains(node1, test._racine) << std::endl;
@@ -162,12 +162,17 @@ int main()
 		// std::cout << "First: " << test.getFirst()->dataPair.first << std::endl;
 		// std::cout << "Last: " << test.getLast()->dataPair.first << std::endl;
 
-		// ft::map<int, char>::iterator last = test.end();
-		// while(--last != NULL)
-		// {
-		// 	std::cout << "--last: " << last->first << std::endl;
-		// 	// last++;
-		// }
+		ft::map<int, char>::iterator last = test.begin();
+		while(last != test.end())
+		{
+			std::cout << "last++: " << (last++)->first << std::endl;
+		}
+		last = test.end();
+		last--;
+		while(last != test.begin())
+		{
+			std::cout << "last--: " << (last--)->first << std::endl;
+		}
 		// try
 		// {
 		// 	ft::map<int, char> test2;
