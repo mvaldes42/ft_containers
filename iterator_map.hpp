@@ -54,6 +54,7 @@ namespace ft
 				{
 					_node = rhs._node;
 					_root = rhs._root;
+					_endNode = rhs._endNode;
 					_comp = rhs._comp;
 				}
 				return (*this);
@@ -67,6 +68,8 @@ namespace ft
 			mapIterator & operator ++()
 			{
 				Node *currentNode;
+				if (_node != nullptr)
+					std::cout << "(1)_node: " << _node << ", endNode: " << _endNode << std::endl;
 				if (_node == nullptr)
 				{
 					_node = _root;

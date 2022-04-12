@@ -71,6 +71,9 @@ namespace ft
 			allocator_type	_allocPair;
 			allocator_node	_allocNode;
 			key_compare		_comp;
+			// node_type		_lastNode;
+			// node_type		_firstNode;
+			node_type		*_endNode;
 
 			// CREATE NOTE
 			node_type *createNode(value_type pair)
@@ -82,12 +85,6 @@ namespace ft
 				return (newNode);
 			};
 			node_type *createNode() { return (createNode(value_type())); };
-			node_type *createNode(size_type depth)
-			{
-				node_type *tmp = createNode();
-				tmp->depth = depth;
-				return (tmp);
-			};
 
 			// DESTROY NODE
 			void destroyNode(node_type *node)
@@ -104,7 +101,7 @@ namespace ft
 			{ return (containsNode(needle->dataPair.first, subTree)); }
 			bool containsNode( key_type const &key, node_type *subTree) const
 			{
-				if( isTreeEmpty(subTree))
+				if(isTreeEmpty(subTree) || isEndNode(subTree))
 					return false;
 				if (_comp(key , subTree->dataPair.first))
 					return containsNode(key, subTree->left);
@@ -119,7 +116,7 @@ namespace ft
 			{ return (findNode(needle->dataPair.first, subTree)); }
 			node_type *findNode(key_type const key, node_type *subTree) const
 			{
-				if(isTreeEmpty(subTree))
+				if(isTreeEmpty(subTree) || isEndNode(subTree))
 					return NULL;
 				if (_comp(key , subTree->dataPair.first))
 					return findNode(key, subTree->left);
@@ -190,9 +187,9 @@ namespace ft
 			// DELETE NODE
 			node_type *findMin(node_type *t)
 			{
-				if( t == nullptr )
+				if( t == nullptr || t == _endNode)
 					return nullptr;
-				if( t->left == nullptr )
+				if( t->left == nullptr || t == _endNode)
 					return t;
 				return findMin( t->left );
 			}
@@ -200,13 +197,13 @@ namespace ft
 			{ removeNode(toRemove, _racine); }
 			void removeNode(node_type *toRemove, node_type *&subTree)
 			{
-				if(isTreeEmpty(subTree))
+				if(isTreeEmpty(subTree) || isEndNode(subTree))
 					return ;
 				if(_comp(toRemove->dataPair.first, subTree->dataPair.first))
 					removeNode(toRemove, subTree->left);
 				else if(_comp(subTree->dataPair.first, toRemove->dataPair.first))
 					removeNode(toRemove, subTree->right); 
-				else if(!isTreeEmpty(subTree->left) && !isTreeEmpty(subTree->right) )
+				else if(!isTreeEmpty(subTree->left) && subTree->left != _endNode && !isTreeEmpty(subTree->right) && subTree->right != _endNode )
 				{
 					node_type *tmpNode = findMin(subTree->right);
 					node_type *newNode = createNode(tmpNode->dataPair);
@@ -220,7 +217,7 @@ namespace ft
 						_racine = newNode;
 					removeNode(tmpNode, newNode->right);
 				}
-				else
+				else if (subTree != _endNode)
 				{
 					node_type *oldNode = subTree;
 					if (!isTreeEmpty(subTree->left))
@@ -248,6 +245,8 @@ namespace ft
 			}
 			//ISTREE EMPTY
 			bool isTreeEmpty(node_type *tree) const { return (tree == nullptr); };
+
+			bool isEndNode(node_type *node) const { return (node == _endNode); };
 
 			node_type *getRightTree(node_type *tree) const
 			{
@@ -283,6 +282,23 @@ namespace ft
 				while (it-- != _endNode)
 					;
 				return (it.getNode());
+			};
+			void setEndNodeFirst()
+			{
+				node_type *first = getFirst();
+				_endNode->right = first;
+				first->left = _endNode;
+			};
+			void setEndNodeLast()
+			{
+				node_type *last = getLast();
+				_endNode->left = last;
+				last->right = _endNode;
+			};
+			void setEndNode()
+			{
+				setEndNodeFirst();
+				setEndNodeLast();
 			};
 
 			void setEndNodeFirst(node_type *first)
@@ -425,7 +441,7 @@ namespace ft
 					destroyNode(toInsert);
 					isInserted = false;
 				}
-				return (ft::pair<iterator, bool>(iterator(_racine, insertedNode), isInserted));
+				return (ft::pair<iterator, bool>(iterator(_racine, _endNode, insertedNode), isInserted));
 			};
 			/*✅*/
 			iterator insert (iterator position, const value_type& val)
@@ -498,7 +514,11 @@ namespace ft
 				_comp = _compTemp;
 			};
 			/*✅*/
-			void clear() { erase(begin(), end()); };
+			void clear()
+			{
+				// std::cout << "first: " << begin().getNode()->dataPair.first << "last: " << end().getNode()->dataPair.first << std::endl;
+				erase(begin(), end());
+			};
 
 			/// OBSERVERS
 			/*✅*/
