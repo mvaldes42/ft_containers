@@ -71,9 +71,6 @@ namespace ft
 			allocator_type	_allocPair;
 			allocator_node	_allocNode;
 			key_compare		_comp;
-			// node_type		_lastNode;
-			// node_type		_firstNode;
-			node_type		*_endNode;
 
 			// CREATE NOTE
 			node_type *createNode(value_type pair)
@@ -283,24 +280,6 @@ namespace ft
 					;
 				return (it.getNode());
 			};
-			void setEndNodeFirst()
-			{
-				node_type *first = getFirst();
-				_endNode->right = first;
-				first->left = _endNode;
-			};
-			void setEndNodeLast()
-			{
-				node_type *last = getLast();
-				_endNode->left = last;
-				last->right = _endNode;
-			};
-			void setEndNode()
-			{
-				setEndNodeFirst();
-				setEndNodeLast();
-			};
-
 			void setEndNodeFirst(node_type *first)
 			{
 				_endNode->right = first;
