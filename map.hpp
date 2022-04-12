@@ -142,13 +142,13 @@ namespace ft
 					setEndNodeFirst(_racine);
 					return (_racine);
 				}
-				else if (isTreeEmpty(subTree))
+				else if (isTreeEmpty(subTree) || subTree == _endNode)
 				{
 					std::cout << "toInsert: " << toInsert->dataPair.first << std::endl;
 					_nbNodes++;
 					toInsert->parent = parent;
 					subTree = toInsert;
-					setEndNode();
+					// setEndNode();
 					return (subTree);
 				}
 				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))   
@@ -158,8 +158,13 @@ namespace ft
 						toInsert->parent = subTree;
 						subTree->left = toInsert;
 						_nbNodes++;
-						// if (subTree->left == getFirst())
-						// 	setEndNodeFirst(subTree->left);
+						if (subTree->left == getFirst())
+						{
+							std::cout << "smallest: " << subTree->left->dataPair.first << std::endl;
+							setEndNodeFirst(subTree->left);
+							// _endNode->right = subTree->left;
+							// subTree->left->left = _endNode;
+						}
 						return (subTree->left);
 					}
 					else
@@ -184,11 +189,23 @@ namespace ft
 			// DELETE NODE
 			node_type *findMin(node_type *t)
 			{
-				if( t == nullptr || t == _endNode)
+				if(t == nullptr)
 					return nullptr;
-				if( t->left == nullptr || t == _endNode)
+				if( t != _endNode && t->left == nullptr)
 					return t;
-				return findMin( t->left );
+				if (t == _endNode)
+					return t->right;
+				return findMin(t->left);
+			}
+			node_type *findMax(node_type *t)
+			{
+				if(t == nullptr)
+					return nullptr;
+				if( t != _endNode && t->right == nullptr)
+					return t;
+				if (t == _endNode)
+					return t->left;
+				return findMax(t->right);
 			}
 			void removeNode(node_type *toRemove)
 			{ removeNode(toRemove, _racine); }
@@ -200,41 +217,57 @@ namespace ft
 					removeNode(toRemove, subTree->left);
 				else if(_comp(subTree->dataPair.first, toRemove->dataPair.first))
 					removeNode(toRemove, subTree->right); 
-				else if(!isTreeEmpty(subTree->left) && subTree->left != _endNode && !isTreeEmpty(subTree->right) && subTree->right != _endNode )
+				else if(!isTreeEmpty(subTree->left) && !isEndNode(subTree->left) && !isTreeEmpty(subTree->right) && !isEndNode(subTree->right))
 				{
 					node_type *tmpNode = findMin(subTree->right);
-					node_type *newNode = createNode(tmpNode->dataPair);
-					newNode->right = subTree->right;
+					node_type *newNode = createNode(tmpNode->dataPair); // NODE FREED IS CREATED HERE
+					//
+					// std::cout << "subTree: " <<  subTree->dataPair.first << std::endl;
+					// std::cout << "min: " <<  findMin(subTree->right)->dataPair.first << std::endl;
+					// std::cout << "last: " <<  getLast()->dataPair.first << std::endl;
+					// std::cout << "max: " <<  findMax(_racine)->dataPair.first << std::endl;
+					// std::cout << "_racine: " << _racine->dataPair.first << std::endl;
+					// std::cout << "newNode: " << newNode->dataPair.first << std::endl;
+					//
+					node_type *oldRight = subTree->right;
+					if (tmpNode->right != _endNode)
+						newNode->right = subTree->right;
+					else
+						setEndNodeLast(newNode);
 					newNode->left = subTree->left;
 					newNode->parent = subTree->parent;
 					newNode->right->parent = newNode;
 					newNode->left->parent = newNode;
+					std::cout << "subTree: " <<  subTree->dataPair.first << std::endl;
 					destroyNode(subTree);
 					if (toRemove == _racine)
 						_racine = newNode;
-					removeNode(tmpNode, newNode->right);
+					removeNode(tmpNode, oldRight);
 				}
 				else if (subTree != _endNode)
 				{
 					node_type *oldNode = subTree;
-					if (!isTreeEmpty(subTree->left))
+					if (!isTreeEmpty(subTree->left) && !isEndNode(subTree->left))
 					{
 						subTree->left->parent = subTree->parent;
 						subTree = subTree->left;
 						if (toRemove == _racine)
 							_racine = subTree;
 					}
-					else
+					else if (isTreeEmpty(subTree->left))
 					{
+						std::cout << "toremove: " << toRemove->dataPair.first << std::endl;
 						if (toRemove == _racine && subTree == _racine)
 						{
-							if (!isTreeEmpty(subTree->right))
+							if (!isTreeEmpty(subTree->right) && !isEndNode(subTree->right))
 								_racine = subTree->right;
 							else
 								_racine = nullptr;
 						}
 						else
 							subTree = nullptr;
+						setEndNode();
+						std::cout << "last: " << getLast()->dataPair.first << std::endl;
 					}
 					destroyNode(oldNode);
 					_nbNodes--;
@@ -466,7 +499,9 @@ namespace ft
 				while (first != last)
 				{
 					// i++;
-					// std::cout << "first: " << first.getNode()->dataPair.first << std::endl;
+					// std::cout << "first: " << first.getNode() << ", last: "<< last.getNode() << std::endl;
+					// if (first != nullptr)
+						// std::cout << "first: " << first.getNode()->dataPair.first << std::endl;
 					erase(first++);
 				}
 				// erase(first);

@@ -68,9 +68,10 @@ namespace ft
 			mapIterator & operator ++()
 			{
 				Node *currentNode;
+				// std::cout << "_node == nullptr: " << (_node == nullptr) << std::endl;
 				if (_node != nullptr)
-					std::cout << "(1)_node: " << _node << ", endNode: " << _endNode << std::endl;
-				if (_node == nullptr)
+					std::cout << "_node: " << _node->dataPair.first << std::endl;
+				if (_node == nullptr && _node != _endNode)
 				{
 					_node = _root;
 					if (_node == nullptr)
@@ -100,7 +101,9 @@ namespace ft
 					_node = currentNode;
 				}
 				else if (_node->right == _endNode)
+				{
 					_node = _endNode;
+				}
 				return *this;
 			};
 			mapIterator operator ++(int)

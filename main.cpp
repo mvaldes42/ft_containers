@@ -118,26 +118,23 @@ int main()
 		test.insert(pair_type(10, 'a'));
 		test.insert(pair_type(30, 'b'));
 		test.insert(pair_type(6, 'c'));
-		test.insert(pair_type(5, 'd'));
-		test.insert(pair_type(1, 'e'));
-		test.insert(pair_type(90, 'f'));
-		test.insert(pair_type(15, 'g'));
-		test.insert(pair_type(14, 'i'));
+		// test.insert(pair_type(5, 'd'));
+		// test.insert(pair_type(1, 'e'));
+		// test.insert(pair_type(90, 'f'));
+		// test.insert(pair_type(15, 'g'));
+		// test.insert(pair_type(14, 'i'));
 
-		std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).second << std::endl;
+		// std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).second << std::endl;
 		// std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
+		test.printBT();
 		// std::cout << "test[6] parent : " << test.findNode(6, test._racine)->parent->dataPair.first << std::endl;
 		// std::cout << "node is found : " << test.contains(node1, test._racine) << std::endl;
 		// std::cout << "node is found : " << test.findNode(test.createNode(pair_type(90, 'f')), test._racine)->dataPair.second << std::endl;
 		// std::cout << "node is found : " << test.findNode(90, test._racine)->dataPair.second << std::endl;
-		// test.erase(14);
-		// std::cout << "removed node 14" << std::endl;
-		// test.removeNode(node2);
-		// test.removeNode(node3);
-		// std::cout << "removed node 10, a" << std::endl;
-		// test.removeNode(node4);
-		// std::cout << "removed node 14, i" << std::endl;
-		// test.removeNode(node5);
+		test.erase(30);
+		std::cout << "removed node 30" << std::endl;
+		// test.erase(12);
+		// std::cout << "removed node 12" << std::endl;
 
 		// std::cout << "test[15] parent : " << test.findNode(15, test._racine)->parent->dataPair.first << std::endl;
 		// std::cout << "test[6]: " << test[6] << std::endl;
@@ -162,17 +159,17 @@ int main()
 		// std::cout << "First: " << test.getFirst()->dataPair.first << std::endl;
 		// std::cout << "Last: " << test.getLast()->dataPair.first << std::endl;
 
-		ft::map<int, char>::iterator last = test.begin();
-		while(last != test.end())
-		{
-			std::cout << "last++: " << (last++)->first << std::endl;
-		}
-		last = test.end();
-		last--;
-		while(last != test.begin())
-		{
-			std::cout << "last--: " << (last--)->first << std::endl;
-		}
+		// ft::map<int, char>::iterator last = test.begin();
+		// while(last != test.end())
+		// {
+		// 	std::cout << "last++: " << (last++)->first << std::endl;
+		// }
+		// last = test.end();
+		// last--;
+		// while(last != test.begin())
+		// {
+		// 	std::cout << "last--: " << (last--)->first << std::endl;
+		// }
 		// try
 		// {
 		// 	ft::map<int, char> test2;
