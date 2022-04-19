@@ -211,6 +211,7 @@ namespace ft
 			{ removeNode(toRemove, _racine); }
 			void removeNode(node_type *toRemove, node_type *&subTree)
 			{
+				std::cout << "REMOVE NODE: " << std::endl;
 				if (!isTreeEmpty(subTree))
 					std::cout << "removeNode toRemove: " <<  toRemove->dataPair.first << "_racine: " <<  _racine->dataPair.first << std::endl;
 				if(isTreeEmpty(subTree) || isEndNode(subTree))
@@ -224,10 +225,9 @@ namespace ft
 					removeNode(toRemove, subTree->right); 
 				else if(!isTreeEmpty(subTree->left) && !isTreeEmpty(subTree->right))
 				{
-					// if (isEndNode(subTree->left) || !isEndNode(subTree->right))
-					// 	goto LABEL;
-					std::cout << "if node to remove has 2 children that are not endNodes" << std::endl;
+					std::cout << "if node to remove has 2 children" << std::endl;
 					node_type *tmpNode = findMin(subTree->right);
+					std::cout << "findMin: " << tmpNode->dataPair.first << std::endl;
 					node_type *newNode = createNode(tmpNode->dataPair);
 					//
 					// std::cout << "subTree: " <<  subTree->dataPair.first << std::endl;
@@ -246,26 +246,23 @@ namespace ft
 					newNode->parent = subTree->parent;
 					newNode->right->parent = newNode;
 					newNode->left->parent = newNode;
-					// std::cout << "subTree: " <<  subTree->dataPair.first << std::endl;
 					destroyNode(subTree);
 					if (toRemove == _racine)
 						_racine = newNode;
+					// std::cout << "is end node at left position: " << _racine->left->dataPair.first << std::endl;
 					removeNode(tmpNode, oldRight);
 				}
 				else
 				{
-					// LABEL:
-					// std::cout << "if node to remove has " << std::endl;
 					node_type *oldNode = subTree;
 					std::cout << "subTree: " <<  subTree->dataPair.first << std::endl;
-					// std::cout << "toRemove: " <<  toRemove->dataPair.first << std::endl;
 					if (!isTreeEmpty(subTree->left))
 					{
 						std::cout << "here" << std::endl;
-						if (isEndNode(subTree->left))
-						{
+						// if (isEndNode(subTree->left))
+						// {
 
-						}
+						// }
 						subTree->left->parent = subTree->parent;
 						// if (!isEndNode(subTree->left))
 							subTree = subTree->left;
@@ -278,7 +275,8 @@ namespace ft
 					else if (isTreeEmpty(subTree->left))
 					{
 						std::cout << "there" << std::endl;
-						// std::cout << "toRemove: " << toRemove->dataPair.first << std::endl;
+						std::cout << "toRemove: " << toRemove->dataPair.first << std::endl;
+						std::cout << "subTree: " <<  subTree->dataPair.first << std::endl;
 						if (toRemove == _racine && subTree == _racine)
 						{
 							if (!isTreeEmpty(subTree->right) && !isEndNode(subTree->right))
@@ -287,14 +285,15 @@ namespace ft
 								_racine = nullptr;
 						}
 						else
-							subTree = nullptr;
-						setEndNode();
+							subTree->parent->left = nullptr;
+
+						// setEndNode();
 						// std::cout << "last: " << getLast()->dataPair.first << std::endl;
 					}
-					// std::cout << "there" << std::endl;
 					destroyNode(oldNode);
 					_nbNodes--;
 				}
+				std::cout << "rien ne s'est passe" << std::endl;
 			}
 			//ISTREE EMPTY
 			bool isTreeEmpty(node_type *tree) const { return (tree == nullptr); };
@@ -325,6 +324,7 @@ namespace ft
 			node_type *getFirst() const
 			{
 				iterator it(_racine, _endNode);
+				std::cout << "GETFIRST" << std::endl;
 				while (it++ != _endNode)
 					;
 				return (it.getNode());
@@ -524,7 +524,7 @@ namespace ft
 					// i++;
 					// std::cout << "first: " << first.getNode() << ", last: "<< last.getNode() << std::endl;
 					// if (first != nullptr)
-						std::cout << "first: " << first.getNode()->dataPair.first << std::endl;
+					std::cout << "ERASE: first: " << first.getNode()->dataPair.first << std::endl;
 					erase(first++);
 				}
 				// erase(first);
