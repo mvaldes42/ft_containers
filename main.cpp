@@ -115,15 +115,17 @@ int main()
 		std::cout << "test[12]: " << test[12] << std::endl;
 
 		typedef ft::map<int, char>::value_type pair_type;
-		// test.insert(pair_type(10, 'a'));
+		test.insert(pair_type(10, 'a'));
 		test.insert(pair_type(30, 'b'));
 		// test.insert(pair_type(6, 'c'));
 		// test.insert(pair_type(5, 'd'));
 		// test.insert(pair_type(1, 'e'));
-		test.insert(pair_type(90, 'f'));
-		test.insert(pair_type(15, 'g'));
+		// test.insert(pair_type(90, 'f'));
+		// test.insert(pair_type(15, 'g'));
 		// test.insert(pair_type(14, 'i'));
 
+		test.printBT();
+		test.erase(12);
 		// std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).second << std::endl;
 		// std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
 		// test.printBT();
@@ -185,9 +187,6 @@ int main()
 		// }
 
 		// test.clear();
-		// test.removeNode(test._racine);
-		// test.removeNode(test._racine);
-		test.printBT();
 		// std::cout << (node2)->dataPair.first << std::endl;
 		// std::cout << test._racine->dataPair.first<< std::endl;
 		// std::cout << "nb nodes: " << test.size() << std::endl;
@@ -204,6 +203,7 @@ int main()
 		// testPartCopy.printBT();
 		// testCopy = testPartCopy;
 		// testCopy.printBT();
+		test.printBT();
 		std::cout << std::endl << "////////DESTRUCTOR/////////" << std::endl << std::endl;
 	}
 }
