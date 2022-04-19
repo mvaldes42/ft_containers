@@ -233,32 +233,37 @@ namespace ft
 					{
 						std::cout << "	> racine is the only node" << std::endl;
 						// OR should we just del _racine ?
-						// _racine = _endNode;
-						// _endNode->right = _endNode;
-						// _endNode->left = _endNode;
+						_racine = _endNode;
+						_endNode->right = _endNode;
+						_endNode->left = _endNode;
 					}
 					/*	B) _root has only one child	*/
-					else if ((_racine->left && _racine->right == _endNode) || (_racine->right && _racine->left == _endNode))
+					/*	a) left child			*/
+					else if (_racine->left && _racine->right == _endNode)
 					{
-						/*	a) left child			*/
-						if (_racine->left && _racine->right == _endNode)
-						{
-							std::cout << "	> racine has only a left child" << std::endl;
-							_racine = _racine->left;
-							_racine->parent = nullptr;
-							_racine->right = _endNode;
-							_endNode->left = _racine;
-						}
-						/*	b) right child			*/
-						else
-						{
-							std::cout << "	> racine has only a right child" << std::endl;
-							_racine = _racine->right;
-							_racine->parent = nullptr;
-							_racine->left = _endNode;
-							_endNode->right = _racine;
-						}
+						std::cout << "	> racine has only a left child" << std::endl;
+						_racine = toDel->left;
+						toDel->left->parent = nullptr;
+						// _racine->right = _endNode;
+						// _endNode->left = _racine;
+						node_type *maxNode = searchMaxNode(toDel->left);
+						std::cout << "	> maxNode: " << maxNode->dataPair.first << std::endl;
+						maxNode->right = _endNode;
+						_endNode->left = maxNode;
 					}
+					/*	b) right child			*/
+					else if (_racine->right && _racine->left == _endNode)
+					{
+						std::cout << "	> racine has only a right child" << std::endl;
+						_racine = toDel->right;
+						_racine->parent = nullptr;
+						// _racine->left = _endNode;
+						// _endNode->right = _racine;
+						node_type *minNode = searchMinNode(toDel->right);
+						std::cout << "	> minNode: " << minNode->dataPair.first << std::endl;
+						minNode->left = _endNode;
+						_endNode->right = minNode;
+						}
 					/*	C) _root has two children	*/
 					else
 					{
@@ -301,21 +306,58 @@ namespace ft
 						}
 					}
 					/*	B) toDel has only one child	*/
-					else if ((!isTreeEmpty(toDel->left) && isEndNode(toDel->right)) || (!isTreeEmpty(toDel->right) && isEndNode(toDel->left)))
+					/*	a) left child				*/
+					else if ( (!isTreeEmpty(toDel->left) && !isEndNode(toDel->left)) && (isTreeEmpty(toDel->right) || isEndNode(toDel->right)) )
 					{
-						if ( !isTreeEmpty(toDel->left) && isEndNode(toDel->right) )
-							std::cout << "toDel has one left child" << std::endl;
+						std::cout << "	> toDel has one left child" << std::endl;
+						if (toDel->dataPair.first <= toDel->parent->dataPair.first)
+							toDel->parent->left = toDel->left;
 						else
-							std::cout << "toDel has one right child" << std::endl;
+							toDel->parent->right = toDel->left;
+						toDel->left->parent = toDel->parent;
+						if (isEndNode(toDel->right))
+						{
+							toDel->left->right = _endNode;
+							_endNode->left = toDel->left;
+						}
+					}
+					/*	b) right child				*/
+					else if ( (!isTreeEmpty(toDel->right) && !isEndNode(toDel->right)) && (isTreeEmpty(toDel->left) || isEndNode(toDel->left)) )
+					{
+						std::cout << "	> toDel has one right child" << std::endl;
+						if (toDel->dataPair.first <= toDel->parent->dataPair.first)
+						{
+							std::cout << "		> toDel is a left child" << std::endl;
+							toDel->parent->left = toDel->right;						
+						}
+						else
+						{
+							std::cout << "		> toDel is a right child" << std::endl;
+							toDel->parent->right = toDel->right;
+						}
+						toDel->left->parent = toDel->parent;
+						if (isEndNode(toDel->left))
+						{
+							std::cout << "		> toDel left is endNode" << std::endl;
+							toDel->right->left = _endNode;
+							_endNode->right = toDel->right;
+						}
+						std::cout << "toDel->right->right" << toDel->right->right << std::endl;
 					}
 					/*	C) toDel has two children	*/
 					else
 					{
 						std::cout << "toDel has two children" << std::endl;
+						node_type *maxNode = searchMaxNode(toDel->left);
+						_allocPair.destroy(&toDel->dataPair);
+						_allocPair.construct(&toDel->dataPair, maxNode->dataPair);
+						removeNode(findNode(maxNode->dataPair.first, toDel->left));
+						return ;
 					}
 				}
 				destroyNode(toDel);
 				_nbNodes -= 1;
+				printBT();
 			};
 
 			bool isTreeEmpty(node_type *tree) const { return (tree == nullptr); };
