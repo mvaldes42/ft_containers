@@ -151,6 +151,7 @@ namespace ft
 				}
 				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))   
 				{
+					std::cout << "toInsert: " << toInsert->dataPair.first << std::endl;
 					if (isTreeEmpty(subTree->left) || subTree->left == _endNode)
 					{
 						toInsert->parent = subTree;
@@ -169,11 +170,15 @@ namespace ft
 				{
 					if (isTreeEmpty(subTree->right) || subTree->right == _endNode)
 					{
+						std::cout << "toInsert: " << toInsert->dataPair.first << std::endl;
 						toInsert->parent = subTree;
 						subTree->right = toInsert;
 						_nbNodes++;
-						if (subTree->right == getLast())
+						if (subTree->right == searchMaxNode(_racine))
+						{
+							std::cout << "getLast(): " << searchMaxNode(_racine)->dataPair.first << std::endl;
 							setEndNodeLast(subTree->right);
+						}
 						return (subTree->right);
 					}
 					else
@@ -335,14 +340,14 @@ namespace ft
 							std::cout << "		> toDel is a right child" << std::endl;
 							toDel->parent->right = toDel->right;
 						}
-						toDel->left->parent = toDel->parent;
+						toDel->right->parent = toDel->parent;
 						if (isEndNode(toDel->left))
 						{
 							std::cout << "		> toDel left is endNode" << std::endl;
 							toDel->right->left = _endNode;
 							_endNode->right = toDel->right;
 						}
-						std::cout << "toDel->right->right" << toDel->right->right << std::endl;
+						// std::cout << "toDel->right->right" << toDel->right->right << std::endl;
 					}
 					/*	C) toDel has two children	*/
 					else
