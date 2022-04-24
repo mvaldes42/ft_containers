@@ -116,15 +116,17 @@ int main()
 		// std::cout << "test[12]: " << test[12] << std::endl;
 
 		typedef ft::map<int, char>::value_type pair_type;
-		test.insert(pair_type(12, 'z'));
 		test.insert(pair_type(10, 'a'));
+			test.insert(pair_type(11, 'e'));
+		test.insert(pair_type(12, 'z'));
+		
 		// test.insert(pair_type(30, 'b'));
 		// test.insert(pair_type(6, 'c'));
-		test.insert(pair_type(11, 'e'));
-		// test.insert(pair_type(13, 'r'));
+	
+		test.insert(pair_type(13, 'r'));
 		// test.insert(pair_type(5, 'd'));
 		// test.insert(pair_type(90, 'f'));
-		// test.insert(pair_type(15, 'g'));
+		test.insert(pair_type(15, 'g'));
 		// test.insert(pair_type(14, 'i'));
 
 		test.printBT();

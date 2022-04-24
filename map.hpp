@@ -17,6 +17,13 @@ namespace ft
 			node					*parent;
 			node					*left;
 			node					*right;
+			short					balanceFactor;
+			size_t					height;
+			//	holds difference in heights between the right and left subtrees.
+			//	In a balanced tree, this difference must be -1, 0, or 1. 
+			//	0 means that both subtrees have the same height.
+			//	-1 means that the left tree is higher (by 1)
+			//	1 means that the right tree is higher.
 
 			node() : dataPair(), parent(NULL), left(NULL), right(NULL){};
 			node(ft::pair<const Key, T> pair) :  node(), dataPair(pair) {};
@@ -147,6 +154,8 @@ namespace ft
 					_nbNodes++;
 					toInsert->parent = parent;
 					subTree = toInsert;
+					setHeight(subTree);
+					balanceTree(subTree);
 					return (subTree);
 				}
 				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))   
@@ -161,6 +170,8 @@ namespace ft
 						{
 							setEndNodeFirst(subTree->left);
 						}
+						setHeight(subTree->left);
+						balanceTree(subTree->left);
 						return (subTree->left);
 					}
 					else
@@ -176,56 +187,22 @@ namespace ft
 						_nbNodes++;
 						if (subTree->right == searchMaxNode(_racine))
 						{
-							std::cout << "getLast(): " << searchMaxNode(_racine)->dataPair.first << std::endl;
+							std::cout << "searchMaxNode(): " << searchMaxNode(_racine)->dataPair.first << std::endl;
 							setEndNodeLast(subTree->right);
 						}
+						setHeight(subTree->right);
+						balanceTree(subTree->right);
 						return (subTree->right);
 					}
 					else
 						return insertNode(toInsert, subTree->right, subTree);
 				}
+				setHeight(subTree);
+				balanceTree(subTree);
 				return subTree;
 			}
 
-			node_type *findMin(node_type *t)
-			{
-				if(t == nullptr)
-					return nullptr;
-				if( t != _endNode && t->left == nullptr)
-					return t;
-				if (t == _endNode)
-					return t->right;
-				return findMin(t->left);
-			}
-			node_type *findMax(node_type *t)
-			{
-				if(t == nullptr)
-					return nullptr;
-				if( t != _endNode && t->right == nullptr)
-					return t;
-				if (t == _endNode)
-					return t->left;
-				return findMax(t->right);
-			}
-
 			// DELETE NODE
-
-			// void removeNode(node_type *toRemove)
-			// { removeNode(toRemove, _racine); }
-
-			node_type*	searchMaxNode(node_type* root) const
-			{
-				if (root->right && root->right != _endNode)
-					return (searchMaxNode(root->right));
-				return (root);
-			}
-
-			node_type*	searchMinNode(node_type* root) const
-			{
-				if (root->left && root->left != _endNode)
-					return (searchMinNode(root->left));
-				return (root);
-			}
 			void removeNode(node_type *toDel)
 			{
 				// we already searched and found the node to remove and we're already at position.
@@ -362,8 +339,99 @@ namespace ft
 				}
 				destroyNode(toDel);
 				_nbNodes -= 1;
-				printBT();
+				// printBT();
 			};
+
+			//	AVL TREE OPERATIONS	//
+
+			size_type max(int a, int b) { return (a > b) ? a : b; };
+
+			size_type getHeight(node_type *node) const
+			{
+  				if (isTreeEmpty(node) || isEndNode(node))
+				  return (0);
+  				return node->height;
+			};
+
+			void setHeight(node_type *node)
+			{
+				if (isTreeEmpty(node) || isEndNode(node))
+					return ;
+				node->height = 1 + max(getHeight(node->left), getHeight(node->right));
+			};
+
+			int getBalanceFactor(node_type *node) const
+			{
+				if (isTreeEmpty(node) || isEndNode(node))
+					return (0);
+				return (getHeight(node->left) - getHeight(node->right));
+			};
+
+			void balanceTree(node_type *node)
+			{
+				while (node)
+				{
+					std::cout << "balance hello" << std::endl;
+					setHeight(node);
+					int balance = getBalanceFactor(node);
+
+					if (balance > 1 && getBalanceFactor(node->left) >= 0)
+						rightRotate(node);
+					else if (balance > 1 && getBalanceFactor(node->left) < 0)
+					{
+						leftRotate(node->left);
+						rightRotate(node);
+					}
+					else if (balance < -1 && getBalanceFactor(node->right) <= 0)
+						leftRotate(node);
+					else if (balance < -1 && getBalanceFactor(node->right) > 0)
+					{
+						rightRotate(node->right);
+						leftRotate(node);
+					}
+					node = node->parent;
+				}
+			};
+
+			void rightRotate(node_type *bottom)
+			{
+				node_type *top = bottom->left;
+
+				bottom->left = top->right;
+				if (top->right)
+					top->right->parent = bottom;
+				top->right = bottom;
+				top->parent = bottom->parent;
+				if	(bottom->parent && bottom->parent->left == bottom)
+					bottom->parent->left = top;
+				else if (bottom->parent)
+					bottom->parent->right = top;
+				top->parent = top;
+				if (isTreeEmpty(top->parent))
+					_racine = top;
+				bottom->height = max(getHeight(bottom->left), getHeight(bottom->right)) + 1;
+				top->height = max(getHeight(top->left), getHeight(top->right)) + 1;
+			}
+
+			void leftRotate(node_type *bottom)
+			{
+				node_type *top = bottom->right;
+
+				bottom->right = top->left;
+				if (top->left)
+					top->left->parent = bottom;
+				top->left = bottom;
+				top->parent = bottom->parent;
+				if	(bottom->parent && bottom->parent->left == bottom)
+					bottom->parent->left = top;
+				else if (bottom->parent)
+					bottom->parent->right = top;
+				top->parent = top;
+				if (isTreeEmpty(top->parent))
+					_racine = top;
+				bottom->height = max(getHeight(bottom->left), getHeight(bottom->right)) + 1;
+				top->height = max(getHeight(top->left), getHeight(top->right)) + 1;
+			}
 
 			bool isTreeEmpty(node_type *tree) const { return (tree == nullptr); };
 
@@ -381,15 +449,19 @@ namespace ft
 					return NULL;
 				return (tree->left);
 			};		
-			// bool isLeaf(node_type *&node) const
-			// {
-			// 	if (isTreeEmpty(node))
-			// 		return false;
-			// 	else if (isTreeEmpty(node->left) && isTreeEmpty(node->right))
-			// 		return true;
-			// 	return false;
-			// }
-			// bool isInsideNode(node_type *node) const { return (!isLeaf(node)); };
+
+			node_type*	searchMaxNode(node_type* root) const
+			{
+				if (root->right && root->right != _endNode)
+					return (searchMaxNode(root->right));
+				return (root);
+			}
+			node_type*	searchMinNode(node_type* root) const
+			{
+				if (root->left && root->left != _endNode)
+					return (searchMinNode(root->left));
+				return (root);
+			}
 			node_type *getFirst() const
 			{
 				iterator it(_racine, _endNode);
@@ -404,6 +476,7 @@ namespace ft
 					;
 				return (it.getNode());
 			};
+
 			void setEndNodeFirst(node_type *first)
 			{
 				_endNode->right = first;
@@ -689,7 +762,26 @@ namespace ft
 			/*✅*/
 			allocator_type get_allocator() const { return (_allocNode); };
 
-			//PRINT TREE
+
+			// void printBT(node_type *root, std::string indent, bool last)
+			// {
+			// 	if (root != nullptr && root != _endNode) {
+			// 		std::cout << indent;
+			// 		if (last) {
+			// 		std::cout << "R----";
+			// 		indent += "   ";
+			// 		} else {
+			// 		std::cout << "L----";
+			// 		indent += "|  ";
+			// 		}
+			// 		std::cout << root->dataPair.first << std::endl;
+			// 		printBT(root->left, indent, false);
+			// 		printBT(root->right, indent, true);
+			// 	}
+			// }
+			// void printBT() { printBT(_racine, "", true); }
+
+			// PRINT TREE
 			void printBT(const std::string& prefix, const node_type *node, bool isLeft)
 			{
 				if( node && node != NULL && node != _endNode)
