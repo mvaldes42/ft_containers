@@ -129,6 +129,8 @@ int main()
 		test.insert(pair_type(90, 'f'));
 		test.insert(pair_type(15, 'g'));
 		test.insert(pair_type(14, 'i'));
+		test.insert(pair_type(100, 'u'));
+		test.insert(pair_type(120, 'y'));
 
 		test.printBT();
 		// test.erase(10);
@@ -158,12 +160,12 @@ int main()
 
 		// std::cout << "insert 80 near 30: " << test.insert(test.find(30), pair_type(80, 'd')).getNode()->dataPair.first << std::endl;
 		// test.printBT();
-		// ft::map<int, char>::iterator itera(test._racine);
+		ft::map<int, char>::iterator itera = test.begin();
 		// std::cout << node3->dataPair.first << ", "<< itera->first << std::endl;
-		// while (--itera != NULL)
-		// {
-		// 	std::cout << "--itera " << itera->first << std::endl;
-		// }
+		while (itera++ != test.end())
+		{
+			std::cout << "itera++ " << itera->first << std::endl;
+		}
 		// std::cout << "First: " << test.getFirst()->dataPair.first << std::endl;
 		// std::cout << "Last: " << test.getLast()->dataPair.first << std::endl;
 

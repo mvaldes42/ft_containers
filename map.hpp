@@ -182,8 +182,10 @@ namespace ft
 			{
 				// std::cout << "> toDel is " << toDel->dataPair.first << std::endl;
 				/*	I/ toDel is _root				*/
+				node_type *toBalance;
 				if (toDel == _racine)
 				{
+					toBalance = nullptr;
 					/*	A) _root is the only node	*/
 					if (_nbNodes == 1)
 					{
@@ -238,6 +240,7 @@ namespace ft
 					if (( isTreeEmpty(toDel->left) || isEndNode(toDel->left) ) && ( isTreeEmpty(toDel->right) || isEndNode(toDel->right) ))
 					{
 						std::cout << "	> toDel is a leaf" << std::endl;
+						std::cout << "	> toDel->left =====> " << toDel->left->dataPair.first << std::endl;
 						if (isEndNode(toDel->left))
 						{
 							std::cout << "		> min leaf" << std::endl;
@@ -280,21 +283,21 @@ namespace ft
 					/*	b) right child				*/
 					else if ( (!isTreeEmpty(toDel->right) && !isEndNode(toDel->right)) && (isTreeEmpty(toDel->left) || isEndNode(toDel->left)) )
 					{
-						std::cout << "	> toDel has one right child" << std::endl;
+						// std::cout << "	> toDel has one right child" << std::endl;
 						if (toDel->dataPair.first <= toDel->parent->dataPair.first)
 						{
-							std::cout << "		> toDel is a left child" << std::endl;
+							// std::cout << "		> toDel is a left child" << std::endl;
 							toDel->parent->left = toDel->right;						
 						}
 						else
 						{
-							std::cout << "		> toDel is a right child" << std::endl;
+							// std::cout << "		> toDel is a right child" << std::endl;
 							toDel->parent->right = toDel->right;
 						}
 						toDel->right->parent = toDel->parent;
 						if (isEndNode(toDel->left))
 						{
-							std::cout << "		> toDel left is endNode" << std::endl;
+							// std::cout << "		> toDel left is endNode" << std::endl;
 							toDel->right->left = _endNode;
 							_endNode->right = toDel->right;
 						}
@@ -303,16 +306,19 @@ namespace ft
 					/*	C) toDel has two children	*/
 					else
 					{
-						std::cout << "toDel has two children" << std::endl;
+						// std::cout << "toDel has two children" << std::endl;
 						node_type *maxNode = searchMaxNode(toDel->left);
 						_allocPair.destroy(&toDel->dataPair);
 						_allocPair.construct(&toDel->dataPair, maxNode->dataPair);
 						removeNode(findNode(maxNode->dataPair.first, toDel->left));
 						return ;
 					}
+					toBalance = toDel->parent;
 				}
 				destroyNode(toDel);
 				_nbNodes -= 1;
+				balanceTree(toBalance);
+				printBT();
 			};
 
 			/*		BALANCING TREE SPEC OPERATIONS		*/
@@ -767,7 +773,7 @@ namespace ft
 				{
 					// usleep(90000);
 					std::cout << prefix;
-					std::cout << (isLeft ? "├──" : "└──" );
+					std::cout << (isLeft ? "├─L─" : "└─R─" );
 					// print the value of the node
 					std::cout << node->dataPair.first << std::endl;
 					// enter the next tree level - left and right branch
