@@ -98,11 +98,11 @@ namespace ft
 				_allocNode.destroy(node);
 				_allocNode.deallocate(node, 1);
 				node = nullptr;
-			}
+			};
 
-			// Find NODE
+			// FIND NODE
 			bool containsNode( node_type const *needle, node_type *subTree) const
-			{ return (containsNode(needle->dataPair.first, subTree)); }
+			{ return (containsNode(needle->dataPair.first, subTree)); };
 			bool containsNode( key_type const &key, node_type *subTree) const
 			{
 				if(isTreeEmpty(subTree) || isEndNode(subTree))
@@ -113,11 +113,11 @@ namespace ft
 					return containsNode(key, subTree->right);
 				else
 					return true;
-			}
+			};
 			node_type *findNode(key_type const key) const
 			{ return (findNode(key, _racine)); };
 			node_type *findNode(node_type const *needle, node_type *subTree) const
-			{ return (findNode(needle->dataPair.first, subTree)); }
+			{ return (findNode(needle->dataPair.first, subTree)); };
 			node_type *findNode(key_type const key, node_type *subTree) const
 			{
 				if(isTreeEmpty(subTree) || isEndNode(subTree))
@@ -128,76 +128,51 @@ namespace ft
 					return findNode(key, subTree->right);
 				else
 					return subTree;
-			}
+			};
 
 			// INSERT NODE
-			node_type *insertNode(node_type *toInsert, node_type *subTree)
-			{ return insertNode(toInsert, subTree, subTree->parent);}
 			node_type *insertNode(node_type *toInsert)
+			{ return insertNode(toInsert, _racine); };
+			node_type *insertNode(node_type *toInsert, node_type *subTree) 
 			{
-				if (isTreeEmpty(_racine))
-					return insertNode(toInsert, _racine, NULL);
-				return insertNode(toInsert, _racine, _racine->parent);
-			}
-			node_type *insertNode(node_type *toInsert, node_type *subTree, node_type *parent) 
-			{
-				if (isTreeEmpty(subTree) && _nbNodes == 0)
+				if (isTreeEmpty(subTree) && _nbNodes == 0)	/*	first insertion into tree	*/
 				{
-					_nbNodes++;
 					_racine = toInsert;
+					_nbNodes++;
 					setEndNodeLast(_racine);
 					setEndNodeFirst(_racine);
-					return (_racine);
+					subTree = _racine;
 				}
-				else if (isTreeEmpty(subTree) || subTree == _endNode)
+				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))	/*	insert < current => go to left	*/
 				{
-					_nbNodes++;
-					toInsert->parent = parent;
-					subTree = toInsert;
-					setHeight(subTree);
-					balanceTree(subTree);
-					return (subTree);
-				}
-				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))   
-				{
-					std::cout << "toInsert: " << toInsert->dataPair.first << std::endl;
-					if (isTreeEmpty(subTree->left) || subTree->left == _endNode)
+					if (isTreeEmpty(subTree->left) || isEndNode(subTree->left))	/*	reached a leaf	*/
 					{
+						node_type *oldLeft = subTree->left;
 						toInsert->parent = subTree;
 						subTree->left = toInsert;
 						_nbNodes++;
-						if (subTree->left == getFirst())
-						{
+						if (isEndNode(oldLeft))	/*	reached a leaf that was endNode	*/
 							setEndNodeFirst(subTree->left);
-						}
-						setHeight(subTree->left);
-						balanceTree(subTree->left);
-						return (subTree->left);
+						subTree = subTree->left;
 					}
 					else
-						return insertNode(toInsert, subTree->left, subTree);
+						return insertNode(toInsert, subTree->left);
 				}
-				else if (_comp(subTree->dataPair.first, toInsert->dataPair.first))
+				else if (_comp(subTree->dataPair.first, toInsert->dataPair.first)) 	//*	insert > current => go to right	*/
 				{
-					if (isTreeEmpty(subTree->right) || subTree->right == _endNode)
+					if (isTreeEmpty(subTree->right) || isEndNode(subTree->right))	/*	reached a leaf	*/
 					{
-						std::cout << "toInsert: " << toInsert->dataPair.first << std::endl;
+						node_type *oldRight = subTree->right;
 						toInsert->parent = subTree;
 						subTree->right = toInsert;
 						_nbNodes++;
-						if (subTree->right == searchMaxNode(_racine))
-						{
-							std::cout << "searchMaxNode(): " << searchMaxNode(_racine)->dataPair.first << std::endl;
+						if (isEndNode(oldRight))	/*	reached a leaf that was endNode	*/
 							setEndNodeLast(subTree->right);
-						}
-						setHeight(subTree->right);
-						balanceTree(subTree->right);
-						return (subTree->right);
+						subTree = subTree->right;
 					}
 					else
-						return insertNode(toInsert, subTree->right, subTree);
+						return insertNode(toInsert, subTree->right);
 				}
-				setHeight(subTree);
 				balanceTree(subTree);
 				return subTree;
 			}
@@ -205,8 +180,7 @@ namespace ft
 			// DELETE NODE
 			void removeNode(node_type *toDel)
 			{
-				// we already searched and found the node to remove and we're already at position.
-				std::cout << "> toDel is " << toDel->dataPair.first << std::endl;
+				// std::cout << "> toDel is " << toDel->dataPair.first << std::endl;
 				/*	I/ toDel is _root				*/
 				if (toDel == _racine)
 				{
@@ -339,10 +313,10 @@ namespace ft
 				}
 				destroyNode(toDel);
 				_nbNodes -= 1;
-				// printBT();
 			};
 
-			//	AVL TREE OPERATIONS	//
+			/*		BALANCING TREE SPEC OPERATIONS		*/
+			/*	https://www.programiz.com/dsa/avl-tree	*/
 
 			size_type max(int a, int b) { return (a > b) ? a : b; };
 
@@ -371,7 +345,6 @@ namespace ft
 			{
 				while (node)
 				{
-					std::cout << "balance hello" << std::endl;
 					setHeight(node);
 					int balance = getBalanceFactor(node);
 
@@ -393,44 +366,50 @@ namespace ft
 				}
 			};
 
-			void rightRotate(node_type *bottom)
+			void rightRotate(node_type *futureBottom)
 			{
-				node_type *top = bottom->left;
+				node_type *futureTop = futureBottom->left;
 
-				bottom->left = top->right;
-				if (top->right)
-					top->right->parent = bottom;
-				top->right = bottom;
-				top->parent = bottom->parent;
-				if	(bottom->parent && bottom->parent->left == bottom)
-					bottom->parent->left = top;
-				else if (bottom->parent)
-					bottom->parent->right = top;
-				top->parent = top;
-				if (isTreeEmpty(top->parent))
-					_racine = top;
-				bottom->height = max(getHeight(bottom->left), getHeight(bottom->right)) + 1;
-				top->height = max(getHeight(top->left), getHeight(top->right)) + 1;
+				// std::cout << ">> rightRotate node: " << futureBottom->dataPair.first << " with " << futureTop->dataPair.first << std::endl;
+				// printBT();
+				futureBottom->left = futureTop->right;
+				if (futureTop->right)
+					futureTop->right->parent = futureBottom;
+				futureTop->right = futureBottom;
+				futureTop->parent = futureBottom->parent;
+				if	(futureBottom->parent && futureBottom->parent->left == futureBottom)
+					futureBottom->parent->left = futureTop;
+				else if (futureBottom->parent)
+					futureBottom->parent->right = futureTop;
+				futureBottom->parent = futureTop;
+				if (isTreeEmpty(futureTop->parent))
+					_racine = futureTop;
+				futureBottom->height = max(getHeight(futureBottom->left), getHeight(futureBottom->right)) + 1;
+				futureTop->height = max(getHeight(futureTop->left), getHeight(futureTop->right)) + 1;
+				// printBT();
 			}
 
-			void leftRotate(node_type *bottom)
+			void leftRotate(node_type *futureBottom)
 			{
-				node_type *top = bottom->right;
+				node_type *futureTop = futureBottom->right;
 
-				bottom->right = top->left;
-				if (top->left)
-					top->left->parent = bottom;
-				top->left = bottom;
-				top->parent = bottom->parent;
-				if	(bottom->parent && bottom->parent->left == bottom)
-					bottom->parent->left = top;
-				else if (bottom->parent)
-					bottom->parent->right = top;
-				top->parent = top;
-				if (isTreeEmpty(top->parent))
-					_racine = top;
-				bottom->height = max(getHeight(bottom->left), getHeight(bottom->right)) + 1;
-				top->height = max(getHeight(top->left), getHeight(top->right)) + 1;
+				// std::cout << ">> leftRotate node: " << futureBottom->dataPair.first << " with " << futureTop->dataPair.first << std::endl;
+				// printBT();
+				futureBottom->right = futureTop->left;
+				if (futureTop->left)
+					futureTop->left->parent = futureBottom;
+				futureTop->left = futureBottom;
+				futureTop->parent = futureBottom->parent;
+				if	(futureBottom->parent && futureBottom->parent->left == futureBottom)
+					futureBottom->parent->left = futureTop;
+				else if (futureBottom->parent)
+					futureBottom->parent->right = futureTop;
+				futureBottom->parent = futureTop;
+				if (isTreeEmpty(futureTop->parent))
+					_racine = futureTop;
+				futureBottom->height = max(getHeight(futureBottom->left), getHeight(futureBottom->right)) + 1;
+				futureTop->height = max(getHeight(futureTop->left), getHeight(futureTop->right)) + 1;
+				// printBT();
 			}
 
 			bool isTreeEmpty(node_type *tree) const { return (tree == nullptr); };
