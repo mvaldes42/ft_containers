@@ -501,11 +501,10 @@ namespace ft
 			/*✅*/
 			map (const map& x) : _racine(NULL), _nbNodes(0), _allocPair(x._allocPair), _comp(x._comp)
 			{
+				std::cout << "NOTHING" << std::endl;
 				_endNode = createNode();
-				// insertNode(_endNode);
-				const_iterator first = x.begin();
-				for (; first != x.end(); first++)
-					insertNode(first.getNode());
+				insertNode(_endNode);
+				insert(x.begin(), x.end());
 			};
 			/*✅*/
 			~map()
