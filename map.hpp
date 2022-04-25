@@ -6,6 +6,7 @@
 #include "reverse_iterator.hpp"
 #include "pair.hpp"
 #include "iterator_map.hpp"
+#include "utils.hpp"
 
 namespace ft
 {
@@ -30,9 +31,9 @@ namespace ft
 			node(const node &other) : dataPair(other.dataPair), parent(other.parent), left(other.left), right(other.right) {};
 			~node()
 			{
-				parent = nullptr;
-				left = nullptr;
-				right = nullptr;
+				parent = NULL;
+				left = NULL;
+				right = NULL;
 			}
 	};
 	template < class Key,class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
@@ -93,11 +94,11 @@ namespace ft
 			// DESTROY NODE
 			void destroyNode(node_type *node)
 			{
-				std::cout << "node destroyed is: " << node->dataPair.first << std::endl;
+				// std::cout << "node destroyed is: " << node->dataPair.first << std::endl;
 				_allocPair.destroy(&node->dataPair);
 				_allocNode.destroy(node);
 				_allocNode.deallocate(node, 1);
-				node = nullptr;
+				node = NULL;
 			};
 
 			// FIND NODE
@@ -185,11 +186,11 @@ namespace ft
 				node_type *toBalance;
 				if (toDel == _racine)
 				{
-					toBalance = nullptr;
+					toBalance = NULL;
 					/*	A) _root is the only node	*/
 					if (_nbNodes == 1)
 					{
-						std::cout << "	> racine is the only node" << std::endl;
+						// std::cout << "	> racine is the only node" << std::endl;
 						// OR should we just del _racine ?
 						_racine = _endNode;
 						_endNode->right = _endNode;
@@ -199,33 +200,33 @@ namespace ft
 					/*	a) left child			*/
 					else if (_racine->left && _racine->right == _endNode)
 					{
-						std::cout << "	> racine has only a left child" << std::endl;
+						// std::cout << "	> racine has only a left child" << std::endl;
 						_racine = toDel->left;
-						toDel->left->parent = nullptr;
+						toDel->left->parent = NULL;
 						// _racine->right = _endNode;
 						// _endNode->left = _racine;
 						node_type *maxNode = searchMaxNode(toDel->left);
-						std::cout << "	> maxNode: " << maxNode->dataPair.first << std::endl;
+						// std::cout << "	> maxNode: " << maxNode->dataPair.first << std::endl;
 						maxNode->right = _endNode;
 						_endNode->left = maxNode;
 					}
 					/*	b) right child			*/
 					else if (_racine->right && _racine->left == _endNode)
 					{
-						std::cout << "	> racine has only a right child" << std::endl;
+						// std::cout << "	> racine has only a right child" << std::endl;
 						_racine = toDel->right;
-						_racine->parent = nullptr;
+						_racine->parent = NULL;
 						// _racine->left = _endNode;
 						// _endNode->right = _racine;
 						node_type *minNode = searchMinNode(toDel->right);
-						std::cout << "	> minNode: " << minNode->dataPair.first << std::endl;
+						// std::cout << "	> minNode: " << minNode->dataPair.first << std::endl;
 						minNode->left = _endNode;
 						_endNode->right = minNode;
 						}
 					/*	C) _root has two children	*/
 					else
 					{
-						std::cout << "	> racine has two children" << std::endl;
+						// std::cout << "	> racine has two children" << std::endl;
 						node_type *maxNode = searchMaxNode(_racine->left);
 						_allocPair.destroy(&_racine->dataPair);
 						_allocPair.construct(&_racine->dataPair, maxNode->dataPair);
@@ -239,36 +240,35 @@ namespace ft
 					/*	A) toDel is a leaf			*/
 					if (( isTreeEmpty(toDel->left) || isEndNode(toDel->left) ) && ( isTreeEmpty(toDel->right) || isEndNode(toDel->right) ))
 					{
-						std::cout << "	> toDel is a leaf" << std::endl;
-						std::cout << "	> toDel->left =====> " << toDel->left->dataPair.first << std::endl;
+						// std::cout << "	> toDel is a leaf" << std::endl;
 						if (isEndNode(toDel->left))
 						{
-							std::cout << "		> min leaf" << std::endl;
+							// std::cout << "		> min leaf" << std::endl;
 							_endNode->right = toDel->parent;
 							toDel->parent->left = _endNode;
 						}
 						else if (isEndNode(toDel->right))
 						{
-							std::cout << "max leaf" << std::endl;
+							// std::cout << "max leaf" << std::endl;
 							_endNode->left = toDel->parent;
 							toDel->parent->right = _endNode;
 						}
 						else if (toDel->dataPair.first <= toDel->parent->dataPair.first)
 						{
-							std::cout << "left leaf" << std::endl;
-							toDel->parent->left = nullptr;
+							// std::cout << "left leaf" << std::endl;
+							toDel->parent->left = NULL;
 						}
 						else
 						{
-							std::cout << "right leaf" << std::endl;
-							toDel->parent->right = nullptr;
+							// std::cout << "right leaf" << std::endl;
+							toDel->parent->right = NULL;
 						}
 					}
 					/*	B) toDel has only one child	*/
 					/*	a) left child				*/
 					else if ( (!isTreeEmpty(toDel->left) && !isEndNode(toDel->left)) && (isTreeEmpty(toDel->right) || isEndNode(toDel->right)) )
 					{
-						std::cout << "	> toDel has one left child" << std::endl;
+						// std::cout << "	> toDel has one left child" << std::endl;
 						if (toDel->dataPair.first <= toDel->parent->dataPair.first)
 							toDel->parent->left = toDel->left;
 						else
@@ -318,7 +318,7 @@ namespace ft
 				destroyNode(toDel);
 				_nbNodes -= 1;
 				balanceTree(toBalance);
-				printBT();
+				// printBT();
 			};
 
 			/*		BALANCING TREE SPEC OPERATIONS		*/
@@ -418,7 +418,7 @@ namespace ft
 				// printBT();
 			}
 
-			bool isTreeEmpty(node_type *tree) const { return (tree == nullptr); };
+			bool isTreeEmpty(node_type *tree) const { return (tree == NULL); };
 
 			bool isEndNode(node_type *node) const { return (node == _endNode); };
 
@@ -499,10 +499,13 @@ namespace ft
 		 			insert(*first);
 			};
 			/*✅*/
-			map (const map& x) : _racine(NULL), _nbNodes(0), _allocPair(x.get_allocator()), _comp(x.key_comp())
+			map (const map& x) : _racine(NULL), _nbNodes(0), _allocPair(x._allocPair), _comp(x._comp)
 			{
 				_endNode = createNode();
-				insert(x.begin(), x.end());
+				// insertNode(_endNode);
+				const_iterator first = x.begin();
+				for (; first != x.end(); first++)
+					insertNode(first.getNode());
 			};
 			/*✅*/
 			~map()
@@ -527,7 +530,7 @@ namespace ft
 				if (!empty())
 					first = getFirst();
 				else
-					first = nullptr;
+					first = NULL;
 				return (iterator(_racine, _endNode, first));
 			};
 			/*✅*/
@@ -537,7 +540,7 @@ namespace ft
 				if (!empty())
 					first = getFirst();
 				else
-					first = nullptr;
+					first = NULL;
 				return (const_iterator(_racine, _endNode, first));
 			};
 			/*✅*/
@@ -636,7 +639,7 @@ namespace ft
 			size_type erase (const key_type& k)
 			{
 				node_type *foundNode = findNode(k);
-				if (foundNode == nullptr)
+				if (foundNode == NULL)
 					return 0;
 				removeNode(foundNode);
 				return 1;
@@ -646,7 +649,7 @@ namespace ft
 			{
 				while (first != last)
 				{
-					std::cout << "ERASE: first: " << first.getNode()->dataPair.first << std::endl;
+					// std::cout << "ERASE: first: " << first.getNode()->dataPair.first << std::endl;
 					erase(first++);
 				}
 				// erase(first);
@@ -718,7 +721,12 @@ namespace ft
 			};
 			/*✅*/
 			const_iterator lower_bound (const key_type& k) const
-			{ return const_iterator(lower_bound(k)); };
+			{
+				const_iterator it = begin();
+				const_iterator itEnd = end();
+				for (; it != itEnd && (key_comp())(it.getNode()->dataPair.first, k) == true; it++);
+				return (it);
+			};
 			/*✅*/
 			iterator upper_bound (const key_type& k)
 			{
@@ -729,7 +737,12 @@ namespace ft
 			};
 			/*✅*/
 			const_iterator upper_bound (const key_type& k) const
-			{ return const_iterator(upper_bound(k)); };
+			{
+				const_iterator it = begin();
+				const_iterator itEnd = end();
+				for (; it != itEnd && (key_comp())(k, it.getNode()->dataPair.first) == false; it++);
+				return (it);				
+			};
 			/*✅*/
 			ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const
 			{
@@ -750,7 +763,7 @@ namespace ft
 
 			// void printBT(node_type *root, std::string indent, bool last)
 			// {
-			// 	if (root != nullptr && root != _endNode) {
+			// 	if (root != NULL && root != _endNode) {
 			// 		std::cout << indent;
 			// 		if (last) {
 			// 		std::cout << "R----";

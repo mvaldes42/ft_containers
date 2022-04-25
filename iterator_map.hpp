@@ -68,26 +68,26 @@ namespace ft
 			mapIterator & operator ++()
 			{
 				Node *currentNode;
-				// if (_node != nullptr)
+				// if (_node != NULL)
 					// std::cout << "ITERATOR start: " << _node->dataPair.first << std::endl;
-				if (_node == nullptr && _node != _endNode)
+				if (_node == NULL && _node != _endNode)
 				{
 					_node = _root;
-					if (_node == nullptr)
+					if (_node == NULL)
 						return *this;
-					while (_node->left != nullptr && _node->left != _endNode)
+					while (_node->left != NULL && _node->left != _endNode)
 						_node = _node->left;
 				}
-				else if (_node->right != nullptr && _node->right != _endNode)
+				else if (_node->right != NULL && _node->right != _endNode)
 				{
 					_node = _node->right;
-					while (_node->left != nullptr && _node->left != _endNode)
+					while (_node->left != NULL && _node->left != _endNode)
 						_node = _node->left;
 				}
-				else if (_node->right == nullptr)
+				else if (_node->right == NULL)
 				{
 					currentNode = _node->parent;
-					while (currentNode != nullptr && currentNode != _endNode && currentNode->right != nullptr && currentNode->right != _endNode)
+					while (currentNode != NULL && currentNode != _endNode && currentNode->right != NULL && currentNode->right != _endNode)
 					{
 						if (_node == currentNode->right)
 						{
@@ -113,24 +113,24 @@ namespace ft
 			mapIterator & operator --()
 			{
 				Node *currentNode;
-				if (_node == nullptr)
+				if (_node == NULL)
 				{
 					_node = _root;
-					if (_node == nullptr)
+					if (_node == NULL)
 						return *this;
-					while (_node->right != nullptr)
+					while (_node->right != NULL)
 						_node = _node->right;
 				}
-				else if (_node->left != nullptr && _node->left != _endNode)
+				else if (_node->left != NULL && _node->left != _endNode)
 				{
 					_node = _node->left;
-					while (_node->right != nullptr && _node->right != _endNode)
+					while (_node->right != NULL && _node->right != _endNode)
 						_node = _node->right;
 				}
-				else if (_node->left == nullptr)
+				else if (_node->left == NULL)
 				{
 					currentNode = _node->parent;
-					while (currentNode != nullptr && currentNode != _endNode && _node == currentNode->left)
+					while (currentNode != NULL && currentNode != _endNode && _node == currentNode->left)
 					{
 						_node = currentNode;
 						currentNode = currentNode->parent;
