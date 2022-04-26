@@ -139,7 +139,8 @@ namespace ft
 				if (isTreeEmpty(subTree) && _nbNodes == 0)	/*	first insertion into tree	*/
 				{
 					_racine = toInsert;
-					_nbNodes++;
+					if (toInsert != _endNode)
+						_nbNodes++;
 					setEndNodeLast(_racine);
 					setEndNodeFirst(_racine);
 					subTree = _racine;
@@ -488,6 +489,7 @@ namespace ft
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp)
 			{
 				_endNode = createNode();
+				insertNode(_endNode);
 			};
 			/*✅*/
 			template <class InputIterator>
@@ -495,13 +497,13 @@ namespace ft
 			: _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp)
 			{
 				_endNode = createNode();
+				insertNode(_endNode);
 				for (; first != last; first++)
 		 			insert(*first);
 			};
 			/*✅*/
 			map (const map& x) : _racine(NULL), _nbNodes(0), _allocPair(x._allocPair), _comp(x._comp)
 			{
-				std::cout << "NOTHING" << std::endl;
 				_endNode = createNode();
 				insertNode(_endNode);
 				insert(x.begin(), x.end());
@@ -529,7 +531,7 @@ namespace ft
 				if (!empty())
 					first = getFirst();
 				else
-					first = NULL;
+					first = _racine;
 				return (iterator(_racine, _endNode, first));
 			};
 			/*✅*/
@@ -539,7 +541,7 @@ namespace ft
 				if (!empty())
 					first = getFirst();
 				else
-					first = NULL;
+					first = _racine;
 				return (const_iterator(_racine, _endNode, first));
 			};
 			/*✅*/
@@ -595,16 +597,17 @@ namespace ft
 			/*✅*/
 			ft::pair<iterator,bool> insert (const value_type& val)
 			{
-				size_type preNbNodes = _nbNodes;
-				node_type *toInsert = createNode(val);
-				node_type *insertedNode = insertNode(toInsert);
-				bool isInserted = true;
-				if (preNbNodes == _nbNodes)
+				node_type *foundNode = findNode(val.first);	
+				if (foundNode)
+					return (ft::pair<iterator, bool>(iterator(_racine, _endNode, foundNode), false));
+				node_type *insertedNode;
+				if (_nbNodes == 0 && _racine == _endNode)
 				{
-					destroyNode(toInsert);
-					isInserted = false;
+					insertedNode = insertNode(createNode(val), NULL);
 				}
-				return (ft::pair<iterator, bool>(iterator(_racine, _endNode, insertedNode), isInserted));
+				else
+					insertedNode = insertNode(createNode(val));
+				return (ft::pair<iterator, bool>(iterator(_racine, _endNode, insertedNode), true));
 			};
 			/*✅*/
 			iterator insert (iterator position, const value_type& val)
@@ -612,6 +615,12 @@ namespace ft
 				node_type *foundNode = findNode(val.first);
 				if (foundNode)
 					return (iterator(_racine, _endNode, foundNode));
+				node_type *insertedNode;
+				if (position.getNode() == _racine && _racine == _endNode)
+				{
+					insertedNode = insertNode(createNode(val), NULL);
+					return (iterator(_racine, _endNode, insertedNode));
+				}
 				if (_comp(val.first, position.getNode()->dataPair.first))
 				{
 					for (; position != end() && _comp(val.first, position.getNode()->dataPair.first); position--);
@@ -622,7 +631,7 @@ namespace ft
 					for (; position != end() && _comp(position.getNode()->dataPair.first, val.first); position++);
 					position--;
 				}
-				node_type *insertedNode = insertNode(createNode(val), position.getNode());
+				insertedNode = insertNode(createNode(val), position.getNode());
 				return (iterator(_racine, _endNode, insertedNode));
 			};
 			/*✅*/

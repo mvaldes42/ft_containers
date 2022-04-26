@@ -112,14 +112,16 @@ int main()
 		// rend += 1;
 		// std::cout << "*(rend += 1): " << *rend << std::endl;
 		ft::map<int, char> test;
-		// std::cout << "test[15]: " << test[15] << std::endl;
-		// std::cout << "test[12]: " << test[12] << std::endl;
 
 		typedef ft::map<int, char>::value_type pair_type;
+		test.insert(test.begin(), pair_type(1337, 'b'));
+		std::cout << "test[15]: " << test[15] << std::endl;
+		std::cout << "test[12]: " << test[12] << std::endl;
+
 		test.insert(pair_type(10, 'a'));
 		test.insert(pair_type(11, 'e'));
 		test.insert(pair_type(12, 'z'));
-		// test.insert(pair_type(12, 'z'));
+		test.insert(pair_type(12, 'z'));
 		
 		test.insert(pair_type(30, 'b'));
 		test.insert(pair_type(6, 'c'));
@@ -162,9 +164,10 @@ int main()
 		// test.printBT();
 		ft::map<int, char>::iterator itera = test.begin();
 		// std::cout << node3->dataPair.first << ", "<< itera->first << std::endl;
-		while (itera++ != test.end())
+		while (itera != test.end())
 		{
 			std::cout << "itera++ " << itera->first << std::endl;
+			itera++;
 		}
 		// std::cout << "First: " << test.getFirst()->dataPair.first << std::endl;
 		// std::cout << "Last: " << test.getLast()->dataPair.first << std::endl;
