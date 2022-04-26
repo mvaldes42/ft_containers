@@ -42,11 +42,17 @@ namespace ft
 			key_compare	_comp;
 
 		public:
-			mapIterator(Node *root = NULL,  Node *endNode = NULL, Node *node = NULL, const key_compare& comp = key_compare()) : _node(node), _root(root), _endNode(endNode),_comp(comp) {};
-			mapIterator(const mapIterator &other) : _node(other._node), _endNode(other._endNode), _comp(other._comp) {};
+			mapIterator(Node *root = NULL,  Node *endNode = NULL, Node *node = NULL, const key_compare& comp = key_compare())
+			: _node(node), _root(root), _endNode(endNode),_comp(comp)
+			{};
+			mapIterator(const mapIterator<Key, T, Node, false, Compare> &other)
+			: _node(other.getNode()), _root(other.getRoot()), _endNode(other.getEnd()), _comp(other.getComp()) {};
 			~mapIterator() {};
 
 			Node *getNode() const { return _node; };
+			Node *getRoot() const { return _root; };
+			Node *getEnd() const { return _endNode; };
+			Compare getComp() const { return _comp; };
 
 			mapIterator & operator = (const mapIterator &rhs)
 			{

@@ -111,30 +111,48 @@ int main()
 		// std::cout << "*(rend + 1): " << *(rend + 1) << std::endl;
 		// rend += 1;
 		// std::cout << "*(rend += 1): " << *rend << std::endl;
-		ft::map<int, char> test;
+		// ft::map<int, char> test;
 
-		typedef ft::map<int, char>::value_type pair_type;
-		test.insert(test.begin(), pair_type(1337, 'b'));
-		std::cout << "test[15]: " << test[15] << std::endl;
-		std::cout << "test[12]: " << test[12] << std::endl;
+		// typedef ft::map<int, char>::value_type pair_type;
+		// test.insert(test.begin(), pair_type(1337, 'b'));
+		// std::cout << "test[15]: " << (test[15] = 'n') << std::endl;
+		// std::cout << "test[12]: " << test[12] << std::endl;
 
-		test.insert(pair_type(10, 'a'));
-		test.insert(pair_type(11, 'e'));
-		test.insert(pair_type(12, 'z'));
-		test.insert(pair_type(12, 'z'));
+		// test.insert(pair_type(10, 'a'));
+		// test.insert(pair_type(11, 'e'));
+		// test.insert(pair_type(12, 'z'));
+		// test.insert(pair_type(12, 'z'));
 		
-		test.insert(pair_type(30, 'b'));
-		test.insert(pair_type(6, 'c'));
+		// test.insert(pair_type(30, 'b'));
+		// test.insert(pair_type(6, 'c'));
 	
-		test.insert(pair_type(13, 'r'));
-		test.insert(pair_type(5, 'd'));
-		test.insert(pair_type(90, 'f'));
-		test.insert(pair_type(15, 'g'));
-		test.insert(pair_type(14, 'i'));
-		test.insert(pair_type(100, 'u'));
-		test.insert(pair_type(120, 'y'));
+		// test.insert(pair_type(13, 'r'));
+		// test.insert(pair_type(5, 'd'));
+		// test.insert(pair_type(90, 'f'));
+		// test.insert(pair_type(15, 'g'));
+		// test.insert(pair_type(14, 'i'));
+		// test.insert(pair_type(100, 'u'));
+		// test.insert(pair_type(120, 'y'));
 
-		test.printBT();
+		// test.printBT();
+
+		// test.find(15)->second = 'k';
+
+		ft::map<int, std::string> mp;
+		// typedef ft::map<int, std::string>::value_type pair_type_string;
+		typedef ft::map<int, std::string>::iterator itera;
+		mp[42] = "fgzgxfn";
+		mp[25] = "funny";
+		mp[80] = "hey";
+		mp[12] = "no";
+		mp[27] = "bee";
+		mp[90] = "8";
+
+		itera iter;
+		iter = mp.find(80);
+		// iter->second = "okieeeeeeeee jlklkjlkjlk";
+		// mp.find(27)->second = "newly inserted mapped_value";
+
 		// test.erase(10);
 		// std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).second << std::endl;
 		// std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
@@ -162,13 +180,13 @@ int main()
 
 		// std::cout << "insert 80 near 30: " << test.insert(test.find(30), pair_type(80, 'd')).getNode()->dataPair.first << std::endl;
 		// test.printBT();
-		ft::map<int, char>::iterator itera = test.begin();
-		// std::cout << node3->dataPair.first << ", "<< itera->first << std::endl;
-		while (itera != test.end())
-		{
-			std::cout << "itera++ " << itera->first << std::endl;
-			itera++;
-		}
+		// ft::map<int, char>::iterator itera = test.begin();
+		// // std::cout << node3->dataPair.first << ", "<< itera->first << std::endl;
+		// while (itera != test.end())
+		// {
+		// 	std::cout << "itera++ " << itera->first << std::endl;
+		// 	itera++;
+		// }
 		// std::cout << "First: " << test.getFirst()->dataPair.first << std::endl;
 		// std::cout << "Last: " << test.getLast()->dataPair.first << std::endl;
 

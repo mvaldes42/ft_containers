@@ -95,7 +95,9 @@ namespace ft
 			void destroyNode(node_type *node)
 			{
 				// std::cout << "node destroyed is: " << node->dataPair.first << std::endl;
-				_allocPair.destroy(&node->dataPair);
+				// std::cout << "node destroyed is: " << &node->dataPair << std::endl;
+				// _allocPair.destroy(&node->dataPair); /// CHECK ??
+				// std::cout << "node destroyed is: " << node<< std::endl;
 				_allocNode.destroy(node);
 				_allocNode.deallocate(node, 1);
 				node = NULL;
@@ -527,42 +529,22 @@ namespace ft
 			/*✅*/
 			iterator begin()
 			{
-				node_type *first;
-				if (!empty())
-					first = getFirst();
-				else
-					first = _racine;
-				return (iterator(_racine, _endNode, first));
+				return (iterator(_racine, _endNode, _endNode->right));
 			};
 			/*✅*/
 			const_iterator begin() const
 			{
-				node_type *first;
-				if (!empty())
-					first = getFirst();
-				else
-					first = _racine;
-				return (const_iterator(_racine, _endNode, first));
+				return (const_iterator(_racine, _endNode, _endNode->right));
 			};
 			/*✅*/
 			iterator end()
 			{
-				node_type *afterEnd;
-				if (!empty())
-					afterEnd = _endNode;
-				else
-					return (begin());
-				return (iterator(_racine, _endNode, afterEnd));
+				return (iterator(_racine, _endNode, _endNode));
 			};
 			/*✅*/
 			const_iterator end() const
 			{
-				node_type *afterEnd;
-				if (!empty())
-					afterEnd = _endNode;
-				else
-					return (begin());
-				return (const_iterator(_racine, _endNode, afterEnd));
+				return (const_iterator(_racine, _endNode, _endNode));
 			};
 			/*✅*/
 			reverse_iterator rbegin() { return reverse_iterator(end()); };
@@ -586,10 +568,14 @@ namespace ft
 			mapped_type& operator[] (const key_type& k)
 			{
 				node_type *newNode = findNode(k, _racine);
-				if (!isTreeEmpty(newNode))
-					return (newNode->dataPair.second);
-				newNode = createNode(value_type(k, mapped_type()));
-				insertNode(newNode);
+				if (isTreeEmpty(newNode))
+				{
+					newNode = createNode(value_type(k, mapped_type()));
+					if (_nbNodes == 0 && _racine == _endNode)
+						insertNode(newNode, NULL);
+					else
+						insertNode(newNode);
+				}
 				return (newNode->dataPair.second);
 			};
 
