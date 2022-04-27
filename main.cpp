@@ -141,7 +141,7 @@ int main()
 		// test.insert(pair_type(100, 'u'));
 		// test.insert(pair_type(120, 'y'));
 
-		// test.printBT();
+		// test.printTree();
 
 		// test.find(15)->second = 'k';
 
@@ -164,7 +164,7 @@ int main()
 		// test.erase(10);
 		// std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).second << std::endl;
 		// std::cout << "insert node 500: " << test.insert(pair_type(500, 'y')).first.getNode() << std::endl;
-		// test.printBT();
+		// test.printTree();
 		// std::cout << "test[6] parent : " << test.findNode(6, test._racine)->parent->dataPair.first << std::endl;
 		// std::cout << "node is found : " << test.contains(node1, test._racine) << std::endl;
 		// std::cout << "node is found : " << test.findNode(test.createNode(pair_type(90, 'f')), test._racine)->dataPair.second << std::endl;
@@ -176,7 +176,7 @@ int main()
 
 		// std::cout << "test[15] parent : " << test.findNode(15, test._racine)->parent->dataPair.first << std::endl;
 		// std::cout << "test[6]: " << test[6] << std::endl;
-		// test.printBT();
+		// test.printTree();
 
 		// test.find(15);
 		// test.find(30000);
@@ -187,7 +187,7 @@ int main()
 		// std::cout << "Upperbound of 100: " << test.upper_bound(100).getNode()->dataPair.first << std::endl;
 
 		// std::cout << "insert 80 near 30: " << test.insert(test.find(30), pair_type(80, 'd')).getNode()->dataPair.first << std::endl;
-		// test.printBT();
+		// test.printTree();
 		// ft::map<int, char>::iterator itera = test.begin();
 		// // std::cout << node3->dataPair.first << ", "<< itera->first << std::endl;
 		// while (itera != test.end())
@@ -233,15 +233,15 @@ int main()
 		// testCopy.erase(90);
 		// testCopy.insert(pair_type(80, 'f'));
 		// testCopy.insert(pair_type(400, 'y'));
-		// testCopy.printBT();
+		// testCopy.printTree();
 
 		// std::cout << "does (testCopy < test)? " << (test > testCopy) << std::endl;
 
 		// ft::map<int, char> testPartCopy(test.begin(), test.find(15));
-		// testPartCopy.printBT();
+		// testPartCopy.printTree();
 		// testCopy = testPartCopy;
-		// testCopy.printBT();
-		// test.printBT();
+		// testCopy.printTree();
+		// test.printTree();
 		std::cout << std::endl << "////////DESTRUCTOR/////////" << std::endl << std::endl;
 	}
 }
