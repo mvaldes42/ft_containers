@@ -57,10 +57,10 @@ namespace ft
 			typedef typename ft::node<key_type, mapped_type> node_type;
 			typedef typename Alloc::template rebind<ft::node<Key, T> >::other allocator_node;
 
-			typedef	typename ft::mapIterator<Key, T, node_type, false>	iterator;
+			typedef	typename ft::mapIterator<Key, T, node_type, key_compare, false>	iterator;
 			typedef typename ft::reverse_iterator<iterator>				reverse_iterator;
-			typedef	typename ft::mapIterator<Key, T, node_type, true>	const_iterator;
-			typedef typename ft::reverse_iterator<iterator>				const_reverse_iterator;
+			typedef	typename ft::mapIterator<Key, T, node_type, key_compare, true>	const_iterator;
+			typedef typename ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 
 			class value_compare : public std::binary_function<value_type,value_type,bool>
 			{
@@ -69,7 +69,8 @@ namespace ft
 					Compare comp;
 					value_compare(Compare c) : comp(c) {}
 				public:
-					bool operator()(const value_type& x, const value_type& y) const { return comp(x.first, y.first); }
+					bool operator()(const value_type& x, const value_type& y) const
+					{ return comp(x.first, y.first); }
 			};
 
 		private:
@@ -452,14 +453,14 @@ namespace ft
 			}
 			node_type *getFirst() const
 			{
-				iterator it(_racine, _endNode);
+				iterator it(_racine, _endNode, NULL, _comp);
 				while (it++ != _endNode)
 					;
 				return (it.getNode());
 			};
 			node_type *getLast() const
 			{
-				iterator it(_racine, _endNode);
+				iterator it(_racine, _endNode, NULL, _comp);
 				while (it-- != _endNode)
 					;
 				return (it.getNode());
@@ -529,22 +530,22 @@ namespace ft
 			/*✅*/
 			iterator begin()
 			{
-				return (iterator(_racine, _endNode, _endNode->right));
+				return (iterator(_racine, _endNode, _endNode->right, _comp));
 			};
 			/*✅*/
 			const_iterator begin() const
 			{
-				return (const_iterator(_racine, _endNode, _endNode->right));
+				return (const_iterator(_racine, _endNode, _endNode->right, _comp));
 			};
 			/*✅*/
 			iterator end()
 			{
-				return (iterator(_racine, _endNode, _endNode));
+				return (iterator(_racine, _endNode, _endNode, _comp));
 			};
 			/*✅*/
 			const_iterator end() const
 			{
-				return (const_iterator(_racine, _endNode, _endNode));
+				return (const_iterator(_racine, _endNode, _endNode, _comp));
 			};
 			/*✅*/
 			reverse_iterator rbegin() { return reverse_iterator(end()); };
@@ -585,7 +586,7 @@ namespace ft
 			{
 				node_type *foundNode = findNode(val.first);	
 				if (foundNode)
-					return (ft::pair<iterator, bool>(iterator(_racine, _endNode, foundNode), false));
+					return (ft::pair<iterator, bool>(iterator(_racine, _endNode, foundNode, _comp), false));
 				node_type *insertedNode;
 				if (_nbNodes == 0 && _racine == _endNode)
 				{
@@ -593,19 +594,19 @@ namespace ft
 				}
 				else
 					insertedNode = insertNode(createNode(val));
-				return (ft::pair<iterator, bool>(iterator(_racine, _endNode, insertedNode), true));
+				return (ft::pair<iterator, bool>(iterator(_racine, _endNode, insertedNode, _comp), true));
 			};
 			/*✅*/
 			iterator insert (iterator position, const value_type& val)
 			{
 				node_type *foundNode = findNode(val.first);
 				if (foundNode)
-					return (iterator(_racine, _endNode, foundNode));
+					return (iterator(_racine, _endNode, foundNode, _comp));
 				node_type *insertedNode;
 				if (position.getNode() == _racine && _racine == _endNode)
 				{
 					insertedNode = insertNode(createNode(val), NULL);
-					return (iterator(_racine, _endNode, insertedNode));
+					return (iterator(_racine, _endNode, insertedNode, _comp));
 				}
 				if (_comp(val.first, position.getNode()->dataPair.first))
 				{
@@ -652,18 +653,21 @@ namespace ft
 			void swap (map& x)
 			{
 				node_type		*_racineTemp = x._racine;
+				node_type		*_endNodeTemp = x._endNode;
 				size_type		_nbNodesTemp = x._nbNodes;
 				allocator_type	_allocPairTemp = x._allocPair;
 				allocator_node	_allocNodeTemp = x._allocNode;
 				key_compare		_compTemp = x._comp;
 
 				x._racine = _racine;
+				x._endNode = _endNode;
 				x._nbNodes = _nbNodes;
 				x._allocPair = _allocPair;
 				x._allocNode = _allocNode;
 				x._comp = _comp;
 
 				_racine = _racineTemp;
+				_endNode = _endNodeTemp;
 				_nbNodes = _nbNodesTemp;
 				_allocPair = _allocPairTemp;
 				_allocNode = _allocNodeTemp;
@@ -687,7 +691,7 @@ namespace ft
 			{
 				node_type *foundNode = findNode(k, _racine);
 				if (foundNode)
-					return (iterator(_racine, _endNode, foundNode));
+					return (iterator(_racine, _endNode, foundNode, _comp));
 				return (end());
 			};
 			/*✅*/
@@ -695,7 +699,7 @@ namespace ft
 			{
 				node_type *foundNode = findNode(k, _racine);
 				if (foundNode)
-					return (const_iterator(_racine, _endNode, foundNode));
+					return (const_iterator(_racine, _endNode, foundNode, _comp));
 				return (const_iterator(end()));
 			};
 			/*✅*/
@@ -797,7 +801,7 @@ namespace ft
 	bool operator== ( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
 	{
 		typedef typename ft::node<Key, T> node_type;
-		typedef	typename ft::mapIterator<Key, T, node_type, true> const_iterator;
+		typedef	typename ft::mapIterator<Key, T, node_type, Compare, true> const_iterator;
 
 		if (lhs.size() != rhs.size())
 			return false;

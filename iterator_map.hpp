@@ -19,7 +19,7 @@ namespace ft
 	struct chooseConst<true, falseConst, trueConst>
 	{ typedef trueConst type; };
 
-	template < class Key, class T, typename Node, bool isConst = false, class Compare = std::less<Key> >
+	template < class Key, class T, typename Node, class Compare, bool isConst = false >
 	class mapIterator
 	{
 		public:
@@ -45,7 +45,7 @@ namespace ft
 			mapIterator(Node *root = NULL,  Node *endNode = NULL, Node *node = NULL, const key_compare& comp = key_compare())
 			: _node(node), _root(root), _endNode(endNode),_comp(comp)
 			{};
-			mapIterator(const mapIterator<Key, T, Node, false, Compare> &other)
+			mapIterator(const mapIterator<Key, T, Node, key_compare, false> &other)
 			: _node(other.getNode()), _root(other.getRoot()), _endNode(other.getEnd()), _comp(other.getComp()) {};
 			~mapIterator() {};
 
@@ -74,8 +74,6 @@ namespace ft
 			mapIterator & operator ++()
 			{
 				Node *currentNode;
-				// if (_node != NULL)
-					// std::cout << "ITERATOR start: " << _node->dataPair.first << std::endl;
 				if (_node == NULL && _node != _endNode)
 				{
 					_node = _root;
@@ -107,7 +105,6 @@ namespace ft
 				}
 				else if (_node->right == _endNode)
 					_node = _endNode;
-				// std::cout << "ITERATOR end: " << _node->dataPair.first << std::endl;
 				return *this;
 			};
 			mapIterator operator ++(int)

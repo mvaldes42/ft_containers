@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <vector>
+#include <list>
 
 
 // #define BUFFER_SIZE 4096
@@ -12,6 +13,12 @@
 // 	int idx;
 // 	char buff[BUFFER_SIZE];
 // };
+
+struct ft_more
+{
+	bool	operator()(const int &first, const int &second) const
+	{ return (first > second); }
+};
 
 int main()
 {
@@ -138,9 +145,10 @@ int main()
 
 		// test.find(15)->second = 'k';
 
-		ft::map<int, std::string> mp;
+
+		ft::map<int, std::string, ft_more> mp;
 		// typedef ft::map<int, std::string>::value_type pair_type_string;
-		typedef ft::map<int, std::string>::iterator itera;
+		// typedef ft::map<int, std::string>::iterator itera;
 		mp[42] = "fgzgxfn";
 		mp[25] = "funny";
 		mp[80] = "hey";
@@ -148,8 +156,8 @@ int main()
 		mp[27] = "bee";
 		mp[90] = "8";
 
-		itera iter;
-		iter = mp.find(80);
+		// itera iter;
+		// iter = mp.find(80);
 		// iter->second = "okieeeeeeeee jlklkjlkjlk";
 		// mp.find(27)->second = "newly inserted mapped_value";
 
