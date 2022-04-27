@@ -57,9 +57,9 @@ namespace ft
 			typedef typename ft::node<key_type, mapped_type> node_type;
 			typedef typename Alloc::template rebind<ft::node<Key, T> >::other allocator_node;
 
-			typedef	typename ft::mapIterator<Key, T, node_type, key_compare, false>	iterator;
+			typedef	typename ft::mapIterator<Key, T, key_compare, node_type, false>	iterator;
 			typedef typename ft::reverse_iterator<iterator>				reverse_iterator;
-			typedef	typename ft::mapIterator<Key, T, node_type, key_compare, true>	const_iterator;
+			typedef	typename ft::mapIterator<Key, T, key_compare, node_type, false>	const_iterator;
 			typedef typename ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 
 			class value_compare : public std::binary_function<value_type,value_type,bool>
@@ -95,13 +95,13 @@ namespace ft
 			// DESTROY NODE
 			void destroyNode(node_type *node)
 			{
-				// std::cout << "node destroyed is: " << node->dataPair.first << std::endl;
+				std::cout << "node destroyed is: " << node->dataPair.first << std::endl;
 				// std::cout << "node destroyed is: " << &node->dataPair << std::endl;
 				// _allocPair.destroy(&node->dataPair); /// CHECK ??
 				// std::cout << "node destroyed is: " << node<< std::endl;
 				_allocNode.destroy(node);
 				_allocNode.deallocate(node, 1);
-				node = NULL;
+				// node = NULL;
 			};
 
 			// FIND NODE
@@ -178,151 +178,141 @@ namespace ft
 					else
 						return insertNode(toInsert, subTree->right);
 				}
+				setHeight(subTree);
 				balanceTree(subTree);
 				return subTree;
 			}
 
 			// DELETE NODE
-			void removeNode(node_type *toDel)
+			void removeNode(node_type* position, key_type key)
 			{
-				// std::cout << "> toDel is " << toDel->dataPair.first << std::endl;
-				/*	I/ toDel is _root				*/
-				node_type *toBalance;
-				if (toDel == _racine)
+				printBT();
+				node_type*	target = findNode(key, position);
+				
+				if (!target)
+					return;
+				
+				//confusedNode is the node to balance from once the target is deleted
+				//this is usually the parent, unless we delete _racine then it is 0 to make balanceTree useless
+				node_type*	confusedNode = 0;
+				
+				/* DELETING THE PARENTLESS ROOT	*/
+				if (!target->parent)
 				{
-					toBalance = NULL;
-					/*	A) _root is the only node	*/
-					if (_nbNodes == 1)
+					//case 1 : only one node in the tree
+					if (target->right == _endNode && target->left == _endNode)
 					{
-						// std::cout << "	> racine is the only node" << std::endl;
-						// OR should we just del _racine ?
 						_racine = _endNode;
 						_endNode->right = _endNode;
 						_endNode->left = _endNode;
 					}
-					/*	B) _root has only one child	*/
-					/*	a) left child			*/
-					else if (_racine->left && _racine->right == _endNode)
+					//case 2 : root only has one left or right child
+					else if (target->left && target->right == _endNode)
 					{
-						// std::cout << "	> racine has only a left child" << std::endl;
-						_racine = toDel->left;
-						toDel->left->parent = NULL;
-						// _racine->right = _endNode;
-						// _endNode->left = _racine;
-						node_type *maxNode = searchMaxNode(toDel->left);
-						// std::cout << "	> maxNode: " << maxNode->dataPair.first << std::endl;
-						maxNode->right = _endNode;
-						_endNode->left = maxNode;
+						confusedNode = target->parent;	//set as 0
+						_racine = target->left;			//root becomes left child
+						target->left->parent = 0;		//cuts the link between target and new root
+						_racine->right = _endNode;
+						_endNode->left = _racine;			//setting the right side of the one node tree _endNode elem
 					}
-					/*	b) right child			*/
-					else if (_racine->right && _racine->left == _endNode)
+					else if (target->right && target->left == _endNode)
 					{
-						// std::cout << "	> racine has only a right child" << std::endl;
-						_racine = toDel->right;
-						_racine->parent = NULL;
-						// _racine->left = _endNode;
-						// _endNode->right = _racine;
-						node_type *minNode = searchMinNode(toDel->right);
-						// std::cout << "	> minNode: " << minNode->dataPair.first << std::endl;
-						minNode->left = _endNode;
-						_endNode->right = minNode;
-						}
-					/*	C) _root has two children	*/
+						confusedNode = target->parent;	//set as 0
+						_racine = target->right;			//root becomes right child
+						target->right->parent = 0;		//cuts the link between target and new root
+						_racine->left = _endNode;
+						_endNode->right = _racine;			//setting the left side of the one node tree _endNode elem
+					}
+					//case 3 : root has 2 children -> set the 'inorder predecessor' one as root
 					else
 					{
-						// std::cout << "	> racine has two children" << std::endl;
-						node_type *maxNode = searchMaxNode(_racine->left);
-						_allocPair.destroy(&_racine->dataPair);
-						_allocPair.construct(&_racine->dataPair, maxNode->dataPair);
-						removeNode(findNode(maxNode->dataPair.first, _racine->left));
-						return ;
+						node_type*	leftSubtreeHighest = searchMaxNode(target->left);
+
+						_allocPair.destroy(&target->dataPair);
+						_allocPair.construct(&target->dataPair, leftSubtreeHighest->dataPair);	//copy highestNode to root
+						//in the left subtree, delete the highest that was moved to root
+						return (removeNode(target->left, leftSubtreeHighest->dataPair.first));	
 					}
 				}
-				/*	II/ toDel is not _root	*/
+				/*	DELETING A NODE	*/
+				//case 1 : target is a leaf
+				else if ((!target->left || target->left == _endNode) && (!target->right || target->right == _endNode))
+				{
+					confusedNode = target->parent;
+
+					if (target->left == _endNode)									//min leaf node (left)
+					{
+						_endNode->right = target->parent;
+						target->parent->left = _endNode;
+					}
+					else if (target->right == _endNode)							//max leaf node (right)
+					{
+						_endNode->left = target->parent;
+						target->parent->right = _endNode;
+					}
+					else if (target->dataPair.first <= target->parent->dataPair.first)	//regular leaf	(left)
+					{
+						target->parent->left = 0;
+					}
+					else														//regular leaf	(right)
+					{
+						target->parent->right = 0;
+					}
+				}
+				//case 2 : target has a child
+				else if ((target->left && target->left != _endNode) && (!target->right || target->right == _endNode))	//has a left child
+				{
+					confusedNode = target->parent;
+		
+					if (target->dataPair.first <= target->parent->dataPair.first)		//target is a left child
+						target->parent->left = target->left;
+					else														//target is a right child
+						target->parent->right = target->left;
+					target->left->parent = target->parent;
+					
+					if (target->right == _endNode)									//target is max node
+					{
+						target->left->right = _endNode;
+						_endNode->left = target->left;
+					}
+				}
+				else if ((target->right && target->right != _endNode) && (!target->left || target->left == _endNode))	//has a right child
+				{
+					std::cout << "here" << std::endl; 
+					confusedNode = target->parent;
+
+					if (target->dataPair.first <= target->parent->dataPair.first)		//target is a left child
+						target->parent->left = target->right;
+					else														//target is a right child
+						target->parent->right = target->right;
+					target->right->parent = target->parent;
+					
+					if (target->left == _endNode)									//target is max node
+					{
+						target->right->left = _endNode;
+						_endNode->right = target->right;
+					}
+				}
+				//case 3 : target has 2 children : same logic as root -> set the 'inorder predecessor' one as root
 				else
 				{
-					/*	A) toDel is a leaf			*/
-					if (( isTreeEmpty(toDel->left) || isEndNode(toDel->left) ) && ( isTreeEmpty(toDel->right) || isEndNode(toDel->right) ))
-					{
-						// std::cout << "	> toDel is a leaf" << std::endl;
-						if (isEndNode(toDel->left))
-						{
-							// std::cout << "		> min leaf" << std::endl;
-							_endNode->right = toDel->parent;
-							toDel->parent->left = _endNode;
-						}
-						else if (isEndNode(toDel->right))
-						{
-							// std::cout << "max leaf" << std::endl;
-							_endNode->left = toDel->parent;
-							toDel->parent->right = _endNode;
-						}
-						else if (toDel->dataPair.first <= toDel->parent->dataPair.first)
-						{
-							// std::cout << "left leaf" << std::endl;
-							toDel->parent->left = NULL;
-						}
-						else
-						{
-							// std::cout << "right leaf" << std::endl;
-							toDel->parent->right = NULL;
-						}
-					}
-					/*	B) toDel has only one child	*/
-					/*	a) left child				*/
-					else if ( (!isTreeEmpty(toDel->left) && !isEndNode(toDel->left)) && (isTreeEmpty(toDel->right) || isEndNode(toDel->right)) )
-					{
-						// std::cout << "	> toDel has one left child" << std::endl;
-						if (toDel->dataPair.first <= toDel->parent->dataPair.first)
-							toDel->parent->left = toDel->left;
-						else
-							toDel->parent->right = toDel->left;
-						toDel->left->parent = toDel->parent;
-						if (isEndNode(toDel->right))
-						{
-							toDel->left->right = _endNode;
-							_endNode->left = toDel->left;
-						}
-					}
-					/*	b) right child				*/
-					else if ( (!isTreeEmpty(toDel->right) && !isEndNode(toDel->right)) && (isTreeEmpty(toDel->left) || isEndNode(toDel->left)) )
-					{
-						// std::cout << "	> toDel has one right child" << std::endl;
-						if (toDel->dataPair.first <= toDel->parent->dataPair.first)
-						{
-							// std::cout << "		> toDel is a left child" << std::endl;
-							toDel->parent->left = toDel->right;						
-						}
-						else
-						{
-							// std::cout << "		> toDel is a right child" << std::endl;
-							toDel->parent->right = toDel->right;
-						}
-						toDel->right->parent = toDel->parent;
-						if (isEndNode(toDel->left))
-						{
-							// std::cout << "		> toDel left is endNode" << std::endl;
-							toDel->right->left = _endNode;
-							_endNode->right = toDel->right;
-						}
-						// std::cout << "toDel->right->right" << toDel->right->right << std::endl;
-					}
-					/*	C) toDel has two children	*/
-					else
-					{
-						// std::cout << "toDel has two children" << std::endl;
-						node_type *maxNode = searchMaxNode(toDel->left);
-						_allocPair.destroy(&toDel->dataPair);
-						_allocPair.construct(&toDel->dataPair, maxNode->dataPair);
-						removeNode(findNode(maxNode->dataPair.first, toDel->left));
-						return ;
-					}
-					toBalance = toDel->parent;
+					node_type*	leftSubtreeHighest = searchMaxNode(target->left);
+
+					_allocPair.destroy(&target->dataPair);
+					_allocPair.construct(&target->dataPair, leftSubtreeHighest->dataPair);	//copy highestNode to root
+
+					//in the left subtree, delete the highest that was moved to root
+					return (removeNode(target->left, leftSubtreeHighest->dataPair.first));					
 				}
-				destroyNode(toDel);
-				_nbNodes -= 1;
-				balanceTree(toBalance);
-				// printBT();
+				printBT();
+				setHeight(confusedNode);			
+				balanceTree(confusedNode);
+
+				destroyNode(target);
+
+				_nbNodes--;
+				printBT();
+				return;
 			};
 
 			/*		BALANCING TREE SPEC OPERATIONS		*/
@@ -339,6 +329,7 @@ namespace ft
 
 			void setHeight(node_type *node)
 			{
+				// std::cout << "node: " << node->dataPair.first << std::endl;
 				if (isTreeEmpty(node) || isEndNode(node))
 					return ;
 				node->height = 1 + max(getHeight(node->left), getHeight(node->right));
@@ -355,25 +346,27 @@ namespace ft
 			{
 				while (node)
 				{
+					int	bf;
 					setHeight(node);
-					int balance = getBalanceFactor(node);
+					bf = getBalanceFactor(node);
 
-					if (balance > 1 && getBalanceFactor(node->left) >= 0)
+					if (bf > 1 && getBalanceFactor(node->left) > 0)			//ll
 						rightRotate(node);
-					else if (balance > 1 && getBalanceFactor(node->left) < 0)
+					else if (bf > 1 && getBalanceFactor(node->left) <= 0)		//lr
 					{
 						leftRotate(node->left);
 						rightRotate(node);
 					}
-					else if (balance < -1 && getBalanceFactor(node->right) <= 0)
-						leftRotate(node);
-					else if (balance < -1 && getBalanceFactor(node->right) > 0)
+					else if (bf < -1 && getBalanceFactor(node->right) >= 0)	//rl
 					{
 						rightRotate(node->right);
 						leftRotate(node);
 					}
+					else if (bf < -1 && getBalanceFactor(node->right) < 0)		//rr
+						leftRotate(node);
 					node = node->parent;
 				}
+				return ;
 			};
 
 			void rightRotate(node_type *futureBottom)
@@ -453,14 +446,14 @@ namespace ft
 			}
 			node_type *getFirst() const
 			{
-				iterator it(_racine, _endNode, NULL, _comp);
+				iterator it(NULL, _endNode, _comp);
 				while (it++ != _endNode)
 					;
 				return (it.getNode());
 			};
 			node_type *getLast() const
 			{
-				iterator it(_racine, _endNode, NULL, _comp);
+				iterator it(NULL, _endNode, _comp);
 				while (it-- != _endNode)
 					;
 				return (it.getNode());
@@ -530,22 +523,22 @@ namespace ft
 			/*✅*/
 			iterator begin()
 			{
-				return (iterator(_racine, _endNode, _endNode->right, _comp));
+				return (iterator(_endNode->right, _endNode, _comp));
 			};
 			/*✅*/
 			const_iterator begin() const
 			{
-				return (const_iterator(_racine, _endNode, _endNode->right, _comp));
+				return (const_iterator(_endNode->right, _endNode, _comp));
 			};
 			/*✅*/
 			iterator end()
 			{
-				return (iterator(_racine, _endNode, _endNode, _comp));
+				return (iterator(_endNode, _endNode, _comp));
 			};
 			/*✅*/
 			const_iterator end() const
 			{
-				return (const_iterator(_racine, _endNode, _endNode, _comp));
+				return (const_iterator(_endNode, _endNode, _comp));
 			};
 			/*✅*/
 			reverse_iterator rbegin() { return reverse_iterator(end()); };
@@ -586,7 +579,7 @@ namespace ft
 			{
 				node_type *foundNode = findNode(val.first);	
 				if (foundNode)
-					return (ft::pair<iterator, bool>(iterator(_racine, _endNode, foundNode, _comp), false));
+					return (ft::pair<iterator, bool>(iterator(foundNode, _endNode, _comp), false));
 				node_type *insertedNode;
 				if (_nbNodes == 0 && _racine == _endNode)
 				{
@@ -594,19 +587,19 @@ namespace ft
 				}
 				else
 					insertedNode = insertNode(createNode(val));
-				return (ft::pair<iterator, bool>(iterator(_racine, _endNode, insertedNode, _comp), true));
+				return (ft::pair<iterator, bool>(iterator(foundNode, _endNode, _comp), true));
 			};
 			/*✅*/
 			iterator insert (iterator position, const value_type& val)
 			{
 				node_type *foundNode = findNode(val.first);
 				if (foundNode)
-					return (iterator(_racine, _endNode, foundNode, _comp));
+					return (iterator(foundNode, _endNode, _comp));
 				node_type *insertedNode;
 				if (position.getNode() == _racine && _racine == _endNode)
 				{
 					insertedNode = insertNode(createNode(val), NULL);
-					return (iterator(_racine, _endNode, insertedNode, _comp));
+					return (iterator(insertedNode, _endNode, _comp));
 				}
 				if (_comp(val.first, position.getNode()->dataPair.first))
 				{
@@ -619,7 +612,7 @@ namespace ft
 					position--;
 				}
 				insertedNode = insertNode(createNode(val), position.getNode());
-				return (iterator(_racine, _endNode, insertedNode));
+				return (iterator(insertedNode, _endNode, _comp));
 			};
 			/*✅*/
 			template <class InputIterator>
@@ -629,7 +622,7 @@ namespace ft
 					insert(*first);
 			};
 			/*✅*/
-			void erase (iterator position) { removeNode(position.getNode()); };
+			void erase (iterator position) { removeNode(position.getNode(), position.getNode()->dataPair.first); };
 			/*✅*/
 			size_type erase (const key_type& k)
 			{
@@ -644,7 +637,7 @@ namespace ft
 			{
 				while (first != last)
 				{
-					// std::cout << "ERASE: first: " << first.getNode()->dataPair.first << std::endl;
+					std::cout << "ERASE: first: " << first.getNode()->dataPair.first << std::endl;
 					erase(first++);
 				}
 				// erase(first);
@@ -691,7 +684,7 @@ namespace ft
 			{
 				node_type *foundNode = findNode(k, _racine);
 				if (foundNode)
-					return (iterator(_racine, _endNode, foundNode, _comp));
+					return (iterator(foundNode, _endNode, _comp));
 				return (end());
 			};
 			/*✅*/
@@ -699,7 +692,7 @@ namespace ft
 			{
 				node_type *foundNode = findNode(k, _racine);
 				if (foundNode)
-					return (const_iterator(_racine, _endNode, foundNode, _comp));
+					return (const_iterator(foundNode, _endNode, _comp));
 				return (const_iterator(end()));
 			};
 			/*✅*/
@@ -801,7 +794,7 @@ namespace ft
 	bool operator== ( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
 	{
 		typedef typename ft::node<Key, T> node_type;
-		typedef	typename ft::mapIterator<Key, T, node_type, Compare, true> const_iterator;
+		typedef	typename ft::mapIterator<Key, T, Compare, node_type, true> const_iterator;
 
 		if (lhs.size() != rhs.size())
 			return false;

@@ -198,11 +198,12 @@ int main()
 		// std::cout << "First: " << test.getFirst()->dataPair.first << std::endl;
 		// std::cout << "Last: " << test.getLast()->dataPair.first << std::endl;
 
-		// ft::map<int, char>::iterator last = test.begin();
-		// while(last != test.end())
-		// {
-		// 	std::cout << "last++: " << (last++)->first << std::endl;
-		// }
+		ft::map<int, std::string, ft_more>::iterator last = mp.begin();
+		while(last != mp.end())
+		{
+			std::cout << "last++: " << (last)->first << std::endl;
+			last++;
+		}
 		// last = test.end();
 		// last--;
 		// while(last != test.begin())
