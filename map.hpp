@@ -72,6 +72,245 @@ namespace ft
 			allocator_node	_allocNode;
 			key_compare		_comp;
 
+		public:
+		
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp)
+			{
+				_endNode = createNode();
+				insertNode(_endNode);
+			};
+
+			template <class InputIterator>
+ 			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
+			: _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp)
+			{
+				_endNode = createNode();
+				insertNode(_endNode);
+				for (; first != last; first++)
+		 			insert(*first);
+			};
+
+			map (const map& x) : _racine(NULL), _nbNodes(0), _allocPair(x._allocPair), _comp(x._comp)
+			{
+				_endNode = createNode();
+				insertNode(_endNode);
+				insert(x.begin(), x.end());
+			};
+
+			~map()
+			{
+				if (!empty())
+					clear();
+				destroyNode(_endNode);
+			};
+
+			map& operator= (const map& x)
+			{
+				if (!empty())
+					clear();
+				insert(x.begin(), x.end());
+				return (*this);
+			};
+
+			iterator begin()
+			{ return (iterator(_racine, _endNode, _endNode->right, _comp)); };
+
+			const_iterator begin() const
+			{ return (const_iterator(_racine, _endNode, _endNode->right, _comp)); };
+
+			iterator end()
+			{ return (iterator(_racine, _endNode, _endNode, _comp)); };
+
+			const_iterator end() const
+			{ return (const_iterator(_racine, _endNode, _endNode, _comp)); };
+
+			reverse_iterator rbegin() { return reverse_iterator(end()); };
+
+			const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); };
+
+			reverse_iterator rend() { return reverse_iterator(begin()); };
+	
+			const_reverse_iterator rend() const { return const_reverse_iterator(begin()); };
+
+			bool empty() const { return (_nbNodes == 0); };
+
+			size_type size() const {return (_nbNodes); };
+
+			size_type max_size() const { return (_allocNode.max_size()); };
+
+			mapped_type& operator[] (const key_type& k)
+			{
+				node_type *newNode = findNode(k, _racine);
+				if (isTreeEmpty(newNode))
+				{
+					newNode = createNode(value_type(k, mapped_type()));
+					if (_nbNodes == 0 && _racine == _endNode)
+						insertNode(newNode, NULL);
+					else
+						insertNode(newNode);
+				}
+				return (newNode->dataPair.second);
+			};
+
+			ft::pair<iterator,bool> insert (const value_type& val)
+			{
+				node_type *foundNode = findNode(val.first);	
+				if (foundNode)
+					return (ft::pair<iterator, bool>(iterator(_racine, _endNode, foundNode, _comp), false));
+				node_type *insertedNode;
+				if (_nbNodes == 0 && _racine == _endNode)
+				{
+					insertedNode = insertNode(createNode(val), NULL);
+				}
+				else
+					insertedNode = insertNode(createNode(val));
+				return (ft::pair<iterator, bool>(iterator(_racine, _endNode, insertedNode, _comp), true));
+			};
+
+			iterator insert (iterator position, const value_type& val)
+			{
+				node_type *foundNode = findNode(val.first);
+				if (foundNode)
+					return (iterator(_racine, _endNode, foundNode, _comp));
+				node_type *insertedNode;
+				if (position.getNode() == _racine && _racine == _endNode)
+				{
+					insertedNode = insertNode(createNode(val), NULL);
+					return (iterator(_racine, _endNode, insertedNode, _comp));
+				}
+				if (_comp(val.first, position.getNode()->dataPair.first))
+				{
+					for (; position != end() && _comp(val.first, position.getNode()->dataPair.first); position--);
+					position++;	
+				}
+				else if (_comp(position.getNode()->dataPair.first, val.first))
+				{
+					for (; position != end() && _comp(position.getNode()->dataPair.first, val.first); position++);
+					position--;
+				}
+				insertedNode = insertNode(createNode(val), position.getNode());
+				return (iterator(_racine, _endNode, insertedNode));
+			};
+
+			template <class InputIterator>
+			void insert (InputIterator first, InputIterator last)
+			{
+				for (; first != last; first++)
+					insert(*first);
+			};
+
+			void erase (iterator position) { removeNode(position.getNode()); };
+
+			size_type erase (const key_type& k)
+			{
+				node_type *foundNode = findNode(k);
+				if (foundNode == NULL)
+					return 0;
+				removeNode(foundNode);
+				return 1;
+			};
+
+			void erase (iterator first, iterator last)
+			{
+				while (first != last)
+					erase(first++);
+			};
+
+			void swap (map& x)
+			{
+				node_type		*_racineTemp = x._racine;
+				node_type		*_endNodeTemp = x._endNode;
+				size_type		_nbNodesTemp = x._nbNodes;
+				allocator_type	_allocPairTemp = x._allocPair;
+				allocator_node	_allocNodeTemp = x._allocNode;
+				key_compare		_compTemp = x._comp;
+
+				x._racine = _racine;
+				x._endNode = _endNode;
+				x._nbNodes = _nbNodes;
+				x._allocPair = _allocPair;
+				x._allocNode = _allocNode;
+				x._comp = _comp;
+
+				_racine = _racineTemp;
+				_endNode = _endNodeTemp;
+				_nbNodes = _nbNodesTemp;
+				_allocPair = _allocPairTemp;
+				_allocNode = _allocNodeTemp;
+				_comp = _compTemp;
+			};
+
+			void clear()
+			{ erase(begin(), end()); };
+
+			key_compare key_comp() const { return (_comp); };
+
+			value_compare value_comp() const { return (value_compare(_comp)); };
+
+			iterator find (const key_type& k)
+			{
+				node_type *foundNode = findNode(k, _racine);
+				if (foundNode)
+					return (iterator(_racine, _endNode, foundNode, _comp));
+				return (end());
+			};
+
+			const_iterator find (const key_type& k) const
+			{
+				node_type *foundNode = findNode(k, _racine);
+				if (foundNode)
+					return (const_iterator(_racine, _endNode, foundNode, _comp));
+				return (const_iterator(end()));
+			};
+
+			size_type count (const key_type& k) const
+			{
+				if (containsNode(k, _racine))
+					return (1);
+				return (0);
+			};
+
+			iterator lower_bound (const key_type& k)
+			{
+				iterator it = begin();
+				iterator itEnd = end();
+				for (; it != itEnd && _comp(it.getNode()->dataPair.first, k) == true; it++);
+				return (it);
+			};
+
+			const_iterator lower_bound (const key_type& k) const
+			{
+				const_iterator it = begin();
+				const_iterator itEnd = end();
+				for (; it != itEnd && _comp(it.getNode()->dataPair.first, k) == true; it++);
+				return (it);
+			};
+
+			iterator upper_bound (const key_type& k)
+			{
+				iterator it = begin();
+				iterator itEnd = end();
+				for (; it != itEnd && _comp(k, it.getNode()->dataPair.first) == false; it++);
+				return (it);				
+			};
+
+			const_iterator upper_bound (const key_type& k) const
+			{
+				const_iterator it = begin();
+				const_iterator itEnd = end();
+				for (; it != itEnd && _comp(k, it.getNode()->dataPair.first) == false; it++);
+				return (it);				
+			};
+
+			ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const
+			{ return (ft::pair<const_iterator, const_iterator>(lower_bound(k), upper_bound(k))); };
+
+			ft::pair<iterator,iterator> equal_range (const key_type& k)
+			{ return (ft::pair<iterator, iterator>(lower_bound(k), upper_bound(k))); };
+
+			allocator_type get_allocator() const { return (_allocNode); };
+
+		private:
 			/////////////////////////////////
 			////	NODE OPERATIONS		////
 			///////////////////////////////
@@ -444,260 +683,6 @@ namespace ft
 					printTree( prefix + (isLeft ? "│   " : "    "), node->right, false);
 				}
 			};
-
-		public:
-		
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp)
-			{
-				_endNode = createNode();
-				insertNode(_endNode);
-			};
-
-			template <class InputIterator>
- 			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
-			: _racine(NULL), _nbNodes(0), _allocPair(alloc), _comp(comp)
-			{
-				_endNode = createNode();
-				insertNode(_endNode);
-				for (; first != last; first++)
-		 			insert(*first);
-			};
-
-			map (const map& x) : _racine(NULL), _nbNodes(0), _allocPair(x._allocPair), _comp(x._comp)
-			{
-				_endNode = createNode();
-				insertNode(_endNode);
-				insert(x.begin(), x.end());
-			};
-
-			~map()
-			{
-				if (!empty())
-					clear();
-				destroyNode(_endNode);
-			};
-
-			map& operator= (const map& x)
-			{
-				if (!empty())
-					clear();
-				insert(x.begin(), x.end());
-				return (*this);
-			};
-
-			iterator begin()
-			{
-				return (iterator(_racine, _endNode, _endNode->right, _comp));
-			};
-
-			const_iterator begin() const
-			{
-				return (const_iterator(_racine, _endNode, _endNode->right, _comp));
-			};
-
-			iterator end()
-			{
-				return (iterator(_racine, _endNode, _endNode, _comp));
-			};
-
-			const_iterator end() const
-			{
-				return (const_iterator(_racine, _endNode, _endNode, _comp));
-			};
-
-			reverse_iterator rbegin() { return reverse_iterator(end()); };
-
-			const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); };
-
-			reverse_iterator rend() { return reverse_iterator(begin()); };
-	
-			const_reverse_iterator rend() const { return const_reverse_iterator(begin()); };
-
-			bool empty() const { return (_nbNodes == 0); };
-
-			size_type size() const {return (_nbNodes); };
-
-			size_type max_size() const { return (_allocNode.max_size()); };
-
-			mapped_type& operator[] (const key_type& k)
-			{
-				node_type *newNode = findNode(k, _racine);
-				if (isTreeEmpty(newNode))
-				{
-					newNode = createNode(value_type(k, mapped_type()));
-					if (_nbNodes == 0 && _racine == _endNode)
-						insertNode(newNode, NULL);
-					else
-						insertNode(newNode);
-				}
-				return (newNode->dataPair.second);
-			};
-
-			ft::pair<iterator,bool> insert (const value_type& val)
-			{
-				node_type *foundNode = findNode(val.first);	
-				if (foundNode)
-					return (ft::pair<iterator, bool>(iterator(_racine, _endNode, foundNode, _comp), false));
-				node_type *insertedNode;
-				if (_nbNodes == 0 && _racine == _endNode)
-				{
-					insertedNode = insertNode(createNode(val), NULL);
-				}
-				else
-					insertedNode = insertNode(createNode(val));
-				return (ft::pair<iterator, bool>(iterator(_racine, _endNode, insertedNode, _comp), true));
-			};
-
-			iterator insert (iterator position, const value_type& val)
-			{
-				node_type *foundNode = findNode(val.first);
-				if (foundNode)
-					return (iterator(_racine, _endNode, foundNode, _comp));
-				node_type *insertedNode;
-				if (position.getNode() == _racine && _racine == _endNode)
-				{
-					insertedNode = insertNode(createNode(val), NULL);
-					return (iterator(_racine, _endNode, insertedNode, _comp));
-				}
-				if (_comp(val.first, position.getNode()->dataPair.first))
-				{
-					for (; position != end() && _comp(val.first, position.getNode()->dataPair.first); position--);
-					position++;	
-				}
-				else if (_comp(position.getNode()->dataPair.first, val.first))
-				{
-					for (; position != end() && _comp(position.getNode()->dataPair.first, val.first); position++);
-					position--;
-				}
-				insertedNode = insertNode(createNode(val), position.getNode());
-				return (iterator(_racine, _endNode, insertedNode));
-			};
-
-			template <class InputIterator>
-			void insert (InputIterator first, InputIterator last)
-			{
-				for (; first != last; first++)
-					insert(*first);
-			};
-
-			void erase (iterator position) { removeNode(position.getNode()); };
-
-			size_type erase (const key_type& k)
-			{
-				node_type *foundNode = findNode(k);
-				if (foundNode == NULL)
-					return 0;
-				removeNode(foundNode);
-				return 1;
-			};
-
-			void erase (iterator first, iterator last)
-			{
-				while (first != last)
-					erase(first++);
-			};
-
-			void swap (map& x)
-			{
-				node_type		*_racineTemp = x._racine;
-				node_type		*_endNodeTemp = x._endNode;
-				size_type		_nbNodesTemp = x._nbNodes;
-				allocator_type	_allocPairTemp = x._allocPair;
-				allocator_node	_allocNodeTemp = x._allocNode;
-				key_compare		_compTemp = x._comp;
-
-				x._racine = _racine;
-				x._endNode = _endNode;
-				x._nbNodes = _nbNodes;
-				x._allocPair = _allocPair;
-				x._allocNode = _allocNode;
-				x._comp = _comp;
-
-				_racine = _racineTemp;
-				_endNode = _endNodeTemp;
-				_nbNodes = _nbNodesTemp;
-				_allocPair = _allocPairTemp;
-				_allocNode = _allocNodeTemp;
-				_comp = _compTemp;
-			};
-
-			void clear()
-			{
-				erase(begin(), end());
-			};
-
-			key_compare key_comp() const { return (_comp); };
-
-			value_compare value_comp() const { return (value_compare(_comp)); };
-
-			iterator find (const key_type& k)
-			{
-				node_type *foundNode = findNode(k, _racine);
-				if (foundNode)
-					return (iterator(_racine, _endNode, foundNode, _comp));
-				return (end());
-			};
-
-			const_iterator find (const key_type& k) const
-			{
-				node_type *foundNode = findNode(k, _racine);
-				if (foundNode)
-					return (const_iterator(_racine, _endNode, foundNode, _comp));
-				return (const_iterator(end()));
-			};
-
-			size_type count (const key_type& k) const
-			{
-				if (containsNode(k, _racine))
-					return (1);
-				return (0);
-			};
-
-			iterator lower_bound (const key_type& k)
-			{
-				iterator it = begin();
-				iterator itEnd = end();
-				for (; it != itEnd && (key_comp())(it.getNode()->dataPair.first, k) == true; it++);
-				return (it);
-			};
-
-			const_iterator lower_bound (const key_type& k) const
-			{
-				const_iterator it = begin();
-				const_iterator itEnd = end();
-				for (; it != itEnd && (key_comp())(it.getNode()->dataPair.first, k) == true; it++);
-				return (it);
-			};
-
-			iterator upper_bound (const key_type& k)
-			{
-				iterator it = begin();
-				iterator itEnd = end();
-				for (; it != itEnd && (key_comp())(k, it.getNode()->dataPair.first) == false; it++);
-				return (it);				
-			};
-
-			const_iterator upper_bound (const key_type& k) const
-			{
-				const_iterator it = begin();
-				const_iterator itEnd = end();
-				for (; it != itEnd && (key_comp())(k, it.getNode()->dataPair.first) == false; it++);
-				return (it);				
-			};
-
-			ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const
-			{
-				ft::pair<const_iterator, const_iterator> result(lower_bound(k), upper_bound(k));
-				return (result);
-			};
-
-			ft::pair<iterator,iterator> equal_range (const key_type& k)
-			{
-				ft::pair<iterator, iterator> result(lower_bound(k), upper_bound(k));
-				return (result);
-			};
-
-			allocator_type get_allocator() const { return (_allocNode); };
   	};
 	
 	template <class Key, class T, class Compare, class Alloc>
@@ -710,7 +695,6 @@ namespace ft
 			return false;
 		const_iterator startLeft = lhs.begin();
 		const_iterator startRight = rhs.begin();
-		const_iterator endRight = rhs.end();
 		for (; startLeft != lhs.end(); startLeft++, startRight++)
 		{
 			if (startLeft.getNode()->dataPair != startRight.getNode()->dataPair)

@@ -204,6 +204,7 @@ int main()
 			std::cout << "last++: " << (last)->first << std::endl;
 			last++;
 		}
+		mp.equal_range(42);
 		// last = test.end();
 		// last--;
 		// while(last != test.begin())
