@@ -5,16 +5,13 @@
 
 namespace ft
 {
-	//boolean is true is const
 	template <bool isConst, typename falseConst, typename trueConst>
 	struct chooseConst {};
 
-	//sets 2nd parameter as ref and pointer
 	template <typename falseConst, typename trueConst>
 	struct chooseConst<false, falseConst, trueConst>
 	{ typedef falseConst type; };
 
-	//sets 2nd parameter as (const) ref and pointer
 	template <typename falseConst, typename trueConst>
 	struct chooseConst<true, falseConst, trueConst>
 	{ typedef trueConst type; };
@@ -43,8 +40,7 @@ namespace ft
 
 		public:
 			mapIterator(Node *root = NULL,  Node *endNode = NULL, Node *node = NULL, const key_compare& comp = key_compare())
-			: _node(node), _root(root), _endNode(endNode),_comp(comp)
-			{};
+			: _node(node), _root(root), _endNode(endNode),_comp(comp){};
 			mapIterator(const mapIterator<Key, T, Node, key_compare, false> &other)
 			: _node(other.getNode()), _root(other.getRoot()), _endNode(other.getEnd()), _comp(other.getComp()) {};
 			~mapIterator() {};
