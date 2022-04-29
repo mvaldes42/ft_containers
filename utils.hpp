@@ -6,7 +6,7 @@
 /*   By: mvaldes <mvaldes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 15:06:26 by mvaldes           #+#    #+#             */
-/*   Updated: 2022/04/29 15:06:27 by mvaldes          ###   ########.fr       */
+/*   Updated: 2022/04/29 15:21:07 by mvaldes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ namespace ft
 	// WHAT_TYPE_M(char16_t)
 	// WHAT_TYPE_M(char32_t)
 	WHAT_TYPE_M(signed char)
+	WHAT_TYPE_M(wchar_t)
 	WHAT_TYPE_M(int)
 	WHAT_TYPE_M(short int)
 	WHAT_TYPE_M(long int)

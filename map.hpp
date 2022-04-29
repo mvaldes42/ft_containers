@@ -6,7 +6,7 @@
 /*   By: mvaldes <mvaldes@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/29 15:06:07 by mvaldes           #+#    #+#             */
-/*   Updated: 2022/04/29 15:06:08 by mvaldes          ###   ########.fr       */
+/*   Updated: 2022/04/29 15:45:58 by mvaldes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,8 +252,7 @@ namespace ft
 				_comp = _compTemp;
 			};
 
-			void clear()
-			{ erase(begin(), end()); };
+			void clear() { erase(begin(), end()); };
 
 			key_compare key_comp() const { return (_comp); };
 
@@ -326,7 +325,7 @@ namespace ft
 			/////////////////////////////////
 			////	NODE OPERATIONS		////
 			///////////////////////////////
-			/*		CREATE NOTE		*/
+			/*		CREATE NODE		*/
 			node_type *createNode() { return (createNode(value_type())); };
 			node_type *createNode(value_type pair)
 			{
@@ -336,14 +335,14 @@ namespace ft
 				_allocPair.construct(&newNode->dataPair, pair);
 				return (newNode);
 			};
-			/*		DESTROY NOTE		*/
+			/*		DESTROY NODE		*/
 			void destroyNode(node_type *node)
 			{
 				_allocNode.destroy(node);
 				_allocNode.deallocate(node, 1);
 				node = NULL;
 			};
-			/*		FIND NOTE		*/
+			/*		FIND NODE		*/
 			bool containsNode( node_type const *needle, node_type *subTree) const
 			{ return (containsNode(needle->dataPair.first, subTree)); };
 			bool containsNode( key_type const &key, node_type *subTree) const
@@ -372,12 +371,12 @@ namespace ft
 				else
 					return subTree;
 			};
-			/*		INSERT NOTE		*/
+			/*		INSERT NODE		*/
 			node_type *insertNode(node_type *toInsert)
 			{ return insertNode(toInsert, _racine); };
 			node_type *insertNode(node_type *toInsert, node_type *subTree) 
 			{
-				if (isTreeEmpty(subTree) && _nbNodes == 0)	/*	first insertion into tree	*/
+				if (isTreeEmpty(subTree) && _nbNodes == 0)
 				{
 					_racine = toInsert;
 					if (toInsert != _endNode)
@@ -386,30 +385,30 @@ namespace ft
 					setEndNodeFirst(_racine);
 					subTree = _racine;
 				}
-				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))	/*	insert < current => go to left	*/
+				else if (_comp(toInsert->dataPair.first, subTree->dataPair.first))
 				{
-					if (isTreeEmpty(subTree->left) || isEndNode(subTree->left))	/*	reached a leaf	*/
+					if (isTreeEmpty(subTree->left) || isEndNode(subTree->left))
 					{
 						node_type *oldLeft = subTree->left;
 						toInsert->parent = subTree;
 						subTree->left = toInsert;
 						_nbNodes++;
-						if (isEndNode(oldLeft))	/*	reached a leaf that was endNode	*/
+						if (isEndNode(oldLeft))
 							setEndNodeFirst(subTree->left);
 						subTree = subTree->left;
 					}
 					else
 						return insertNode(toInsert, subTree->left);
 				}
-				else if (_comp(subTree->dataPair.first, toInsert->dataPair.first)) 	//*	insert > current => go to right	*/
+				else if (_comp(subTree->dataPair.first, toInsert->dataPair.first))
 				{
-					if (isTreeEmpty(subTree->right) || isEndNode(subTree->right))	/*	reached a leaf	*/
+					if (isTreeEmpty(subTree->right) || isEndNode(subTree->right))
 					{
 						node_type *oldRight = subTree->right;
 						toInsert->parent = subTree;
 						subTree->right = toInsert;
 						_nbNodes++;
-						if (isEndNode(oldRight))	/*	reached a leaf that was endNode	*/
+						if (isEndNode(oldRight))
 							setEndNodeLast(subTree->right);
 						subTree = subTree->right;
 					}
@@ -419,23 +418,19 @@ namespace ft
 				balanceTree(subTree);
 				return subTree;
 			};
-			/*		DELETE NOTE		*/
+			/*		DELETE NODE		*/
 			void removeNode(node_type *toDel)
 			{
-				/*	I/ toDel is _root				*/
 				node_type *toBalance;
 				if (toDel == _racine)
 				{
 					toBalance = NULL;
-					/*	A) _root is the only node	*/
 					if (_nbNodes == 1)
 					{
 						_racine = _endNode;
 						_endNode->right = _endNode;
 						_endNode->left = _endNode;
 					}
-					/*	B) _root has only one child	*/
-					/*	a) left child			*/
 					else if (_racine->left && _racine->right == _endNode)
 					{
 						_racine = toDel->left;
@@ -444,7 +439,6 @@ namespace ft
 						maxNode->right = _endNode;
 						_endNode->left = maxNode;
 					}
-					/*	b) right child			*/
 					else if (_racine->right && _racine->left == _endNode)
 					{
 						_racine = toDel->right;
@@ -453,7 +447,6 @@ namespace ft
 						minNode->left = _endNode;
 						_endNode->right = minNode;
 						}
-					/*	C) _root has two children	*/
 					else
 					{
 						node_type *maxNode = getMax(_racine->left);
@@ -463,10 +456,8 @@ namespace ft
 						return ;
 					}
 				}
-				/*	II/ toDel is not _root	*/
 				else
 				{
-					/*	A) toDel is a leaf			*/
 					if (( isTreeEmpty(toDel->left) || isEndNode(toDel->left) ) && ( isTreeEmpty(toDel->right) || isEndNode(toDel->right) ))
 					{
 						if (isEndNode(toDel->left))
@@ -484,8 +475,6 @@ namespace ft
 						else
 							toDel->parent->right = NULL;
 					}
-					/*	B) toDel has only one child	*/
-					/*	a) left child				*/
 					else if ( (!isTreeEmpty(toDel->left) && !isEndNode(toDel->left)) && (isTreeEmpty(toDel->right) || isEndNode(toDel->right)) )
 					{
 						if (toDel->dataPair.first <= toDel->parent->dataPair.first)
@@ -499,7 +488,6 @@ namespace ft
 							_endNode->left = toDel->left;
 						}
 					}
-					/*	b) right child				*/
 					else if ( (!isTreeEmpty(toDel->right) && !isEndNode(toDel->right)) && (isTreeEmpty(toDel->left) || isEndNode(toDel->left)) )
 					{
 						if (toDel->dataPair.first <= toDel->parent->dataPair.first)
@@ -513,7 +501,6 @@ namespace ft
 							_endNode->right = toDel->right;
 						}
 					}
-					/*	C) toDel has two children	*/
 					else
 					{
 						node_type *maxNode = getMax(toDel->left);
@@ -540,7 +527,7 @@ namespace ft
 			{
   				if (isTreeEmpty(node) || isEndNode(node))
 				  return (0);
-  				return node->height;
+  				return (node->height);
 			};
 			void setHeight(node_type *node)
 			{
@@ -564,29 +551,34 @@ namespace ft
 
 			void balanceTree(node_type *node)
 			{
+				int	factor;
+
 				while (node)
 				{
-					int	bf;
 					setHeight(node);
-					bf = getBalanceFactor(node);
-
-					if (bf > 1 && getBalanceFactor(node->left) > 0)
-						rightRotate(node);
-					else if (bf > 1 && getBalanceFactor(node->left) <= 0)
+					factor = getBalanceFactor(node);
+					if (factor > 1)
 					{
-						leftRotate(node->left);
-						rightRotate(node);
+						if (getBalanceFactor(node->left) > 0)
+							rightRotate(node);
+						else if (getBalanceFactor(node->left) <= 0)
+						{
+							leftRotate(node->left);
+							rightRotate(node);
+						}
 					}
-					else if (bf < -1 && getBalanceFactor(node->right) >= 0)
+					else if (factor < -1)
 					{
-						rightRotate(node->right);
-						leftRotate(node);
+						if (getBalanceFactor(node->right) < 0)
+							leftRotate(node);
+						else if (getBalanceFactor(node->right) >= 0)
+						{
+							rightRotate(node->right);
+							leftRotate(node);
+						}
 					}
-					else if (bf < -1 && getBalanceFactor(node->right) < 0)
-						leftRotate(node);
 					node = node->parent;
 				}
-				return ;
 			};
 
 			void rightRotate(node_type *futureBottom)
