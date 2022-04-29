@@ -53,7 +53,7 @@ namespace ft
 					_size++;
 				_capacity = _size;
 				_array = _alloc.allocate(_size);
-				for (size_type i = 0; i <= _size; ++i)
+				for (size_type i = 0; i < _size; ++i)
 					_alloc.construct(&_array[i], *first++);
 			};
 			
